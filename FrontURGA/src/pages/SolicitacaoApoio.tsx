@@ -1,0 +1,213 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { formsService } from '../services/forms';
+import { FileText, Save, ArrowLeft } from 'lucide-react';
+import './SolicitacaoApoio.css';
+
+export function SolicitacaoApoio() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Form state
+  const [formData, setFormData] = useState({
+    departamento: '',
+    operacao: '',
+    data_operacao: '',
+    numero_processo: '',
+    medida_cautelar: '',
+    numero_cautelar: '',
+    descricao_operacao: '',
+    valor_estimado: ''
+  });
+
+  const [resultados, setResultados] = useState<string[]>([]);
+  const [tiposApreendidos, setTiposApreendidos] = useState<string[]>([]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const toggleCheckbox = (setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
+    setList(prev => 
+      prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setError('');
+      setLoading(true);
+      
+      const payload = {
+        departamento: formData.departamento,
+        operacao: formData.operacao,
+        data_operacao: formData.data_operacao,
+        numero_processo: formData.numero_processo,
+        medida_cautelar: formData.medida_cautelar,
+        numero_cautelar: formData.numero_cautelar,
+        descricao_operacao: formData.descricao_operacao,
+        valor_estimado: Number(formData.valor_estimado),
+        resultados,
+        tipos_apreendidos: tiposApreendidos
+      };
+
+      await formsService.createForm(payload);
+      alert('Formulário cadastrado com sucesso!');
+      navigate('/dashboard');
+    } catch (err: any) {
+      console.error('Erro na requisição:', err);
+      
+      // Tenta extrair a mensagem de erro específica do backend
+      if (err.response && err.response.data) {
+        const data = err.response.data;
+        
+        // Verifica diferentes formatos comuns de erro de APIs Node.js
+        if (Array.isArray(data.errors)) {
+          // Ex: express-validator ou Joi retorna um array de erros
+          const mensagens = data.errors.map((e: any) => e.msg || e.message || JSON.stringify(e)).join(' | ');
+          setError(`Erro de preenchimento: ${mensagens}`);
+        } else if (data.mensagem) {
+          setError(`Erro: ${data.mensagem}`);
+        } else if (data.error) {
+          setError(`Erro: ${data.error}`);
+        } else if (typeof data === 'string') {
+          setError(data);
+        } else {
+          setError(`Erro da API (${err.response.status}): Por favor, verifique se todos os campos estão no formato correto.`);
+        }
+      } else if (err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
+        setError('Erro de conexão. A API pode estar offline ou bloqueando por CORS.');
+      } else {
+        setError('Erro ao criar formulário. Tente novamente.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="apoio-container">
+      <div className="apoio-glass-card">
+        <div className="apoio-header">
+          <button onClick={() => navigate('/dashboard')} className="back-btn">
+            <ArrowLeft size={20} /> Voltar
+          </button>
+          <div className="header-title">
+            <div className="logo-circle">
+              <FileText size={24} className="logo-icon" />
+            </div>
+            <h2>Nova Solicitação de Apoio</h2>
+          </div>
+          <div style={{ width: '80px' }}></div> {/* Spacer */}
+        </div>
+
+        {error && <div className="error-message">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="apoio-form">
+          <div className="form-grid">
+            
+            <div className="input-group">
+              <label>Departamento</label>
+              <input type="text" name="departamento" value={formData.departamento} onChange={handleInputChange} required placeholder="Ex: Homicídios" />
+            </div>
+
+            <div className="input-group">
+              <label>Nome da Operação</label>
+              <input type="text" name="operacao" value={formData.operacao} onChange={handleInputChange} required placeholder="Ex: Operação Limpeza" />
+            </div>
+
+            <div className="input-group">
+              <label>Data da Operação</label>
+              <input type="text" name="data_operacao" value={formData.data_operacao} onChange={handleInputChange} required placeholder="DD-MM-YYYY" />
+            </div>
+
+            <div className="input-group">
+              <label>Nº do Processo</label>
+              <input type="text" name="numero_processo" value={formData.numero_processo} onChange={handleInputChange} required placeholder="Ex: 1234567-89.2026.8.00.0000" />
+            </div>
+
+            <div className="input-group">
+              <label>Medida Cautelar</label>
+              <select name="medida_cautelar" value={formData.medida_cautelar} onChange={handleInputChange} required>
+                <option value="">Selecione...</option>
+                <option value="BUSCA E APREENSÃO">Busca e Apreensão</option>
+                <option value="SEQUESTRO DE BENS">Sequestro de Bens</option>
+                <option value="PRISAO">Prisão</option>
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label>Nº Cautelar</label>
+              <input type="text" name="numero_cautelar" value={formData.numero_cautelar} onChange={handleInputChange} required placeholder="Ex: 9876543210" />
+            </div>
+
+            <div className="input-group">
+              <label>Valor Estimado (R$)</label>
+              <input type="number" name="valor_estimado" value={formData.valor_estimado} onChange={handleInputChange} required placeholder="Ex: 150000" />
+            </div>
+
+          </div>
+
+          <div className="form-grid-checkboxes">
+            <div className="checkbox-group-container">
+              <label>Resultados da Operação</label>
+              <div className="checkbox-list">
+                {['APREENSAO', 'SEQUESTRO'].map(res => (
+                  <label key={res} className="custom-checkbox">
+                    <input 
+                      type="checkbox" 
+                      checked={resultados.includes(res)} 
+                      onChange={() => toggleCheckbox(setResultados, res)} 
+                    />
+                    <span>{res}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="checkbox-group-container">
+              <label>Tipos Apreendidos</label>
+              <div className="checkbox-list">
+                {['CARRO', 'DINHEIRO', 'IMÓVEL', 'OUTROS'].map(tipo => (
+                  <label key={tipo} className="custom-checkbox">
+                    <input 
+                      type="checkbox" 
+                      checked={tiposApreendidos.includes(tipo)} 
+                      onChange={() => toggleCheckbox(setTiposApreendidos, tipo)} 
+                    />
+                    <span>{tipo}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="input-group full-width">
+            <label>Descrição da Operação</label>
+            <textarea 
+              name="descricao_operacao" 
+              value={formData.descricao_operacao} 
+              onChange={handleInputChange} 
+              required 
+              rows={4}
+              placeholder="Descreva os detalhes da operação..."
+            ></textarea>
+          </div>
+
+          <div className="form-actions">
+            <button type="submit" disabled={loading} className="submit-btn">
+              <Save size={20} /> {loading ? 'Salvando...' : 'Salvar Formulário'}
+            </button>
+          </div>
+        </form>
+      </div>
+      <div className="background-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
+    </div>
+  );
+}
