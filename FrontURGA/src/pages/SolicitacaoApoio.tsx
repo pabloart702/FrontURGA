@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { formsService } from '../services/forms';
 import { FileText, Save, ArrowLeft, Calendar } from 'lucide-react';
 import { BENS } from '../constants/bens';
@@ -8,6 +9,7 @@ import './SolicitacaoApoio.css';
 
 export function SolicitacaoApoio() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,6 +28,12 @@ export function SolicitacaoApoio() {
   const [resultados, setResultados] = useState<string[]>([]);
   const [tiposApreendidos, setTiposApreendidos] = useState<string[]>([]);
   const [outrosTipos, setOutrosTipos] = useState('');
+
+  useEffect(() => {
+    if (user && user.role === 'Usuário' && user.departamento) {
+      setFormData(prev => ({ ...prev, departamento: user.departamento }));
+    }
+  }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -138,12 +146,23 @@ export function SolicitacaoApoio() {
 
             <div className="input-group">
               <label>Departamento</label>
-              <input type="text" name="departamento" list="departamentos-list" value={formData.departamento} onChange={handleInputChange} required placeholder="Ex: Homicídios" />
-              <datalist id="departamentos-list">
-                {UNIDADES_POLICIAIS.map(unidade => (
-                  <option key={unidade} value={unidade} />
-                ))}
-              </datalist>
+              <input 
+                type="text" 
+                name="departamento" 
+                list="departamentos-list" 
+                value={formData.departamento} 
+                onChange={handleInputChange} 
+                required 
+                placeholder="Ex: Homicídios" 
+                disabled={user?.role === 'Usuário'}
+              />
+              {user?.role !== 'Usuário' && (
+                <datalist id="departamentos-list">
+                  {UNIDADES_POLICIAIS.map(unidade => (
+                    <option key={unidade} value={unidade} />
+                  ))}
+                </datalist>
+              )}
             </div>
 
             <div className="input-group">
