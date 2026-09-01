@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formsService } from '../services/forms';
-import { FileText, Save, ArrowLeft } from 'lucide-react';
+import { FileText, Save, ArrowLeft, Calendar } from 'lucide-react';
+import { BENS } from '../constants/bens';
+import { UNIDADES_POLICIAIS } from '../constants/unidades';
 import './SolicitacaoApoio.css';
 
 export function SolicitacaoApoio() {
@@ -23,14 +25,24 @@ export function SolicitacaoApoio() {
 
   const [resultados, setResultados] = useState<string[]>([]);
   const [tiposApreendidos, setTiposApreendidos] = useState<string[]>([]);
+  const [outrosTipos, setOutrosTipos] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+
+    if (name === 'data_operacao') {
+      let v = value.replace(/\D/g, '');
+      if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
+      if (v.length > 5) v = v.substring(0, 5) + '/' + v.substring(5, 9);
+      setFormData(prev => ({ ...prev, [name]: v }));
+      return;
+    }
+
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const toggleCheckbox = (setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
-    setList(prev => 
+    setList(prev =>
       prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
     );
   };
@@ -40,7 +52,22 @@ export function SolicitacaoApoio() {
     try {
       setError('');
       setLoading(true);
-      
+
+      if (!UNIDADES_POLICIAIS.includes(formData.departamento)) {
+        setError('Por favor, selecione um departamento válido da lista.');
+        setLoading(false);
+        return;
+      }
+
+      let finalTiposApreendidos = [...tiposApreendidos];
+      if (finalTiposApreendidos.includes('Outros')) {
+        finalTiposApreendidos = finalTiposApreendidos.filter(t => t !== 'Outros');
+        if (outrosTipos.trim()) {
+          const customTipos = outrosTipos.split(',').map(t => t.trim());
+          finalTiposApreendidos.push(...customTipos);
+        }
+      }
+
       const payload = {
         departamento: formData.departamento,
         operacao: formData.operacao,
@@ -51,7 +78,7 @@ export function SolicitacaoApoio() {
         descricao_operacao: formData.descricao_operacao,
         valor_estimado: Number(formData.valor_estimado),
         resultados,
-        tipos_apreendidos: tiposApreendidos
+        tipos_apreendidos: finalTiposApreendidos
       };
 
       await formsService.createForm(payload);
@@ -59,11 +86,11 @@ export function SolicitacaoApoio() {
       navigate('/dashboard');
     } catch (err: any) {
       console.error('Erro na requisição:', err);
-      
+
       // Tenta extrair a mensagem de erro específica do backend
       if (err.response && err.response.data) {
         const data = err.response.data;
-        
+
         // Verifica diferentes formatos comuns de erro de APIs Node.js
         if (Array.isArray(data.errors)) {
           // Ex: express-validator ou Joi retorna um array de erros
@@ -108,10 +135,15 @@ export function SolicitacaoApoio() {
 
         <form onSubmit={handleSubmit} className="apoio-form">
           <div className="form-grid">
-            
+
             <div className="input-group">
               <label>Departamento</label>
-              <input type="text" name="departamento" value={formData.departamento} onChange={handleInputChange} required placeholder="Ex: Homicídios" />
+              <input type="text" name="departamento" list="departamentos-list" value={formData.departamento} onChange={handleInputChange} required placeholder="Ex: Homicídios" />
+              <datalist id="departamentos-list">
+                {UNIDADES_POLICIAIS.map(unidade => (
+                  <option key={unidade} value={unidade} />
+                ))}
+              </datalist>
             </div>
 
             <div className="input-group">
@@ -121,27 +153,66 @@ export function SolicitacaoApoio() {
 
             <div className="input-group">
               <label>Data da Operação</label>
-              <input type="text" name="data_operacao" value={formData.data_operacao} onChange={handleInputChange} required placeholder="DD-MM-YYYY" />
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  name="data_operacao"
+                  value={formData.data_operacao}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="DD/MM/AAAA"
+                  maxLength={10}
+                />
+                <input
+                  type="date"
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    width: '40px',
+                    height: '100%',
+                    opacity: 0,
+                    cursor: 'pointer'
+                  }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val) {
+                      const [y, m, d] = val.split('-');
+                      setFormData(prev => ({ ...prev, data_operacao: `${d}/${m}/${y}` }));
+                    }
+                  }}
+                />
+                <Calendar
+                  style={{
+                    position: 'absolute',
+                    right: 12,
+                    pointerEvents: 'none',
+                    color: '#94a3b8'
+                  }}
+                  size={20}
+                />
+              </div>
             </div>
 
             <div className="input-group">
               <label>Nº do Processo</label>
-              <input type="text" name="numero_processo" value={formData.numero_processo} onChange={handleInputChange} required placeholder="Ex: 1234567-89.2026.8.00.0000" />
+              <input type="number" name="numero_processo" value={formData.numero_processo} onChange={handleInputChange} required placeholder="Ex: 1234567-89.2026.8.00.0000" />
             </div>
 
             <div className="input-group">
               <label>Medida Cautelar</label>
               <select name="medida_cautelar" value={formData.medida_cautelar} onChange={handleInputChange} required>
                 <option value="">Selecione...</option>
-                <option value="BUSCA E APREENSÃO">Busca e Apreensão</option>
-                <option value="SEQUESTRO DE BENS">Sequestro de Bens</option>
-                <option value="PRISAO">Prisão</option>
+                <option value="Auto de prisão em flagrante">Auto de prisão em flagrante</option>
+                <option value="Bloqueio">Bloqueio</option>
+                <option value="Busca e apreensão">Busca e apreensão</option>
+                <option value="Sequestro">Sequestro de bens</option>
               </select>
             </div>
 
             <div className="input-group">
               <label>Nº Cautelar</label>
-              <input type="text" name="numero_cautelar" value={formData.numero_cautelar} onChange={handleInputChange} required placeholder="Ex: 9876543210" />
+              <input type="number" name="numero_cautelar" value={formData.numero_cautelar} onChange={handleInputChange} required placeholder="Ex: 9876543210" />
             </div>
 
             <div className="input-group">
@@ -155,12 +226,12 @@ export function SolicitacaoApoio() {
             <div className="checkbox-group-container">
               <label>Resultados da Operação</label>
               <div className="checkbox-list">
-                {['APREENSAO', 'SEQUESTRO'].map(res => (
+                {['Apreensão', 'Bloqueio', 'Depósito', 'Indisponibilidades', 'Sequestro', 'Uso'].map(res => (
                   <label key={res} className="custom-checkbox">
-                    <input 
-                      type="checkbox" 
-                      checked={resultados.includes(res)} 
-                      onChange={() => toggleCheckbox(setResultados, res)} 
+                    <input
+                      type="checkbox"
+                      checked={resultados.includes(res)}
+                      onChange={() => toggleCheckbox(setResultados, res)}
                     />
                     <span>{res}</span>
                   </label>
@@ -171,27 +242,55 @@ export function SolicitacaoApoio() {
             <div className="checkbox-group-container">
               <label>Tipos Apreendidos</label>
               <div className="checkbox-list">
-                {['CARRO', 'DINHEIRO', 'IMÓVEL', 'OUTROS'].map(tipo => (
+                {BENS.map(tipo => (
                   <label key={tipo} className="custom-checkbox">
-                    <input 
-                      type="checkbox" 
-                      checked={tiposApreendidos.includes(tipo)} 
-                      onChange={() => toggleCheckbox(setTiposApreendidos, tipo)} 
+                    <input
+                      type="checkbox"
+                      checked={tiposApreendidos.includes(tipo)}
+                      onChange={() => toggleCheckbox(setTiposApreendidos, tipo)}
                     />
                     <span>{tipo}</span>
                   </label>
                 ))}
+                <label key="Outros" className="custom-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={tiposApreendidos.includes('Outros')}
+                    onChange={() => toggleCheckbox(setTiposApreendidos, 'Outros')}
+                  />
+                  <span>Outros</span>
+                </label>
+                {tiposApreendidos.includes('Outros') && (
+                  <div style={{ marginTop: '5px' }}>
+                    <input
+                      type="text"
+                      value={outrosTipos}
+                      onChange={(e) => setOutrosTipos(e.target.value)}
+                      placeholder="Os outros itens devem ser separados por ,"
+                      style={{
+                        width: '90%',
+                        padding: '10px 14px',
+                        background: 'rgba(15, 23, 42, 0.6)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '8px',
+                        color: 'white',
+                        outline: 'none',
+                        fontSize: '13px'
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           <div className="input-group full-width">
             <label>Descrição da Operação</label>
-            <textarea 
-              name="descricao_operacao" 
-              value={formData.descricao_operacao} 
-              onChange={handleInputChange} 
-              required 
+            <textarea
+              name="descricao_operacao"
+              value={formData.descricao_operacao}
+              onChange={handleInputChange}
+              required
               rows={4}
               placeholder="Descreva os detalhes da operação..."
             ></textarea>

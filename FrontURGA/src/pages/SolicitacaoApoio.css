@@ -95,13 +95,16 @@
   grid-column: 1 / -1;
 }
 
-.input-group label, .checkbox-group-container label {
+.input-group label,
+.checkbox-group-container label {
   font-size: 14px;
   color: #cbd5e1;
   font-weight: 500;
 }
 
-.input-group input, .input-group select, .input-group textarea {
+.input-group input,
+.input-group select,
+.input-group textarea {
   width: 100%;
   padding: 14px 16px;
   background: rgba(15, 23, 42, 0.6);
@@ -114,10 +117,22 @@
   box-sizing: border-box;
 }
 
-.input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
   border-color: rgba(59, 130, 246, 0.5);
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
   background: rgba(15, 23, 42, 0.8);
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .checkbox-list {
@@ -129,6 +144,26 @@
   padding: 15px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.checkbox-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.checkbox-list::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 10px;
+}
+
+.checkbox-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.checkbox-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .custom-checkbox {
