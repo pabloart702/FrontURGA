@@ -9,13 +9,13 @@ import './UsuariosList.css';
 export function UsuariosList() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Pagination and Filter state
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [departamento, setDepartamento] = useState('');
-  
+
   const navigate = useNavigate();
 
   // Departamentos disponíveis vindos do arquivo de constantes
@@ -44,7 +44,7 @@ export function UsuariosList() {
     const timeoutId = setTimeout(() => {
       loadUsers();
     }, 300);
-    
+
     return () => clearTimeout(timeoutId);
   }, [page, searchTerm, departamento]);
 
@@ -65,7 +65,7 @@ export function UsuariosList() {
           <Users size={28} className="header-icon" />
           <div>
             <h2>Gestão de Usuários</h2>
-            <p>Gerencie os usuários do sistema (Administrador)</p>
+            <p>Gerencie os usuários do sistema</p>
           </div>
         </div>
       </div>
@@ -83,9 +83,9 @@ export function UsuariosList() {
 
         <div className="search-group">
           <Search size={18} className="usuarios-icon" />
-          <input 
-            type="text" 
-            placeholder="Pesquisar por nome, CPF ou matrícula..." 
+          <input
+            type="text"
+            placeholder="Pesquisar por nome, CPF ou matrícula..."
             value={searchTerm}
             onChange={handleSearchChange}
             className="search-input"
@@ -94,12 +94,12 @@ export function UsuariosList() {
       </div>
 
       <div className="usuarios-list-card">
-        {loading ? (
+        {loading && users.length === 0 ? (
           <div className="loading-state">Carregando usuários...</div>
         ) : users.length === 0 ? (
           <div className="empty-state">Nenhum usuário encontrado.</div>
         ) : (
-          <div className="table-responsive">
+          <div className="table-responsive" style={{ opacity: loading ? 0.6 : 1, pointerEvents: loading ? "none" : "auto", transition: "opacity 0.2s ease" }}>
             <table className="usuarios-table">
               <thead>
                 <tr>
@@ -133,21 +133,21 @@ export function UsuariosList() {
 
       {totalPages > 1 && (
         <div className="pagination">
-          <button 
-            className="pagination-btn" 
-            disabled={page === 1} 
+          <button
+            className="pagination-btn"
+            disabled={page === 1}
             onClick={() => setPage(p => p - 1)}
           >
             <ChevronLeft size={18} /> Anterior
           </button>
-          
+
           <span className="pagination-info">
             Página {page} de {totalPages}
           </span>
-          
-          <button 
-            className="pagination-btn" 
-            disabled={page === totalPages} 
+
+          <button
+            className="pagination-btn"
+            disabled={page === totalPages}
             onClick={() => setPage(p => p + 1)}
           >
             Próxima <ChevronRight size={18} />

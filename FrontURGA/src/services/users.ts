@@ -36,7 +36,12 @@ export const usersService = {
   },
 
   deleteUser: async (id: number | string): Promise<{ mensagem: string }> => {
-    const response = await api.delete<{ mensagem: string }>(`/users/${id}`);
+    const response = await api.delete<{ mensagem: string }>(`/users/id/${id}`);
+    return response.data;
+  },
+
+  activateUser: async (id: number | string): Promise<{ mensagem: string, user: User }> => {
+    const response = await api.patch<{ mensagem: string, user: User }>(`/users/id/${id}/ativar`);
     return response.data;
   },
 };

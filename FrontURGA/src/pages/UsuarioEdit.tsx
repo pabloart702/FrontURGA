@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usersService } from '../services/users';
-import { User as UserIcon, ArrowLeft, Trash2, Save } from 'lucide-react';
+import { User as UserIcon, ArrowLeft, Trash2, Save, UserCheck } from 'lucide-react';
 import { UNIDADES_POLICIAIS } from '../constants/unidades';
 import './Perfil.css';
 
@@ -112,6 +112,23 @@ export function UsuarioEdit() {
     }
   };
 
+  const handleActivate = async () => {
+    if (!id) return;
+    if (!window.confirm('Tem certeza que deseja ativar este usuário?')) return;
+    
+    setSaving(true);
+    try {
+      await usersService.activateUser(id);
+      setMessage({ type: 'success', text: 'Usuário ativado com sucesso!' });
+      setFormData(prev => ({ ...prev, status: 'Ativo' }));
+    } catch (error: any) {
+      console.error("Erro ao ativar usuário:", error);
+      setMessage({ type: 'error', text: error.response?.data?.message || 'Erro ao ativar usuário.' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -134,15 +151,28 @@ export function UsuarioEdit() {
             </div>
             <h2>Editar Usuário</h2>
           </div>
-          <button 
-            type="button"
-            className="btn-deactivate"
-            onClick={handleDeactivate}
-            disabled={saving || formData.status.toLowerCase() === 'inativo'}
-          >
-            <Trash2 size={18} />
-            Desativar Usuário
-          </button>
+          {formData.status?.toLowerCase() === 'inativo' ? (
+            <button 
+              type="button"
+              className="btn-deactivate"
+              onClick={handleActivate}
+              disabled={saving}
+              style={{ backgroundColor: '#10b981', color: 'white', border: 'none' }}
+            >
+              <UserCheck size={18} />
+              Ativar Usuário
+            </button>
+          ) : (
+            <button 
+              type="button"
+              className="btn-deactivate"
+              onClick={handleDeactivate}
+              disabled={saving}
+            >
+              <Trash2 size={18} />
+              Desativar Usuário
+            </button>
+          )}
         </div>
 
         {message.text && (
