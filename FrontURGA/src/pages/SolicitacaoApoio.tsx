@@ -146,14 +146,14 @@ export function SolicitacaoApoio() {
 
             <div className="input-group">
               <label>Departamento</label>
-              <input 
-                type="text" 
-                name="departamento" 
-                list="departamentos-list" 
-                value={formData.departamento} 
-                onChange={handleInputChange} 
-                required 
-                placeholder="Ex: Homicídios" 
+              <input
+                type="text"
+                name="departamento"
+                list="departamentos-list"
+                value={formData.departamento}
+                onChange={handleInputChange}
+                required
+                placeholder="Ex: Homicídios"
                 disabled={user?.role === 'Usuário'}
               />
               {user?.role !== 'Usuário' && (
@@ -188,7 +188,7 @@ export function SolicitacaoApoio() {
                     position: 'absolute',
                     right: 0,
                     top: 0,
-                    width: '40px',
+                    width: '50px',
                     height: '100%',
                     opacity: 0,
                     cursor: 'pointer'
@@ -280,21 +280,26 @@ export function SolicitacaoApoio() {
                   <span>Outros</span>
                 </label>
                 {tiposApreendidos.includes('Outros') && (
-                  <div style={{ marginTop: '5px' }}>
-                    <input
-                      type="text"
+                  <div style={{}}>
+                    <textarea
                       value={outrosTipos}
                       onChange={(e) => setOutrosTipos(e.target.value)}
-                      placeholder="Os outros itens devem ser separados por ,"
+                      placeholder="Os tipos devem ser separados por vírgula"
                       style={{
-                        width: '90%',
-                        padding: '10px 14px',
-                        background: 'rgba(15, 23, 42, 0.6)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        width: '100%',
+                        height: '60px',
+                        padding: '9px 16px',
+                        background: '#ffffff',
+                        border: '1px solid #e4e4e7',
                         borderRadius: '8px',
-                        color: 'white',
+                        color: '#09090b',
                         outline: 'none',
-                        fontSize: '13px'
+                        fontSize: '13px',
+                        marginTop: '4px',
+                        resize: 'none',
+                        overflow: 'hidden',
+                        lineHeight: '1.5',
+                        fontFamily: 'inherit'
                       }}
                     />
                   </div>
@@ -311,7 +316,22 @@ export function SolicitacaoApoio() {
               onChange={handleInputChange}
               required
               rows={4}
-              placeholder="Descreva os detalhes da operação..."
+              style={{
+                width: '100%',
+                height: '60px',
+                padding: '9px 16px',
+                background: '#ffffff',
+                border: '1px solid #e4e4e7',
+                borderRadius: '8px',
+                color: '#09090b',
+                outline: 'none',
+                fontSize: '15px',
+                marginTop: '4px',
+                resize: 'none',
+                lineHeight: '1.5',
+                fontFamily: 'inherit'
+              }}
+              placeholder="Descreva os detalhes da operação (no máximo 500 caracteres)"
             ></textarea>
           </div>
 

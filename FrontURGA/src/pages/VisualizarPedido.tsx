@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { formsService } from '../services/forms';
 import type { Form } from '../types';
-import { ArrowLeft, FileText, CheckCircle, Clock } from 'lucide-react';
+import { ArrowLeft, FileText, CheckCircle, Clock, Printer } from 'lucide-react';
 import './VisualizarPedido.css';
 
 export function VisualizarPedido() {
@@ -17,13 +17,12 @@ export function VisualizarPedido() {
       if (!id) return;
       try {
         const data = await formsService.getFormById(id);
-        // Pode vir o objeto direto ou envelopado { form: {...} }
         if (data.id) {
           setForm(data);
         } else if ((data as any).form || (data as any).data) {
           setForm((data as any).form || (data as any).data);
         } else {
-          setForm(data); // tenta salvar o que veio
+          setForm(data);
         }
       } catch (err: any) {
         console.error(err);
@@ -48,13 +47,22 @@ export function VisualizarPedido() {
       <div className="vp-container">
         <div className="vp-error">
           <p>{error || 'Pedido não encontrado.'}</p>
-          <button onClick={() => navigate('/apoios')} className="vp-btn">Voltar para Apoios</button>
+          <button onClick={() => navigate('/apoios')} className="vp-print-btn">Voltar para Apoios</button>
         </div>
       </div>
     );
   }
 
   const isPendente = form.status === 'pendente';
+
+  const handlePrint = () => {
+    const originalTitle = document.title;
+    // Define o título que o navegador usará como nome padrão do arquivo PDF
+    document.title = `Relatorio_URGA_${form.operacao.replace(/\s+/g, '_')}`;
+    window.print();
+    // Restaura o título original após abrir a janela de impressão
+    document.title = originalTitle;
+  };
 
   return (
     <div className="vp-container">
@@ -65,13 +73,18 @@ export function VisualizarPedido() {
           </button>
           <div className="vp-title">
             <div className="vp-logo-circle">
-              <FileText size={24} color="white" />
+              <FileText size={24} />
             </div>
             <h2>Detalhes da Operação</h2>
           </div>
-          <div className={`vp-status-badge ${isPendente ? 'status-pendente' : 'status-concluido'}`}>
-            {isPendente ? <Clock size={16} /> : <CheckCircle size={16} />}
-            {form.status ? form.status.toUpperCase() : 'PENDENTE'}
+          <div className="vp-actions">
+            <button className="vp-print-btn" onClick={handlePrint}>
+              <Printer size={18} /> Relatório da Solicitação
+            </button>
+            <div className={`vp-status-badge ${isPendente ? 'status-pendente' : 'status-concluido'}`}>
+              {isPendente ? <Clock size={16} /> : <CheckCircle size={16} />}
+              {form.status ? form.status.toUpperCase() : 'PENDENTE'}
+            </div>
           </div>
         </div>
 

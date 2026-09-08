@@ -2,13 +2,16 @@ import api from '../api/axios';
 import type { User } from '../types';
 
 export const usersService = {
-  getUsers: async (): Promise<User[]> => {
-    const response = await api.get<User[]>('/users');
+  getUsers: async (page: number = 1, search?: string, departamento?: string): Promise<{ data: User[], totalPages: number, currentPage: number }> => {
+    let url = `/users?page=${page}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (departamento) url += `&departamento=${encodeURIComponent(departamento)}`;
+    const response = await api.get<{ data: User[], totalPages: number, currentPage: number }>(url);
     return response.data;
   },
 
   getUserById: async (id: number | string): Promise<User> => {
-    const response = await api.get<User>(`/users/${id}`);
+    const response = await api.get<User>(`/users/id/${id}`);
     return response.data;
   },
 
@@ -18,7 +21,17 @@ export const usersService = {
   },
 
   updateUser: async (id: number | string, userData: Partial<User>): Promise<User> => {
-    const response = await api.patch<User>(`/users/${id}`, userData);
+    const response = await api.patch<User>(`/users/id/${id}`, userData);
+    return response.data;
+  },
+
+  getProfile: async (): Promise<User> => {
+    const response = await api.get<User>('/users/perfil');
+    return response.data;
+  },
+
+  updateProfile: async (userData: Partial<User> & { password?: string }): Promise<User> => {
+    const response = await api.patch<User>('/users/perfil', userData);
     return response.data;
   },
 

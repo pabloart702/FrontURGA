@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formsService } from '../services/forms';
 import type { Form } from '../types';
-import { FileSearch, ArrowLeft } from 'lucide-react';
+import { FileSearch, PlusCircle } from 'lucide-react';
 
 export function Apoios() {
   const [forms, setForms] = useState<Form[]>([]);
@@ -28,45 +28,79 @@ export function Apoios() {
   }, []);
 
   return (
-    <div style={{ padding: '30px', color: 'white', fontFamily: 'sans-serif', minHeight: '100vh', background: '#0f172a' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <button 
-            onClick={() => navigate('/dashboard')}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
-          >
-            <ArrowLeft size={20} /> Voltar
-          </button>
-          <h2>Lista de Apoios</h2>
+    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px', paddingBottom: '20px', borderBottom: '1px solid #e4e4e7' }}>
+        <div>
+          <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#09090b', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <FileSearch size={28} color="#09090b" />
+            Lista de Apoios
+          </h2>
+          <p style={{ color: '#71717a', fontSize: '15px', margin: 0 }}>Gerencie e visualize as solicitações de apoio realizadas.</p>
         </div>
+        
+        <button 
+          onClick={() => navigate('/solicitacao-apoio')}
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px', 
+            padding: '12px 20px', 
+            background: '#09090b', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '8px', 
+            cursor: 'pointer', 
+            fontWeight: '600',
+            fontSize: '14px',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.background = '#27272a'}
+          onMouseOut={(e) => e.currentTarget.style.background = '#09090b'}
+        >
+          <PlusCircle size={18} /> Nova Solicitação
+        </button>
       </div>
 
-      <div style={{ marginTop: '30px' }}>
+      <div>
         {forms.length > 0 ? (
-          <div style={{ display: 'grid', gap: '15px', marginTop: '20px' }}>
+          <div style={{ display: 'grid', gap: '16px' }}>
             {forms.map((form) => (
               <div 
                 key={form.id || Math.random()} 
                 onClick={() => navigate(`/visualizar-pedido/${form.id}`)}
                 style={{ 
-                  background: 'rgba(30, 41, 59, 0.6)', 
-                  padding: '20px', 
+                  background: '#ffffff', 
+                  padding: '24px', 
                   borderRadius: '12px', 
-                  border: '1px solid rgba(255, 255, 255, 0.1)', 
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  border: '1px solid #e4e4e7', 
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                   cursor: 'pointer',
-                  transition: 'transform 0.2s, background 0.2s'
+                  transition: 'all 0.2s ease'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(30, 41, 59, 0.9)'}
-                onMouseOut={(e) => e.currentTarget.style.background = 'rgba(30, 41, 59, 0.6)'}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.borderColor = '#d4d4d8';
+                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.borderColor = '#e4e4e7';
+                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
-                    <h3 style={{ margin: '0 0 10px 0', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <FileSearch size={18} color="#3b82f6" /> {form.operacao}
+                    <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', color: '#09090b', fontWeight: '600' }}>
+                      {form.operacao}
                     </h3>
-                    <strong style={{ color: '#cbd5e1' }}>Departamento:</strong> <span style={{ color: '#94a3b8' }}>{form.departamento}</span> <br />
-                    <strong style={{ color: '#cbd5e1' }}>Processo:</strong> <span style={{ color: '#94a3b8' }}>{form.numero_processo}</span>
+                    <div style={{ display: 'flex', gap: '24px', fontSize: '14px' }}>
+                      <div>
+                        <strong style={{ color: '#71717a', fontWeight: '500' }}>Departamento:</strong> <span style={{ color: '#09090b', fontWeight: '500' }}>{form.departamento}</span>
+                      </div>
+                      <div>
+                        <strong style={{ color: '#71717a', fontWeight: '500' }}>Processo:</strong> <span style={{ color: '#09090b', fontWeight: '500' }}>{form.numero_processo}</span>
+                      </div>
+                    </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <span style={{ 
@@ -74,14 +108,14 @@ export function Apoios() {
                       padding: '4px 12px',
                       borderRadius: '20px',
                       fontSize: '13px',
-                      fontWeight: 'bold',
-                      background: form.status === 'pendente' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(16, 185, 129, 0.2)',
-                      color: form.status === 'pendente' ? '#f59e0b' : '#10b981',
-                      border: `1px solid ${form.status === 'pendente' ? 'rgba(245, 158, 11, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`
+                      fontWeight: '600',
+                      background: form.status === 'pendente' ? '#fef3c7' : '#d1fae5',
+                      color: form.status === 'pendente' ? '#d97706' : '#059669',
+                      border: `1px solid ${form.status === 'pendente' ? '#fde68a' : '#a7f3d0'}`
                     }}>
                       {form.status ? form.status.toUpperCase() : 'PENDENTE'}
                     </span>
-                    <div style={{ marginTop: '10px', fontSize: '14px', color: '#64748b' }}>
+                    <div style={{ marginTop: '12px', fontSize: '13px', color: '#71717a', fontWeight: '500' }}>
                       Data: {form.data_operacao}
                     </div>
                   </div>
@@ -90,8 +124,8 @@ export function Apoios() {
             ))}
           </div>
         ) : (
-          <div style={{ marginTop: '30px', padding: '40px', textAlign: 'center', background: 'rgba(30, 41, 59, 0.6)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-            <p style={{ color: '#94a3b8', fontSize: '16px' }}>Nenhum apoio encontrado no momento.</p>
+          <div style={{ padding: '60px 40px', textAlign: 'center', background: '#ffffff', borderRadius: '12px', border: '1px dashed #d4d4d8' }}>
+            <p style={{ color: '#71717a', fontSize: '15px' }}>Nenhum apoio encontrado no momento.</p>
           </div>
         )}
       </div>

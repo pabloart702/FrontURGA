@@ -1,53 +1,29 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { PlusCircle, LogOut, LayoutDashboard, FileSearch } from 'lucide-react';
+import { LayoutDashboard } from 'lucide-react';
 
 export function Dashboard() {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
-    <div style={{ padding: '30px', color: 'white', fontFamily: 'sans-serif', minHeight: '100vh', background: '#0f172a' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '20px' }}>
-        <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <LayoutDashboard size={24} color="#3b82f6" />
+    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#09090b', display: 'flex', alignItems: 'center', gap: '12px', margin: '0 0 8px 0' }}>
+          <LayoutDashboard size={28} color="#09090b" />
           Dashboard
         </h2>
-        <div style={{ display: 'flex', gap: '15px' }}>
-          <button 
-            onClick={() => navigate('/apoios')}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', background: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            <FileSearch size={18} /> Ver Apoios
-          </button>
-
-          <button 
-            onClick={() => navigate('/solicitacao-apoio')}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            <PlusCircle size={18} /> Nova Solicitação
-          </button>
-          
-          <button 
-            onClick={logout}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', background: 'transparent', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            <LogOut size={18} /> Sair
-          </button>
-        </div>
+        <p style={{ color: '#71717a', fontSize: '15px', margin: 0 }}>Bem-vindo ao painel de controle, {user?.departamento || 'Usuário'}.</p>
       </div>
 
-      <div style={{ marginTop: '40px' }}>
-        <div style={{ 
-          background: 'rgba(30, 41, 59, 0.6)', 
-          padding: '60px 40px', 
-          borderRadius: '16px', 
-          border: '1px dashed rgba(255, 255, 255, 0.1)',
-          textAlign: 'center'
-        }}>
-          <h3 style={{ color: '#cbd5e1', fontSize: '20px', marginBottom: '10px' }}>Área de Gráficos (Em Breve)</h3>
-          <p style={{ color: '#64748b' }}>Neste local serão desenvolvidos os dashboards estatísticos, visões gerenciais e relatórios consolidados.</p>
-        </div>
+      <div style={{ 
+        background: '#ffffff', 
+        padding: '60px 40px', 
+        borderRadius: '12px', 
+        border: '1px dashed #d4d4d8',
+        textAlign: 'center'
+      }}>
+        <h3 style={{ color: '#09090b', fontSize: '20px', marginBottom: '10px' }}>Área de Gráficos (Em Breve)</h3>
+        <p style={{ color: '#71717a' }}>Neste local serão desenvolvidos os dashboards estatísticos, visões gerenciais e relatórios consolidados.</p>
       </div>
     </div>
   );
