@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { usersService } from '../services/users';
+import { useAuth } from '../../contexts/AuthContext';
+import { usersService } from '../../services/users';
 import { User as UserIcon, Save, ArrowLeft } from 'lucide-react';
 import './Perfil.css';
 

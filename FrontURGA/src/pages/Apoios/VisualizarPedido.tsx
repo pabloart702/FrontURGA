@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { formsService } from '../services/forms';
-import type { Form } from '../types';
-import { ArrowLeft, FileText, CheckCircle, Clock, Printer } from 'lucide-react';
+import { formsService } from '../../services/forms';
+import type { Form } from '../../types';
+import { ArrowLeft, FileText, CheckCircle, Clock, Printer, AlertCircle } from 'lucide-react';
+import axios from 'axios';
 import './VisualizarPedido.css';
 
 export function VisualizarPedido() {
@@ -11,6 +12,7 @@ export function VisualizarPedido() {
   const [form, setForm] = useState<Form | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [toastMessage, setToastMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
 
   useEffect(() => {
     async function loadForm() {
@@ -34,6 +36,40 @@ export function VisualizarPedido() {
     loadForm();
   }, [id]);
 
+  const showToast = (type: 'error' | 'success', text: string) => {
+    setToastMessage({ type, text });
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+  };
+
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!form || !form.id) return;
+    const newStatus = e.target.value;
+    try {
+      await formsService.updateStatus(form.id, newStatus);
+      showToast('success', 'Status atualizado com sucesso.');
+      setForm({ ...form, status: newStatus });
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        const apiMessage = err.response.data?.message || err.response.data?.error;
+        if (err.response.status === 403) {
+          showToast('error', apiMessage || 'Apenas administradores podem alterar o status do formulário.');
+        } else if (err.response.status === 401) {
+          showToast('error', apiMessage || 'Sessão expirada ou não autenticado.');
+        } else if (err.response.status >= 500) {
+          showToast('error', apiMessage || 'Erro interno no servidor ao atualizar o status.');
+        } else {
+          showToast('error', apiMessage || `Ocorreu um erro ao atualizar o status (Erro ${err.response.status}).`);
+        }
+      } else if (axios.isAxiosError(err) && err.request) {
+        showToast('error', 'Erro de conexão com o servidor. Verifique sua rede.');
+      } else {
+        showToast('error', err instanceof Error ? err.message : 'Ocorreu um erro inesperado.');
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="vp-container">
@@ -53,8 +89,6 @@ export function VisualizarPedido() {
     );
   }
 
-  const isPendente = form.status === 'pendente';
-
   const handlePrint = () => {
     const originalTitle = document.title;
     // Define o título que o navegador usará como nome padrão do arquivo PDF
@@ -65,7 +99,28 @@ export function VisualizarPedido() {
   };
 
   return (
-    <div className="vp-container">
+    <div className="vp-container" style={{ position: 'relative' }}>
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: toastMessage.type === 'error' ? '#fee2e2' : '#d1fae5',
+          color: toastMessage.type === 'error' ? '#991b1b' : '#065f46',
+          padding: '16px 24px',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          zIndex: 1000,
+          border: `1px solid ${toastMessage.type === 'error' ? '#f87171' : '#34d399'}`
+        }}>
+          {toastMessage.type === 'error' ? <AlertCircle size={20} /> : <CheckCircle size={20} />}
+          <span style={{ fontWeight: '500' }}>{toastMessage.text}</span>
+        </div>
+      )}
+
       <div className="vp-glass-card">
         <div className="vp-header">
           <button onClick={() => navigate('/apoios')} className="vp-back-btn">
@@ -81,10 +136,31 @@ export function VisualizarPedido() {
             <button className="vp-print-btn" onClick={handlePrint}>
               <Printer size={18} /> Relatório da Solicitação
             </button>
-            <div className={`vp-status-badge ${isPendente ? 'status-pendente' : 'status-concluido'}`}>
-              {isPendente ? <Clock size={16} /> : <CheckCircle size={16} />}
-              {form.status ? form.status.toUpperCase() : 'PENDENTE'}
-            </div>
+            
+            <select
+              value={form.status || 'pendente'}
+              onChange={handleStatusChange}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '600',
+                border: `1px solid ${form.status === 'pendente' ? '#fca5a5' : form.status === 'ciente' ? '#fde047' : '#86efac'}`,
+                background: form.status === 'pendente' ? '#fee2e2' : form.status === 'ciente' ? '#fef9c3' : '#dcfce7',
+                color: form.status === 'pendente' ? '#dc2626' : form.status === 'ciente' ? '#ca8a04' : '#16a34a',
+                cursor: 'pointer',
+                outline: 'none',
+                textTransform: 'uppercase',
+                appearance: 'none',
+                WebkitAppearance: 'none',
+                MozAppearance: 'none',
+                textAlign: 'center'
+              }}
+            >
+              <option value="pendente" style={{ color: '#dc2626', fontWeight: '600', background: '#ffffff' }}>PENDENTE</option>
+              <option value="ciente" style={{ color: '#ca8a04', fontWeight: '600', background: '#ffffff' }}>CIENTE</option>
+              <option value="realizado" style={{ color: '#16a34a', fontWeight: '600', background: '#ffffff' }}>REALIZADO</option>
+            </select>
           </div>
         </div>
 

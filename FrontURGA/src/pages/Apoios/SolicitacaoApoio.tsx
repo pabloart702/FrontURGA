@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { formsService } from '../services/forms';
+import { useAuth } from '../../contexts/AuthContext';
+import { formsService } from '../../services/forms';
 import { FileText, Save, ArrowLeft, Calendar } from 'lucide-react';
-import { BENS } from '../constants/bens';
-import { UNIDADES_POLICIAIS } from '../constants/unidades';
+import { BENS } from '../../constants/bens';
+import { UNIDADES_POLICIAIS } from '../../constants/unidades';
 import './SolicitacaoApoio.css';
 
 export function SolicitacaoApoio() {

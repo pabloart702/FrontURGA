@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { usersService } from '../services/users';
+import { usersService } from '../../services/users';
 import { User as UserIcon, ArrowLeft, Trash2, Save, UserCheck } from 'lucide-react';
-import { UNIDADES_POLICIAIS } from '../constants/unidades';
-import './Perfil.css';
+import { UNIDADES_POLICIAIS } from '../../constants/unidades';
+import type { User } from '../../types';
+import '../Perfil/Perfil.css';
 
 export function UsuarioEdit() {
   const { id } = useParams<{ id: string }>();

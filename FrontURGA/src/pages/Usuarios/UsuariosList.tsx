@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usersService } from '../services/users';
-import type { User } from '../types';
+import { usersService } from '../../services/users';
+import type { User } from '../../types';
 import { Users, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
-import { UNIDADES_POLICIAIS } from '../constants/unidades';
+import { UNIDADES_POLICIAIS } from '../../constants/unidades';
 import './UsuariosList.css';
 
 export function UsuariosList() {

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Shield, Eye, EyeOff, ShieldCheck } from 'lucide-react';
-import { CofreAnimado } from '../components/CofreAnimado';
+import { CofreAnimado } from '../../components/CofreAnimado';
 import './Login.css';
 
 export function Login() {

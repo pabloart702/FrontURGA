@@ -1,9 +1,18 @@
 import api from '../api/axios';
 import type { Form } from '../types';
 
+export interface GetFormsParams {
+  status?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  departamento?: string;
+  page?: number;
+  limit?: number;
+}
+
 export const formsService = {
-  getForms: async (): Promise<Form[]> => {
-    const response = await api.get<Form[]>('/forms');
+  getForms: async (params?: GetFormsParams): Promise<Form[]> => {
+    const response = await api.get<Form[]>('/forms', { params });
     return response.data;
   },
 
@@ -19,6 +28,12 @@ export const formsService = {
 
   updateForm: async (id: number | string, formData: Partial<Form>): Promise<Form> => {
     const response = await api.patch<Form>(`/forms/${id}`, formData);
+    return response.data;
+  },
+
+  updateStatus: async (id: number | string, status: string): Promise<Form> => {
+    // Usa a mesma rota de edição de formulário, enviando apenas o status (PATCH)
+    const response = await api.patch<Form>(`/forms/${id}`, { status });
     return response.data;
   },
 
