@@ -1,6 +1,20 @@
 import api from '../api/axios';
 import type { Form } from '../types';
 
+export interface DashboardMetricItem {
+  _id: string;
+  count: number;
+}
+
+export interface DashboardMetrics {
+  apoiosPrestados: number;
+  apoiosSolicitados: number;
+  totalValorEstimado: number;
+  delegaciasMaisSolicitam: DashboardMetricItem[];
+  tiposMaisApreendidos: DashboardMetricItem[];
+  resultadosMaisComuns: DashboardMetricItem[];
+}
+
 export interface GetFormsParams {
   status?: string;
   sortBy?: string;
@@ -11,6 +25,11 @@ export interface GetFormsParams {
 }
 
 export const formsService = {
+  getDashboardMetrics: async (): Promise<DashboardMetrics> => {
+    const response = await api.get<DashboardMetrics>('/forms/dashboard');
+    return response.data;
+  },
+
   getForms: async (params?: GetFormsParams): Promise<Form[]> => {
     const response = await api.get<Form[]>('/forms', { params });
     return response.data;

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { formsService, type GetFormsParams } from '../../services/forms';
 import type { Form } from '../../types';
 import { FileSearch, PlusCircle } from 'lucide-react';
@@ -9,7 +9,9 @@ type TabStatus = 'pendente' | 'ciente' | 'realizado';
 
 export function Apoios() {
   const [forms, setForms] = useState<Form[]>([]);
-  const [activeTab, setActiveTab] = useState<TabStatus>('pendente');
+  const location = useLocation();
+  const initialTab = (location.state as any)?.returnTab || 'pendente';
+  const [activeTab, setActiveTab] = useState<TabStatus>(initialTab);
   const [departamento, setDepartamento] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -152,7 +154,7 @@ export function Apoios() {
             {forms.map((form) => (
               <div
                 key={form.id || Math.random()}
-                onClick={() => navigate(`/visualizar-pedido/${form.id}`)}
+                onClick={() => navigate(`/visualizar-pedido/${form.id}`, { state: { returnTab: activeTab } })}
                 style={{
                   background: '#ffffff',
                   padding: '24px',

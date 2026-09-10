@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { formsService } from '../../services/forms';
 import type { Form } from '../../types';
 import { ArrowLeft, FileText, CheckCircle, Clock, Printer, AlertCircle } from 'lucide-react';
@@ -9,6 +9,8 @@ import './VisualizarPedido.css';
 export function VisualizarPedido() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTab = (location.state as any)?.returnTab || 'pendente';
   const [form, setForm] = useState<Form | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -83,7 +85,7 @@ export function VisualizarPedido() {
       <div className="vp-container">
         <div className="vp-error">
           <p>{error || 'Pedido não encontrado.'}</p>
-          <button onClick={() => navigate('/apoios')} className="vp-print-btn">Voltar para Apoios</button>
+          <button onClick={() => navigate('/apoios', { state: { returnTab } })} className="vp-print-btn">Voltar para Apoios</button>
         </div>
       </div>
     );
@@ -123,7 +125,7 @@ export function VisualizarPedido() {
 
       <div className="vp-glass-card">
         <div className="vp-header">
-          <button onClick={() => navigate('/apoios')} className="vp-back-btn">
+          <button onClick={() => navigate('/apoios', { state: { returnTab } })} className="vp-back-btn">
             <ArrowLeft size={20} /> Voltar
           </button>
           <div className="vp-title">
