@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileText, X } from 'lucide-react';
+import { FileText, X } from 'lucide-react';
 import api from '../../api/axios';
 import './Documentos.css';
 
@@ -11,7 +10,6 @@ interface DocumentInfo {
 }
 
 export function Documentos() {
-  const navigate = useNavigate();
   const [selectedDoc, setSelectedDoc] = useState<DocumentInfo | null>(null);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [isLoadingPdf, setIsLoadingPdf] = useState(false);
@@ -56,12 +54,6 @@ export function Documentos() {
 
   return (
     <div className="doc-container">
-      <div className="doc-header">
-        <button onClick={() => navigate('/dashboard')} className="doc-back-btn">
-          <ArrowLeft size={20} /> Voltar
-        </button>
-      </div>
-
       <div style={{ marginBottom: '32px' }}>
         <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#09090b', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
           <FileText size={28} color="#09090b" />

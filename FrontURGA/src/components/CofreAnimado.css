@@ -7,69 +7,60 @@
   margin: 0 auto;
 }
 
-/* Animação para a fechadura principal (Gira sentido horário) */
-.lock-gear {
-  animation: spin 35s linear infinite;
+.cofre-svg-root {
+  color: rgba(255, 255, 255, 0.822);
 }
 
-/* Engrenagem secundária no fundo (Gira sentido anti-horário) */
-.gear-reverse {
-  animation: spin-reverse 5s linear infinite;
+.cofre-svg-root * {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* Engrenagem secundária no fundo (Gira sentido horário) */
-.gear-forward {
-  animation: spin 12s linear infinite;
+.cofre-svg-root text {
+  stroke: none;
+  fill: currentColor;
 }
 
-/* Efeito de brilho pulsante no LED/Fechadura */
-.glow-pulse {
-  animation: pulse 2s ease-in-out infinite alternate;
+.cofre-corpo {
+  stroke-width: 3.5;
 }
 
-/* Keyframes */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+.cofre-porta {
+  stroke-width: 1.6;
+  opacity: 0.85;
 }
 
-@keyframes spin-reverse {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(-360deg);
-  }
+.cofre-detalhe {
+  stroke-width: 1.4;
 }
 
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
+.cofre-dial-anel {
+  stroke-width: 2;
 }
 
-@keyframes pulse {
-  0% {
-    filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.5));
-    opacity: 0.8;
-  }
+.cofre-dial-fino {
+  stroke-width: 1;
+}
 
-  100% {
-    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8)) drop-shadow(0 0 15px rgba(212, 175, 55, 1));
-    opacity: 1;
-  }
+.cofre-engrenagem {
+  stroke-width: 1.8;
+}
+
+.cofre-ponteiro {
+  stroke-width: 2;
+  color: rgb(255, 230, 5)
+}
+
+.grupo-dial {
+  transform-origin: 0px 0px;
+}
+
+.grupo-engrenagem-esq {
+  transform-origin: 0px 0px;
+}
+
+.grupo-engrenagem-dir {
+  transform-origin: 0px 0px;
 }
