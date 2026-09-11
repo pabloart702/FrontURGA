@@ -2,7 +2,7 @@ export interface User {
   id: string;
   nome: string;
   email: string;
-  cpf: number;
+  cpf: string;
   matricula: string;
   cargo: string;
   role: string;

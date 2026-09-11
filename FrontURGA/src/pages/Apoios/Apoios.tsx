@@ -29,11 +29,11 @@ export function Apoios() {
       }
 
       if (activeTab === 'pendente') {
-        params.sortBy = 'createdAt';
+        params.sortBy = 'data_operacao';
         params.sortOrder = 'asc';
       } else if (activeTab === 'ciente') {
         params.sortBy = 'data_operacao';
-        params.sortOrder = 'desc';
+        params.sortOrder = 'asc';
       } else if (activeTab === 'realizado') {
         params.sortBy = 'dataRealizado';
         params.sortOrder = 'desc';

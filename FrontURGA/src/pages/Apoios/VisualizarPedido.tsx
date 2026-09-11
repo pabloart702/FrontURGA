@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { formsService } from '../../services/forms';
 import type { Form } from '../../types';
-import { ArrowLeft, FileText, CheckCircle, Clock, Printer, AlertCircle } from 'lucide-react';
+import { ArrowLeft, FileText, CheckCircle, Printer, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import './VisualizarPedido.css';
 

@@ -1,4 +1,4 @@
-import { removerAcentos } from '../utils/sanitizers.js';
+import { removerAcentos } from '../utils/sanitizers';
 export const BENS = [
     "Aeronave",
     "Arma",

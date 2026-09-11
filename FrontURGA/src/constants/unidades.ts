@@ -1,4 +1,4 @@
-import { removerAcentos } from '../utils/sanitizers.js';
+import { removerAcentos } from '../utils/sanitizers';
 
 export const UNIDADES_POLICIAIS = [
     "Delegacia-Geral da Polícia Civil (DEGEPOLI)",
