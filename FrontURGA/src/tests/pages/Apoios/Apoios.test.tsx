@@ -23,7 +23,10 @@ describe('Apoios Component - Ordenação das abas', () => {
       </MemoryRouter>
     );
 
-    // Na montagem, a aba inicial é "pendente"
+    // Clica na aba pendentes (já que a inicial agora é agenda)
+    const abaPendentes = screen.getByRole('button', { name: /pendentes/i });
+    fireEvent.click(abaPendentes);
+
     await waitFor(() => {
       expect(formsService.getForms).toHaveBeenCalledWith(expect.objectContaining({
         status: 'pendente',
@@ -68,6 +71,23 @@ describe('Apoios Component - Ordenação das abas', () => {
       expect(formsService.getForms).toHaveBeenCalledWith(expect.objectContaining({
         status: 'realizado',
         sortBy: 'dataRealizado',
+        sortOrder: 'desc'
+      }));
+    });
+  });
+
+  it('deve buscar todas as solicitações (sem status) na aba agenda com ordenação data_operacao asc', async () => {
+    render(
+      <MemoryRouter>
+        <Apoios />
+      </MemoryRouter>
+    );
+
+    // Na montagem, a aba inicial é "agenda"
+    await waitFor(() => {
+      expect(formsService.getForms).toHaveBeenCalledWith(expect.objectContaining({
+        limit: 1000,
+        sortBy: 'data_operacao',
         sortOrder: 'desc'
       }));
     });

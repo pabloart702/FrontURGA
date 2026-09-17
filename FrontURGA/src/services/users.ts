@@ -35,6 +35,21 @@ export const usersService = {
     return response.data;
   },
 
+  updateProfilePicture: async (file: File): Promise<{ mensagem: string, user: User }> => {
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+
+    const response = await api.patch<{ mensagem: string, user: User }>('/users/profile-picture', formData);
+    
+    // axios interceptor automatically sets the Authorization header
+    return response.data;
+  },
+
+  deleteProfilePicture: async (): Promise<{ mensagem: string, user: User }> => {
+    const response = await api.delete<{ mensagem: string, user: User }>('/users/profile-picture');
+    return response.data;
+  },
+
   deleteUser: async (id: number | string): Promise<{ mensagem: string }> => {
     const response = await api.delete<{ mensagem: string }>(`/users/id/${id}`);
     return response.data;

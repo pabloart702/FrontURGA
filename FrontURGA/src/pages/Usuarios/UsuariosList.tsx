@@ -4,6 +4,7 @@ import { usersService } from '../../services/users';
 import type { User } from '../../types';
 import { Users, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { UNIDADES_POLICIAIS } from '../../constants/unidades';
+import { SecureImage } from '../../components/SecureImage';
 import './UsuariosList.css';
 
 export function UsuariosList() {
@@ -99,34 +100,47 @@ export function UsuariosList() {
         ) : users.length === 0 ? (
           <div className="empty-state">Nenhum usuário encontrado.</div>
         ) : (
-          <div className="table-responsive" style={{ opacity: loading ? 0.6 : 1, pointerEvents: loading ? "none" : "auto", transition: "opacity 0.2s ease" }}>
-            <table className="usuarios-table">
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>Cargo</th>
-                  <th>Departamento</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map(user => (
-                  <tr key={user.id} onClick={() => navigate(`/usuarios/${user.id}`)}>
-                    <td>
-                      <div className="user-name">{user.nome}</div>
-                      <div className="user-email">{user.email}</div>
-                    </td>
-                    <td>{user.cargo}</td>
-                    <td>{user.departamento}</td>
-                    <td>
-                      <span className={`status-badge ${user.status?.toLowerCase() === 'ativo' ? 'status-active' : 'status-inactive'}`}>
-                        {user.status || 'ATIVO'}
+          <div className="usuarios-grid" style={{ opacity: loading ? 0.6 : 1, pointerEvents: loading ? "none" : "auto", transition: "opacity 0.2s ease" }}>
+            {users.map(user => (
+              <div 
+                key={user.id} 
+                className="usuario-card" 
+                onClick={() => navigate(`/usuarios/${user.id}`)}
+              >
+                <div className="usuario-card-header">
+                  {user.fotoPerfil ? (
+                    <SecureImage 
+                      src={`/uploads/profiles/${user.fotoPerfil}`} 
+                      alt={user.nome} 
+                      className="usuario-card-img" 
+                      fallback={<div className="usuario-card-avatar-placeholder">{user.nome.charAt(0).toUpperCase()}</div>}
+                    />
+                  ) : (
+                    <div className="usuario-card-avatar-placeholder">
+                      {user.nome.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <div className="usuario-card-body">
+                  <h3 className="usuario-card-name" title={user.nome}>{user.nome}</h3>
+                  <p className="usuario-card-role">{user.cargo || 'Sem Cargo'}</p>
+                  
+                  <div className="usuario-card-details">
+                    {user.departamento && (
+                      <span className="usuario-card-dept" title={user.departamento}>
+                        {user.departamento}
                       </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    )}
+                  </div>
+                  
+                  <div className="usuario-card-footer">
+                    <span className={`status-badge ${user.status?.toLowerCase() === 'ativo' ? 'status-active' : 'status-inactive'}`}>
+                      {user.status || 'ATIVO'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

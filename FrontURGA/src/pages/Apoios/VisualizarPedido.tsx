@@ -48,6 +48,32 @@ export function VisualizarPedido() {
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (!form || !form.id) return;
     const newStatus = e.target.value;
+
+    if (newStatus === 'realizado' && form.data_operacao) {
+      let d, m, y;
+      if (form.data_operacao.includes('/')) {
+        [d, m, y] = form.data_operacao.split('/');
+      } else if (form.data_operacao.includes('-')) {
+        const parts = form.data_operacao.split('T')[0].split('-');
+        if (parts[0].length === 4) {
+          [y, m, d] = parts;
+        } else {
+          [d, m, y] = parts;
+        }
+      }
+
+      if (d && m && y) {
+        const opDate = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (opDate > today) {
+          showToast('error', 'Não é possível marcar como "realizado" pois a operação ainda não ocorreu.');
+          return;
+        }
+      }
+    }
+
     try {
       await formsService.updateStatus(form.id, newStatus);
       showToast('success', 'Status atualizado com sucesso.');

@@ -8,6 +8,7 @@ export interface User {
   role: string;
   departamento: string;
   status: string;
+  fotoPerfil?: string;
 }
 
 export interface Form {

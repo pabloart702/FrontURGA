@@ -22,7 +22,11 @@ export function Login() {
       await login(email, password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError('Credenciais inválidas. Tente novamente.');
+      if (err.response?.status === 403 && err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(err.response?.data?.message || 'Credenciais inválidas. Tente novamente.');
+      }
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { LayoutDashboard, AlertCircle, FileCheck, FileSearch, DollarSign } from 'lucide-react';
 import { formsService } from '../../services/forms';
+import { usersService } from '../../services/users';
 import type { DashboardMetrics } from '../../services/forms';
 import {
   BarChart,
@@ -18,13 +19,21 @@ export function Dashboard() {
   const [data, setData] = useState<DashboardMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string>('');
 
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
         setIsLoading(true);
-        const metrics = await formsService.getDashboardMetrics();
+        const [metrics, profileData] = await Promise.all([
+          formsService.getDashboardMetrics(),
+          user?.id ? usersService.getProfile().catch(() => null) : Promise.resolve(null)
+        ]);
+
         setData(metrics);
+        if (profileData && profileData.nome) {
+          setUserName(profileData.nome);
+        }
         setError(null);
       } catch (err) {
         console.error('Erro ao buscar métricas:', err);
@@ -69,7 +78,7 @@ export function Dashboard() {
           Dashboard Global
         </h2>
         <p style={{ color: '#71717a', fontSize: '15px', margin: 0 }}>
-          Bem-vindo, {user?.departamento || 'Usuário'}. Visão geral consolidada do sistema.
+          Bem-vindo, {userName || 'Usuário'}. Visão geral consolidada do sistema.
         </p>
       </div>
 
@@ -111,7 +120,7 @@ export function Dashboard() {
 
       {/* Gráficos */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '24px' }}>
-        
+
         {/* Gráfico 1: Delegacias */}
         <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7' }}>
           <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Top Delegacias Solicitantes</h3>

@@ -5,12 +5,14 @@ import type { Form } from '../../types';
 import { FileSearch, PlusCircle } from 'lucide-react';
 import { UNIDADES_POLICIAIS } from '../../constants/unidades';
 
-type TabStatus = 'pendente' | 'ciente' | 'realizado';
+import { AgendaCalendar } from './AgendaCalendar';
+
+type TabStatus = 'agenda' | 'pendente' | 'ciente' | 'realizado';
 
 export function Apoios() {
   const [forms, setForms] = useState<Form[]>([]);
   const location = useLocation();
-  const initialTab = (location.state as any)?.returnTab || 'pendente';
+  const initialTab = (location.state as any)?.returnTab || 'agenda';
   const [activeTab, setActiveTab] = useState<TabStatus>(initialTab);
   const [departamento, setDepartamento] = useState('');
   const [page, setPage] = useState(1);
@@ -22,7 +24,11 @@ export function Apoios() {
   const loadForms = useCallback(async () => {
     setLoading(true);
     try {
-      const params: GetFormsParams = { status: activeTab, page, limit };
+      const params: GetFormsParams = { page, limit: activeTab === 'agenda' ? 100 : limit };
+
+      if (activeTab !== 'agenda') {
+        params.status = activeTab;
+      }
 
       if (departamento) {
         params.departamento = departamento;
@@ -31,6 +37,9 @@ export function Apoios() {
       if (activeTab === 'pendente') {
         params.sortBy = 'data_operacao';
         params.sortOrder = 'asc';
+      } else if (activeTab === 'agenda') {
+        params.sortBy = 'data_operacao';
+        params.sortOrder = 'desc';
       } else if (activeTab === 'ciente') {
         params.sortBy = 'data_operacao';
         params.sortOrder = 'asc';
@@ -100,7 +109,7 @@ export function Apoios() {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div style={{ display: 'flex', gap: '8px', background: '#f4f4f5', padding: '4px', borderRadius: '8px' }}>
-          {(['pendente', 'ciente', 'realizado'] as TabStatus[]).map((tab) => (
+          {(['agenda', 'pendente', 'ciente', 'realizado'] as TabStatus[]).map((tab) => (
             <button
               key={tab}
               onClick={() => { setActiveTab(tab); setPage(1); }}
@@ -149,6 +158,8 @@ export function Apoios() {
       <div>
         {loading ? (
           <div style={{ padding: '40px', textAlign: 'center', color: '#71717a' }}>Carregando...</div>
+        ) : activeTab === 'agenda' ? (
+          <AgendaCalendar forms={forms} />
         ) : forms.length > 0 ? (
           <div style={{ display: 'grid', gap: '16px' }}>
             {forms.map((form) => (
@@ -217,7 +228,7 @@ export function Apoios() {
           </div>
         )}
 
-        {(forms.length > 0 || page > 1) && (
+        {activeTab !== 'agenda' && (forms.length > 0 || page > 1) && (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '32px', gap: '16px' }}>
             <button
               disabled={page === 1}

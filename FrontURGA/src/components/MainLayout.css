@@ -5,15 +5,89 @@
   /* Cor de fundo solicitada */
 }
 
+/* Mobile Top Bar - Escondida no desktop */
+.mobile-top-bar {
+  display: none;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e4e4e7;
+  padding: 16px 20px;
+  align-items: center;
+  justify-content: center; /* Brand in center, menu button on left */
+  position: relative;
+  z-index: 40;
+}
+
+.mobile-menu-btn {
+  position: absolute;
+  left: 20px;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  color: #09090b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-brand {
+  font-size: 24px;
+  font-weight: 800;
+  color: #09090b;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
 .sidebar {
   width: 260px;
   background-color: #ffffff;
   border-right: 1px solid #e4e4e7;
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   height: 100vh;
+  z-index: 50;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-closed .sidebar {
+  transform: translateX(-100%);
+}
+
+.sidebar-toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: -24px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 48px;
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #71717a;
+  z-index: 51;
+  box-shadow: 2px 0px 4px rgba(0,0,0,0.05);
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.sidebar-toggle-btn:hover {
+  color: #09090b;
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon.rotated {
+  transform: rotate(180deg);
 }
 
 .sidebar-header {
@@ -96,6 +170,46 @@
   flex: 1;
   padding: 40px;
   overflow-y: auto;
+  margin-left: 260px;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-closed .main-content {
+  margin-left: 0;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 40;
+}
+
+@media (max-width: 999px) {
+  .main-layout {
+    flex-direction: column;
+  }
+
+  .mobile-top-bar {
+    display: flex;
+  }
+
+  .sidebar-toggle-btn {
+    display: none; /* Esconde a setinha lateral no mobile */
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 20px; /* Reduz padding no mobile */
+  }
+
+  .sidebar-open .sidebar-overlay {
+    display: block;
+  }
 }
 
 /* Ocultar barra lateral na impressão */

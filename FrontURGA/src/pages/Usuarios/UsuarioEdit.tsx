@@ -4,6 +4,7 @@ import { usersService } from '../../services/users';
 import { User as UserIcon, ArrowLeft, Trash2, Save, UserCheck } from 'lucide-react';
 import { UNIDADES_POLICIAIS } from '../../constants/unidades';
 import type { User } from '../../types';
+import { SecureImage } from '../../components/SecureImage';
 import '../Perfil/Perfil.css';
 
 export function UsuarioEdit() {
@@ -18,7 +19,8 @@ export function UsuarioEdit() {
     matricula: '',
     cargo: '',
     departamento: '',
-    status: ''
+    status: '',
+    fotoPerfil: ''
   });
 
   const [loading, setLoading] = useState(true);
@@ -41,7 +43,8 @@ export function UsuarioEdit() {
           matricula: user.matricula || '',
           cargo: user.cargo || '',
           departamento: user.departamento || '',
-          status: user.status || 'Ativo'
+          status: user.status || 'Ativo',
+          fotoPerfil: user.fotoPerfil || ''
         });
       } catch (error) {
         console.error("Erro ao carregar as informações do usuário:", error);
@@ -147,8 +150,20 @@ export function UsuarioEdit() {
             <button type="button" className="back-btn" onClick={() => navigate('/usuarios')} title="Voltar">
               <ArrowLeft size={20} />
             </button>
-            <div className="logo-circle">
-              <UserIcon size={24} className="logo-icon" />
+            <div className="profile-picture-container">
+              {formData.fotoPerfil ? (
+                <SecureImage 
+                  src={`/uploads/profiles/${formData.fotoPerfil}`} 
+                  alt="Profile" 
+                  className="profile-picture"
+                  zoomable={true}
+                  fallback={<div className="usuario-avatar-placeholder">{formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}</div>}
+                />
+              ) : (
+                <div className="usuario-avatar-placeholder">
+                  {formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}
+                </div>
+              )}
             </div>
             <h2>Editar Usuário</h2>
           </div>

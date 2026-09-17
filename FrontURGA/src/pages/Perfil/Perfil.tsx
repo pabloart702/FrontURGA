@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { usersService } from '../../services/users';
-import { User as UserIcon, Save, ArrowLeft } from 'lucide-react';
+import { User as UserIcon, Save, Camera, Trash2 } from 'lucide-react';
+import { SecureImage } from '../../components/SecureImage';
 import './Perfil.css';
 
 export function Perfil() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -20,6 +19,8 @@ export function Perfil() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [fotoPerfil, setFotoPerfil] = useState<string>('');
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export function Perfil() {
             departamento: userData.departamento || '',
             status: userData.status || ''
           });
+          setFotoPerfil(userData.fotoPerfil || '');
         } catch (error) {
           console.error("Erro ao carregar perfil:", error);
           setMessage({ type: 'error', text: 'Erro ao carregar as informações do perfil.' });
@@ -92,6 +94,45 @@ export function Perfil() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const response = await usersService.updateProfilePicture(file);
+      setFotoPerfil(response.user.fotoPerfil || '');
+      setMessage({ type: 'success', text: response.mensagem || 'Foto de perfil atualizada com sucesso!' });
+      // Clear the input so the same file can be selected again if needed
+      e.target.value = '';
+    } catch (error: any) {
+      console.error("Erro ao atualizar foto de perfil:", error);
+      setMessage({ type: 'error', text: error.response?.data?.message || 'Erro ao atualizar a foto de perfil.' });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleRemoveImage = async () => {
+    if (!window.confirm('Tem certeza que deseja remover sua foto de perfil?')) return;
+    
+    setUploadingImage(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const response = await usersService.deleteProfilePicture();
+      setFotoPerfil('');
+      setMessage({ type: 'success', text: response.mensagem || 'Foto de perfil removida com sucesso!' });
+    } catch (error: any) {
+      console.error("Erro ao remover foto de perfil:", error);
+      setMessage({ type: 'error', text: error.response?.data?.message || 'Erro ao remover a foto de perfil.' });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   if (loading) {
     return <div className="perfil-container"><p>Carregando...</p></div>;
   }
@@ -101,11 +142,42 @@ export function Perfil() {
       <div className="perfil-glass-card">
         <div className="perfil-header">
           <div className="header-title">
-            <button type="button" className="back-btn" onClick={() => navigate('/dashboard')} title="Voltar">
-              <ArrowLeft size={20} />
-            </button>
-            <div className="logo-circle">
-              <UserIcon size={24} className="logo-icon" />
+            <div className="profile-picture-container">
+              {fotoPerfil ? (
+                <SecureImage 
+                  src={`/uploads/profiles/${fotoPerfil}`} 
+                  alt="Profile" 
+                  className="profile-picture"
+                  zoomable={true}
+                  fallback={<div className="usuario-avatar-placeholder">{formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}</div>}
+                />
+              ) : (
+                <div className="usuario-avatar-placeholder">
+                  {formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}
+                </div>
+              )}
+              <label className="upload-btn" title="Alterar foto">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageUpload} 
+                  disabled={uploadingImage}
+                  style={{ display: 'none' }}
+                />
+                <Camera size={14} />
+              </label>
+              
+              {fotoPerfil && (
+                <button 
+                  type="button" 
+                  className="remove-photo-btn" 
+                  title="Remover foto"
+                  onClick={handleRemoveImage}
+                  disabled={uploadingImage}
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
             </div>
             <h2>Meu Perfil</h2>
           </div>
