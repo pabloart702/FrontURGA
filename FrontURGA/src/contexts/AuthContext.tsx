@@ -1,77 +1,80 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { authService } from '../services/auth';
-import { jwtDecode } from 'jwt-decode';
+import type { User } from '../types';
 
 export interface UserPayload {
   id?: string;
   role: string;
   departamento: string;
+  nome?: string;
 }
 
 interface AuthContextType {
-  token: string | null;
   user: UserPayload | null;
   login: (email: string, pass: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-  const [user, setUser] = useState<UserPayload | null>(() => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      try {
-        const decoded = jwtDecode<UserPayload & { exp?: number }>(storedToken);
-        // Verifica se o token expirou
-        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-          localStorage.removeItem('token');
-          return null;
-        }
-        return decoded;
-      } catch (e) {
-        localStorage.removeItem('token');
-        return null;
-      }
-    }
-    return null;
-  });
+function mapUserToPayload(serverUser: User): UserPayload {
+  return {
+    id: serverUser.id,
+    role: serverUser.role,
+    departamento: serverUser.departamento,
+    nome: serverUser.nome,
+  };
+}
 
-  useEffect(() => {
-    if (token) {
-      try {
-        const decoded = jwtDecode<UserPayload & { exp?: number }>(token);
-        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-          logout();
-        } else {
-          setUser(decoded);
-        }
-      } catch (e) {
-        console.error('Token inválido', e);
-        logout();
-      }
-    } else {
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<UserPayload | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const logout = useCallback(async () => {
+    try {
+      await authService.logout();
+    } finally {
       setUser(null);
     }
-  }, [token]);
+  }, []);
 
-  const login = async (email: string, pass: string) => {
-    const data = await authService.login(email, pass);
-    setToken(data.token);
-    localStorage.setItem('token', data.token);
-  };
+  useEffect(() => {
+    const initSession = async () => {
+      try {
+        const serverUser = await authService.me();
+        setUser(mapUserToPayload(serverUser));
+      } catch {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initSession();
+  }, []);
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('token');
+  useEffect(() => {
+    const handleSessionExpired = () => logout();
+    window.addEventListener('auth:session-expired', handleSessionExpired);
+    return () => window.removeEventListener('auth:session-expired', handleSessionExpired);
+  }, [logout]);
+
+  const login = async (email: string, pass: string): Promise<void> => {
+    await authService.login(email, pass); // backend emite o cookie HttpOnly
+    const serverUser = await authService.me();
+    setUser(mapUserToPayload(serverUser));
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{
+      user,
+      login,
+      logout,
+      isAuthenticated: !!user,
+      isLoading,
+    }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,6 +1,7 @@
-import { ReactNode, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, FileSearch, Activity, LogOut, User as UserIcon, Users, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { LayoutDashboard, FileText, FileSearch, Activity, LogOut, User as UserIcon, Users, ChevronLeft, Menu } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './MainLayout.css';
 
