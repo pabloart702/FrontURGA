@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { getSafeErrorMessage } from '../../utils/errorMessages';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { formsService } from '../../services/forms';
 import type { Form } from '../../types';
@@ -19,6 +20,14 @@ export function VisualizarPedido() {
   useEffect(() => {
     async function loadForm() {
       if (!id) return;
+
+      const isValidId = /^[a-zA-Z0-9\-]+$/.test(id);
+      if (!isValidId) {
+        setError('Formato de identificador inválido.');
+        setLoading(false);
+        return;
+      }
+
       try {
         const data = await formsService.getFormById(id);
         if (data.id) {
@@ -80,16 +89,7 @@ export function VisualizarPedido() {
       setForm({ ...form, status: newStatus });
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
-        const apiMessage = err.response.data?.message || err.response.data?.error;
-        if (err.response.status === 403) {
-          showToast('error', apiMessage || 'Apenas administradores podem alterar o status do formulário.');
-        } else if (err.response.status === 401) {
-          showToast('error', apiMessage || 'Sessão expirada ou não autenticado.');
-        } else if (err.response.status >= 500) {
-          showToast('error', apiMessage || 'Erro interno no servidor ao atualizar o status.');
-        } else {
-          showToast('error', apiMessage || `Ocorreu um erro ao atualizar o status (Erro ${err.response.status}).`);
-        }
+        showToast('error', getSafeErrorMessage(err.response.status, 'Ocorreu um erro ao atualizar o status.'));
       } else if (axios.isAxiosError(err) && err.request) {
         showToast('error', 'Erro de conexão com o servidor. Verifique sua rede.');
       } else {
@@ -164,7 +164,7 @@ export function VisualizarPedido() {
             <button className="vp-print-btn" onClick={handlePrint}>
               <Printer size={18} /> Relatório da Solicitação
             </button>
-            
+
             <select
               value={form.status || 'pendente'}
               onChange={handleStatusChange}
@@ -234,7 +234,7 @@ export function VisualizarPedido() {
                   {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(form.valor_estimado || 0)}
                 </p>
               </div>
-              
+
               <div className="vp-info-group">
                 <label>Resultados da Operação</label>
                 <div className="vp-tags">

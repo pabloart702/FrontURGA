@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getSafeErrorMessage } from '../../utils/errorMessages';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { formsService } from '../../services/forms';
@@ -93,30 +94,10 @@ export function SolicitacaoApoio() {
       alert('Formulário cadastrado com sucesso!');
       navigate('/dashboard');
     } catch (err: any) {
-      console.error('Erro na requisição:', err);
-
-      // Tenta extrair a mensagem de erro específica do backend
-      if (err.response && err.response.data) {
-        const data = err.response.data;
-
-        // Verifica diferentes formatos comuns de erro de APIs Node.js
-        if (Array.isArray(data.errors)) {
-          // Ex: express-validator ou Joi retorna um array de erros
-          const mensagens = data.errors.map((e: any) => e.msg || e.message || JSON.stringify(e)).join(' | ');
-          setError(`Erro de preenchimento: ${mensagens}`);
-        } else if (data.mensagem) {
-          setError(`Erro: ${data.mensagem}`);
-        } else if (data.error) {
-          setError(`Erro: ${data.error}`);
-        } else if (typeof data === 'string') {
-          setError(data);
-        } else {
-          setError(`Erro da API (${err.response.status}): Por favor, verifique se todos os campos estão no formato correto.`);
-        }
-      } else if (err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
-        setError('Erro de conexão. A API pode estar offline ou bloqueando por CORS.');
+      if (err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
+        setError('Erro de conexão. A API pode estar offline.');
       } else {
-        setError('Erro ao criar formulário. Tente novamente.');
+        setError(getSafeErrorMessage(err.response?.status, 'Erro ao criar formulário. Verifique os dados e tente novamente.'));
       }
     } finally {
       setLoading(false);

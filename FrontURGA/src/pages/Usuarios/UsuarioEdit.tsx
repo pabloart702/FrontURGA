@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { getSafeErrorMessage } from '../../utils/errorMessages';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usersService } from '../../services/users';
 import { User as UserIcon, ArrowLeft, Trash2, Save, UserCheck } from 'lucide-react';
@@ -85,15 +86,7 @@ export function UsuarioEdit() {
       setFormData(prev => ({ ...prev, password: '' }));
     } catch (error: any) {
       console.error("Erro ao atualizar usuário:", error);
-      let errorMsg = 'Erro ao atualizar o usuário. Tente novamente.';
-      
-      if (error.response?.data?.errors) {
-        errorMsg = error.response.data.errors.map((err: any) => err.msg).join(' | ');
-      } else if (error.response?.data?.message) {
-        errorMsg = error.response.data.message;
-      }
-
-      setMessage({ type: 'error', text: errorMsg });
+      setMessage({ type: 'error', text: getSafeErrorMessage(error.response?.status, 'Erro ao atualizar o usuário. Tente novamente.') });
     } finally {
       setSaving(false);
     }

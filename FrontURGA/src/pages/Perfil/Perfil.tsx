@@ -94,9 +94,51 @@ export function Perfil() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const MAX_FILE_SIZE_MB = 5;
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setMessage({ type: 'error', text: 'Formato inválido. Envie apenas JPEG, PNG ou WebP.' });
+      e.target.value = '';
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      setMessage({ type: 'error', text: `A imagem deve ter no máximo ${MAX_FILE_SIZE_MB}MB.` });
+      e.target.value = '';
+      return;
+    }
+
+    const MAGIC_BYTES: Record<string, number[][]> = {
+      'image/jpeg': [[0xFF, 0xD8, 0xFF]],
+      'image/png': [[0x89, 0x50, 0x4E, 0x47]],
+      'image/webp': [[0x52, 0x49, 0x46, 0x46]],
+    };
+
+    try {
+      const buffer = await file.slice(0, 8).arrayBuffer();
+      const bytes = Array.from(new Uint8Array(buffer));
+      const expectedMagic = MAGIC_BYTES[file.type];
+
+      const isValidMagic = expectedMagic.some(magic =>
+        magic.every((byte, i) => bytes[i] === byte)
+      );
+
+      if (!isValidMagic) {
+        setMessage({ type: 'error', text: 'Arquivo corrompido.' });
+        e.target.value = '';
+        return;
+      }
+    } catch (err) {
+      console.error("Erro ao ler arquivo:", err);
+      setMessage({ type: 'error', text: 'Erro ao processar o arquivo.' });
+      e.target.value = '';
+      return;
+    }
 
     setUploadingImage(true);
     setMessage({ type: '', text: '' });
@@ -117,7 +159,7 @@ export function Perfil() {
 
   const handleRemoveImage = async () => {
     if (!window.confirm('Tem certeza que deseja remover sua foto de perfil?')) return;
-    
+
     setUploadingImage(true);
     setMessage({ type: '', text: '' });
 
@@ -144,9 +186,9 @@ export function Perfil() {
           <div className="header-title">
             <div className="profile-picture-container">
               {fotoPerfil ? (
-                <SecureImage 
-                  src={`/uploads/profiles/${fotoPerfil}`} 
-                  alt="Profile" 
+                <SecureImage
+                  src={`/uploads/profiles/${fotoPerfil}`}
+                  alt="Profile"
                   className="profile-picture"
                   zoomable={true}
                   fallback={<div className="usuario-avatar-placeholder">{formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}</div>}
@@ -157,20 +199,20 @@ export function Perfil() {
                 </div>
               )}
               <label className="upload-btn" title="Alterar foto">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleImageUpload} 
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
                   disabled={uploadingImage}
                   style={{ display: 'none' }}
                 />
                 <Camera size={14} />
               </label>
-              
+
               {fotoPerfil && (
-                <button 
-                  type="button" 
-                  className="remove-photo-btn" 
+                <button
+                  type="button"
+                  className="remove-photo-btn"
                   title="Remover foto"
                   onClick={handleRemoveImage}
                   disabled={uploadingImage}

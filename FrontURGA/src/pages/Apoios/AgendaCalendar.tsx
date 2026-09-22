@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { Form } from '../../types';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,10 +7,9 @@ interface AgendaCalendarProps {
 }
 
 export function AgendaCalendar({ forms }: AgendaCalendarProps) {
-  console.log("Forms received in AgendaCalendar:", forms);
   const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date());
-  
+
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
   const today = new Date();
@@ -55,7 +54,7 @@ export function AgendaCalendar({ forms }: AgendaCalendarProps) {
   return (
     <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e4e4e7', overflow: 'hidden' }}>
       <div style={{ padding: '20px', borderBottom: '1px solid #e4e4e7', background: '#fafafa', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <button 
+        <button
           onClick={prevMonth}
           style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #e4e4e7', background: '#fff', cursor: 'pointer', fontWeight: '500' }}
         >
@@ -64,38 +63,61 @@ export function AgendaCalendar({ forms }: AgendaCalendarProps) {
         <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: '#09090b', textTransform: 'capitalize' }}>
           {monthNames[currentMonth]} {currentYear}
         </h3>
-        <button 
+        <button
           onClick={nextMonth}
           style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #e4e4e7', background: '#fff', cursor: 'pointer', fontWeight: '500' }}
         >
           Próximo
         </button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid #e4e4e7' }}>
-        {weekDays.map(day => (
-          <div key={day} style={{ padding: '12px', textAlign: 'center', fontWeight: '600', fontSize: '13px', color: '#71717a', borderRight: '1px solid #e4e4e7' }}>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
+        gridTemplateRows: 'auto',
+        gridAutoRows: 'minmax(120px, auto)',
+        width: '100%',
+        boxSizing: 'border-box'
+      }}>
+        {/* Cabeçalho dos Dias da Semana */}
+        {weekDays.map((day, idx) => (
+          <div key={day} style={{
+            padding: '12px', textAlign: 'center', fontWeight: '600', fontSize: '13px', color: '#71717a',
+            borderRight: idx === 6 ? 'none' : '1px solid #e4e4e7',
+            borderBottom: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxSizing: 'border-box'
+          }}>
             {day}
           </div>
         ))}
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gridAutoRows: 'minmax(120px, auto)' }}>
+
+        {/* Espaços vazios no início do mês */}
         {blanks.map(blank => (
-          <div key={`blank-${blank}`} style={{ background: '#fafafa', borderRight: '1px solid #e4e4e7', borderBottom: '1px solid #e4e4e7' }} />
+          <div key={`blank-${blank}`} style={{
+            background: '#fafafa',
+            borderRight: (blank % 7 === 6) ? 'none' : '1px solid #e4e4e7',
+            borderBottom: '1px solid #e4e4e7',
+            boxSizing: 'border-box'
+          }} />
         ))}
+
+        {/* Dias do mês */}
         {days.map(day => {
           const isToday = day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
           const dayForms = getFormsForDate(day);
-          
+          const currentWeekdayIndex = (firstDayOfMonth + day - 1) % 7;
+
           return (
-            <div key={day} style={{ 
-              padding: '8px', 
-              borderRight: '1px solid #e4e4e7', 
+            <div key={day} style={{
+              padding: '8px',
+              borderRight: currentWeekdayIndex === 6 ? 'none' : '1px solid #e4e4e7',
               borderBottom: '1px solid #e4e4e7',
               background: isToday ? '#e0f2fe' : '#ffffff',
-              position: 'relative'
+              position: 'relative',
+              boxSizing: 'border-box'
             }}>
-              <div style={{ 
-                fontWeight: isToday ? '700' : '500', 
+              <div style={{
+                fontWeight: isToday ? '700' : '500',
                 color: isToday ? '#0284c7' : '#3f3f46',
                 marginBottom: '8px',
                 fontSize: '14px',
@@ -111,24 +133,25 @@ export function AgendaCalendar({ forms }: AgendaCalendarProps) {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {dayForms.map(form => (
-                  <div 
-                    key={form.id || Math.random()} 
+                  <div
+                    key={form.id || Math.random()}
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(`/visualizar-pedido/${form.id}`, { state: { returnTab: 'agenda' } });
                     }}
-                    style={{ 
-                      fontSize: '11px', 
-                      background: form.status === 'pendente' ? '#fee2e2' : form.status === 'ciente' ? '#fef9c3' : '#dcfce7', 
-                      color: form.status === 'pendente' ? '#991b1b' : form.status === 'ciente' ? '#854d0e' : '#166534', 
+                    style={{
+                      fontSize: '11px',
+                      background: form.status === 'pendente' ? '#fee2e2' : form.status === 'ciente' ? '#fef9c3' : '#dcfce7',
+                      color: form.status === 'pendente' ? '#991b1b' : form.status === 'ciente' ? '#854d0e' : '#166534',
                       border: `1px solid ${form.status === 'pendente' ? '#fca5a5' : form.status === 'ciente' ? '#fde047' : '#86efac'}`,
-                      padding: '4px 6px', 
+                      padding: '4px 6px',
                       borderRadius: '4px',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       cursor: 'pointer',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      boxSizing: 'border-box'
                     }}
                     title={form.operacao}
                   >

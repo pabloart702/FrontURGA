@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FileText, X } from 'lucide-react';
 import api from '../../api/axios';
+import { logger } from '../../utils/logger';
 import './Documentos.css';
 
 interface DocumentInfo {
@@ -19,9 +20,20 @@ export function Documentos() {
     setIsLoadingPdf(true);
     setPdfBlobUrl(null);
 
+    // Valida que o filename não contém path traversal
+    const safeFilename = doc.filename.replace(/[^a-zA-Z0-9._\- ]/g, '');
+    if (safeFilename !== doc.filename) {
+      logger.error('Nome de arquivo inválido detectado');
+      setIsLoadingPdf(false);
+      setSelectedDoc(null);
+      return;
+    }
+
+    const encodedFilename = encodeURIComponent(doc.filename);
+
     try {
       // Baixa o arquivo do backend passando o token automaticamente via api/axios
-      const response = await api.get(`/api/documentos/${doc.filename}`, {
+      const response = await api.get(`/api/documentos/${encodedFilename}`, {
         responseType: 'blob' // Necessário para arquivos binários
       });
 
@@ -29,7 +41,7 @@ export function Documentos() {
       const blobUrl = URL.createObjectURL(response.data);
       setPdfBlobUrl(blobUrl);
     } catch (error) {
-      console.error('Erro ao buscar o documento:', error);
+      logger.error('Erro ao buscar o documento:', error);
       alert('Erro ao carregar o documento. Pode ter havido um problema de conexão ou o limite de requisições foi excedido.');
       setSelectedDoc(null);
     } finally {
