@@ -209,15 +209,56 @@
   word-break: break-word;
 }
 
-/* Ocultar elementos de UI durante impressão */
+/* Ocultar elementos de UI durante impressão e forçar cores */
 @media print {
+  /* Força a cor do texto para preto e remove fundo escuro, caso haja no body/html */
+  body, html {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  /* Força todos os textos relevantes a serem pretos na impressão */
+  .vp-container,
+  .vp-title h2,
+  .vp-section h3,
+  .vp-info-group label,
+  .vp-info-group p,
+  .vp-valor,
+  .vp-desc-box,
+  .vp-tag,
+  .vp-empty,
+  .vp-status-badge {
+    color: black !important;
+  }
+
+  /* Ajusta o select para não parecer um botão */
+  .vp-actions select {
+    border: none !important;
+    background: transparent !important;
+    color: black !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0;
+  }
+
   .vp-back-btn,
   .vp-print-btn {
     display: none !important;
   }
+  
   .vp-glass-card {
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
+    background: transparent !important;
+  }
+  
+  /* Garante que os fundos coloridos (tags, badge) sejam impressos (no Chrome/Edge/Safari) */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
