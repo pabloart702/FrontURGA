@@ -20,8 +20,7 @@ export function Documentos() {
     setIsLoadingPdf(true);
     setPdfBlobUrl(null);
 
-    // Valida que o filename não contém path traversal
-    const safeFilename = doc.filename.replace(/[^a-zA-Z0-9._\- ]/g, '');
+    const safeFilename = doc.filename.replace(/[^\p{L}0-9._\- ]/gu, '');
     if (safeFilename !== doc.filename) {
       logger.error('Nome de arquivo inválido detectado');
       setIsLoadingPdf(false);
@@ -32,13 +31,12 @@ export function Documentos() {
     const encodedFilename = encodeURIComponent(doc.filename);
 
     try {
-      // Baixa o arquivo do backend passando o token automaticamente via api/axios
       const response = await api.get(`/api/documentos/${encodedFilename}`, {
         responseType: 'blob' // Necessário para arquivos binários
       });
 
-      // Cria a URL temporária baseada no arquivo binário baixado
-      const blobUrl = URL.createObjectURL(response.data);
+      const file = new File([response.data], doc.filename, { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(file) + '#' + encodeURIComponent(doc.filename);
       setPdfBlobUrl(blobUrl);
     } catch (error) {
       logger.error('Erro ao buscar o documento:', error);

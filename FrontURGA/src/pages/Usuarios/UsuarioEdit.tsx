@@ -139,10 +139,10 @@ export function UsuarioEdit() {
     <div className="perfil-container">
       <div className="perfil-glass-card">
         <div className="perfil-header">
-          <div className="header-title">
-            <button type="button" className="back-btn" onClick={() => navigate('/usuarios')} title="Voltar">
-              <ArrowLeft size={20} />
-            </button>
+          <button type="button" className="back-btn" onClick={() => navigate('/usuarios')}>
+            <ArrowLeft size={20} /> Voltar
+          </button>
+          <div className="header-title" style={{ flex: 1, justifyContent: 'center' }}>
             <div className="profile-picture-container">
               {formData.fotoPerfil ? (
                 <SecureImage 

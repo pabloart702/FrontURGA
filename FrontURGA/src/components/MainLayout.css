@@ -2,17 +2,15 @@
   display: flex;
   min-height: 100vh;
   background-color: #f8f4f5;
-  /* Cor de fundo solicitada */
 }
 
-/* Mobile Top Bar - Escondida no desktop */
 .mobile-top-bar {
   display: none;
   background-color: #ffffff;
   border-bottom: 1px solid #e4e4e7;
   padding: 16px 20px;
   align-items: center;
-  justify-content: center; /* Brand in center, menu button on left */
+  justify-content: center;
   position: relative;
   z-index: 40;
 }
@@ -73,7 +71,7 @@
   cursor: pointer;
   color: #71717a;
   z-index: 51;
-  box-shadow: 2px 0px 4px rgba(0,0,0,0.05);
+  box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.05);
   transition: color 0.2s;
   padding: 0;
 }
@@ -199,12 +197,12 @@
   }
 
   .sidebar-toggle-btn {
-    display: none; /* Esconde a setinha lateral no mobile */
+    display: none;
   }
 
   .main-content {
     margin-left: 0;
-    padding: 20px; /* Reduz padding no mobile */
+    padding: 20px;
   }
 
   .sidebar-open .sidebar-overlay {
@@ -212,8 +210,8 @@
   }
 }
 
-/* Ocultar barra lateral e elementos desnecessários na impressão */
 @media print {
+
   .sidebar,
   .sidebar-overlay,
   .mobile-top-bar {

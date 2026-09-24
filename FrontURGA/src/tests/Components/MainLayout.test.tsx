@@ -8,11 +8,11 @@ describe('MainLayout Component', () => {
     it('deve renderizar a sidebar e o conteúdo', () => {
         // Mock do useAuth
         vi.spyOn(AuthContext, 'useAuth').mockReturnValue({
-            user: { departamento: 'TI', role: 'Administrador' },
+            user: { departamento: 'TI', role: 'Administrador' } as any,
             logout: vi.fn(),
-            token: 'fake-token',
             login: vi.fn(),
             isAuthenticated: true,
+            isLoading: false
         });
 
         render(
@@ -41,11 +41,11 @@ describe('MainLayout Component', () => {
 
     it('não deve mostrar link de Usuários se não for Administrador', () => {
         vi.spyOn(AuthContext, 'useAuth').mockReturnValue({
-            user: { departamento: 'TI', role: 'Comum' },
+            user: { departamento: 'TI', role: 'Comum' } as any,
             logout: vi.fn(),
-            token: 'fake-token',
             login: vi.fn(),
             isAuthenticated: true,
+            isLoading: false
         });
 
         render(

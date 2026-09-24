@@ -75,10 +75,10 @@ export function Dashboard() {
       <div style={{ marginBottom: '32px' }}>
         <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#09090b', display: 'flex', alignItems: 'center', gap: '12px', margin: '0 0 8px 0' }}>
           <LayoutDashboard size={28} color="#09090b" />
-          Dashboard Global
+          Dashboard dos apoios prestados
         </h2>
         <p style={{ color: '#71717a', fontSize: '15px', margin: 0 }}>
-          Bem-vindo, {userName || 'Usuário'}. Visão geral consolidada do sistema.
+          Bem-vindo, {userName || 'Usuário'}.
         </p>
       </div>
 

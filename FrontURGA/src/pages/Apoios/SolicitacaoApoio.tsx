@@ -111,13 +111,12 @@ export function SolicitacaoApoio() {
           <button onClick={() => navigate('/dashboard')} className="back-btn">
             <ArrowLeft size={20} /> Voltar
           </button>
-          <div className="header-title">
+          <div className="header-title" style={{ flex: 1, justifyContent: 'center' }}>
             <div className="logo-circle">
               <FileText size={24} className="logo-icon" />
             </div>
             <h2>Nova Solicitação de Apoio</h2>
           </div>
-          <div style={{ width: '80px' }}></div> {/* Spacer */}
         </div>
 
         {error && <div className="error-message">{error}</div>}
