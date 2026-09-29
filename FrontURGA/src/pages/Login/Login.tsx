@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getSafeErrorMessage } from '../../utils/errorMessages';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Shield, Eye, EyeOff } from 'lucide-react';
 import { CofreAnimado } from '../../components/CofreAnimado';
 import './Login.css';
 
@@ -14,8 +14,23 @@ export function Login() {
   const [loading, setLoading] = useState(false);
 
   const [failedAttempts, setFailedAttempts] = useState(0);
-  const [cooldownEnd, setCooldownEnd] = useState<number | null>(null);
-  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [cooldownEnd, setCooldownEnd] = useState<number | null>(() => {
+    const saved = localStorage.getItem('loginCooldownEnd');
+    if (saved) {
+      const parsed = parseInt(saved, 10);
+      if (parsed > Date.now()) return parsed;
+      localStorage.removeItem('loginCooldownEnd');
+    }
+    return null;
+  });
+  const [cooldownRemaining, setCooldownRemaining] = useState(() => {
+    const saved = localStorage.getItem('loginCooldownEnd');
+    if (saved) {
+      const parsed = parseInt(saved, 10);
+      if (parsed > Date.now()) return Math.ceil((parsed - Date.now()) / 1000);
+    }
+    return 0;
+  });
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -29,6 +44,7 @@ export function Login() {
           setCooldownEnd(null);
           setCooldownRemaining(0);
           setFailedAttempts(0); // Reseta as tentativas após o cooldown
+          localStorage.removeItem('loginCooldownEnd');
         } else {
           setCooldownRemaining(remaining);
         }
@@ -51,13 +67,38 @@ export function Login() {
       setFailedAttempts(0);
       navigate('/dashboard');
     } catch (err: any) {
+      if (err.response?.status === 429) {
+        // Backend já bloqueou (rate limit ativado)
+        let resetTimeMs = Date.now() + 300000; // Padrão 5 minutos
+
+        // Tenta ler o cabeçalho 'RateLimit-Reset' ou 'Retry-After' se o backend enviar
+        const resetHeader = err.response?.headers?.['ratelimit-reset'] || err.response?.headers?.['retry-after'];
+        if (resetHeader) {
+          const parsed = parseInt(resetHeader, 10);
+          if (!isNaN(parsed) && parsed > 1000000000) {
+            resetTimeMs = parsed * 1000; // É um timestamp Unix (segundos)
+          } else if (!isNaN(parsed) && parsed > 0 && parsed < 3600) {
+            resetTimeMs = Date.now() + (parsed * 1000); // É em segundos restantes
+          }
+        }
+
+        const remainingSeconds = Math.max(1, Math.ceil((resetTimeMs - Date.now()) / 1000));
+        setCooldownEnd(resetTimeMs);
+        setCooldownRemaining(remainingSeconds);
+        localStorage.setItem('loginCooldownEnd', resetTimeMs.toString());
+        setError(`Muitas tentativas falhas. Aguarde ${remainingSeconds}s para tentar novamente.`);
+        return;
+      }
+
       const newAttempts = failedAttempts + 1;
       setFailedAttempts(newAttempts);
 
       if (newAttempts >= 5) {
-        setCooldownEnd(Date.now() + 120000);
-        setCooldownRemaining(120);
-        setError('Muitas tentativas falhas. Conta temporariamente bloqueada (120s).');
+        const timeMs = Date.now() + 300000;
+        setCooldownEnd(timeMs);
+        setCooldownRemaining(300);
+        localStorage.setItem('loginCooldownEnd', timeMs.toString());
+        setError('Muitas tentativas falhas. Aguarde 5 minutos (300s) para tentar novamente.');
       } else {
         setError(getSafeErrorMessage(err.response?.status, 'Credenciais inválidas. Tente novamente.'));
       }
@@ -81,9 +122,6 @@ export function Login() {
         <div className="left-content">
           <div className="urga-brand">
             <h1 className="urga-title">URGA</h1>
-            <div className="shield-icon-wrapper">
-              <ShieldCheck size={50} strokeWidth={1.5} color="#d4af37" fill="rgba(212, 175, 55, 0.1)" />
-            </div>
           </div>
           <h2 className="urga-subtitle">ADMINISTRAÇÃO INTEGRADA<br />DE BENS E VALORES</h2>
           <p className="urga-description">Controle, Custódia e Destinação</p>

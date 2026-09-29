@@ -147,7 +147,6 @@ export function Perfil() {
       const response = await usersService.updateProfilePicture(file);
       setFotoPerfil(response.user.fotoPerfil || '');
       setMessage({ type: 'success', text: response.mensagem || 'Foto de perfil atualizada com sucesso!' });
-      // Clear the input so the same file can be selected again if needed
       e.target.value = '';
     } catch (error: any) {
       console.error("Erro ao atualizar foto de perfil:", error);
@@ -180,8 +179,8 @@ export function Perfil() {
   }
 
   return (
-    <div className="perfil-container">
-      <div className="perfil-glass-card">
+    <div className="page-container">
+      <div className="page-glass-card">
         <div className="perfil-header">
           <div className="header-title">
             <div className="profile-picture-container">

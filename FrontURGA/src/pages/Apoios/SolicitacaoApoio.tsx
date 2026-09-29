@@ -105,8 +105,8 @@ export function SolicitacaoApoio() {
   };
 
   return (
-    <div className="apoio-container">
-      <div className="apoio-glass-card">
+    <div className="page-container">
+      <div className="page-glass-card">
         <div className="apoio-header">
           <button onClick={() => navigate('/dashboard')} className="back-btn">
             <ArrowLeft size={20} /> Voltar

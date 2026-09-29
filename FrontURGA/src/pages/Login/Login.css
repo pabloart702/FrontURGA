@@ -1,20 +1,8 @@
-* {
-  box-sizing: border-box;
-}
-
-body,
-html {
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
-
 .login-split-container {
   display: flex;
   width: 100vw;
   height: 100vh;
   overflow-y: auto;
-  /* Permite rolagem se a tela for muito pequena */
   background-color: #050505;
 }
 
@@ -22,7 +10,7 @@ html {
 .login-left-panel {
   flex: 1;
   background-color: #050505;
-  /* Fundo bem escuro */
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -48,7 +36,6 @@ html {
   position: absolute;
   top: 40%;
   left: 50%;
-  /* Centraliza em relação ao painel esquerdo */
   transform: translate(-50%, -50%) scale(1.2);
 
   width: 400px;
@@ -61,7 +48,6 @@ html {
   z-index: 10;
   max-width: 600px;
   margin-top: clamp(100px, 20vh, 400px);
-  /* Ajusta a margem dinamicamente */
 }
 
 .urga-brand {
@@ -96,7 +82,6 @@ html {
   font-size: 18px;
   font-weight: 400;
   color: #a1a1aa;
-  /* Zinc 400 */
   margin: 0;
 }
 
@@ -106,7 +91,6 @@ html {
   left: 80px;
   font-size: 13px;
   color: #71717a;
-  /* Zinc 500 */
   display: flex;
   align-items: center;
 }
@@ -143,7 +127,6 @@ html {
   font-size: 32px;
   font-weight: 800;
   color: #09090b;
-  /* Zinc 950 */
   margin: 5px 0 0 0;
   letter-spacing: -1px;
 }
@@ -186,7 +169,6 @@ html {
   outline: none;
 }
 
-/* Força que o fundo e texto permaneçam como configurado mesmo quando o browser autopreencher a senha/email */
 .input-group input:-webkit-autofill,
 .input-group input:-webkit-autofill:hover,
 .input-group input:-webkit-autofill:focus,
@@ -268,8 +250,7 @@ html {
   font-size: 12px;
 }
 
-
-/* Responsividade Básica */
+/* Reponsividade para telas menores */
 @media (max-width: 900px) {
   .login-split-container {
     flex-direction: column;
@@ -292,7 +273,6 @@ html {
     transform: translate(-50%, -50%) scale(0.85);
     width: 320px;
     opacity: 0.15;
-    /* Mais transparente no mobile para facilitar leitura */
   }
 
   .left-content {
@@ -323,7 +303,7 @@ html {
   }
 }
 
-/* Ajuste intermediário (Tablets/Telas Médias-Pequenas): Texto na esquerda, cofre na direita */
+/* Responsividade para telas médias */
 @media (min-width: 501px) and (max-width: 900px) {
   .login-left-panel {
     align-items: flex-start;
@@ -341,9 +321,7 @@ html {
 
   .wireframe-safe-bg {
     left: 70%;
-    /* Desloca o cofre para a direita */
     transform: translate(-50%, -50%) scale(1.0);
     opacity: 0.3;
-    /* Mais nítido já que o texto não fica em cima */
   }
 }

@@ -12,6 +12,7 @@ import { UsuariosList } from './pages/Usuarios/UsuariosList';
 import { UsuarioEdit } from './pages/Usuarios/UsuarioEdit';
 import { MainLayout } from './components/MainLayout';
 import './index.css';
+import './App.css';
 
 function ProtectedRoute() {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -19,7 +20,7 @@ function ProtectedRoute() {
   // Aguarda a validação da sessão com o servidor antes de redirecionar.
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#71717a', fontSize: '15px' }}>
+      <div className="loading-container">
         Verificando sessão...
       </div>
     );
@@ -46,7 +47,7 @@ function AdminRoute() {
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#71717a', fontSize: '15px' }}>
+      <div className="loading-container">
         Verificando sessão...
       </div>
     );

@@ -29,9 +29,8 @@ export function SecureImage({ src, fallback, zoomable = false, ...props }: Secur
           return;
         }
 
-        // We use api from axios because it already injects the Authorization header
         const response = await api.get(src, { responseType: 'blob' });
-        
+
         const blob = response.data;
         if (isMounted) {
           currentObjectUrl = URL.createObjectURL(blob);
@@ -71,9 +70,9 @@ export function SecureImage({ src, fallback, zoomable = false, ...props }: Secur
 
   return (
     <>
-      <img 
-        src={objectUrl} 
-        {...props} 
+      <img
+        src={objectUrl}
+        {...props}
         onClick={(e) => {
           if (zoomable) {
             e.stopPropagation();
@@ -85,7 +84,7 @@ export function SecureImage({ src, fallback, zoomable = false, ...props }: Secur
       />
 
       {isZoomed && zoomable && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm"
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)' }}
           onClick={(e) => {
@@ -93,7 +92,7 @@ export function SecureImage({ src, fallback, zoomable = false, ...props }: Secur
             setIsZoomed(false);
           }}
         >
-          <button 
+          <button
             className="absolute top-6 right-6 text-white hover:text-gray-300"
             style={{ position: 'absolute', top: '24px', right: '24px', color: 'white', background: 'transparent', border: 'none', cursor: 'pointer' }}
             onClick={(e) => {
@@ -103,10 +102,10 @@ export function SecureImage({ src, fallback, zoomable = false, ...props }: Secur
           >
             <X size={32} />
           </button>
-          <img 
-            src={objectUrl} 
-            alt="Zoomed" 
-            style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }} 
+          <img
+            src={objectUrl}
+            alt="Zoomed"
+            style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
             onClick={(e) => e.stopPropagation()}
           />
         </div>

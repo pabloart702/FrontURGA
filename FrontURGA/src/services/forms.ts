@@ -51,7 +51,6 @@ export const formsService = {
   },
 
   updateStatus: async (id: number | string, status: string): Promise<Form> => {
-    // Usa a mesma rota de edição de formulário, enviando apenas o status (PATCH)
     const response = await api.patch<Form>(`/forms/${id}`, { status });
     return response.data;
   },

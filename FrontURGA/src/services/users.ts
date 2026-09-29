@@ -40,8 +40,7 @@ export const usersService = {
     formData.append('profilePicture', file);
 
     const response = await api.patch<{ mensagem: string, user: User }>('/users/profile-picture', formData);
-    
-    // axios interceptor automatically sets the Authorization header
+
     return response.data;
   },
 

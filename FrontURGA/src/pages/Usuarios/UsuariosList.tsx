@@ -11,7 +11,7 @@ export function UsuariosList() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Pagination and Filter state
+  // Estado de paginação e filtro
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,12 +51,12 @@ export function UsuariosList() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setPage(1); // Reset page on new search
+    setPage(1);
   };
 
   const handleDeptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDepartamento(e.target.value);
-    setPage(1); // Reset page on new filter
+    setPage(1);
   };
 
   return (
@@ -102,17 +102,17 @@ export function UsuariosList() {
         ) : (
           <div className="usuarios-grid" style={{ opacity: loading ? 0.6 : 1, pointerEvents: loading ? "none" : "auto", transition: "opacity 0.2s ease" }}>
             {users.map(user => (
-              <div 
-                key={user.id} 
-                className="usuario-card" 
+              <div
+                key={user.id}
+                className="usuario-card"
                 onClick={() => navigate(`/usuarios/${user.id}`)}
               >
                 <div className="usuario-card-header">
                   {user.fotoPerfil ? (
-                    <SecureImage 
-                      src={`/uploads/profiles/${user.fotoPerfil}`} 
-                      alt={user.nome} 
-                      className="usuario-card-img" 
+                    <SecureImage
+                      src={`/uploads/profiles/${user.fotoPerfil}`}
+                      alt={user.nome}
+                      className="usuario-card-img"
                       fallback={<div className="usuario-card-avatar-placeholder">{user.nome.charAt(0).toUpperCase()}</div>}
                     />
                   ) : (
@@ -124,7 +124,7 @@ export function UsuariosList() {
                 <div className="usuario-card-body">
                   <h3 className="usuario-card-name" title={user.nome}>{user.nome}</h3>
                   <p className="usuario-card-role">{user.cargo || 'Sem Cargo'}</p>
-                  
+
                   <div className="usuario-card-details">
                     {user.departamento && (
                       <span className="usuario-card-dept" title={user.departamento}>
@@ -132,7 +132,7 @@ export function UsuariosList() {
                       </span>
                     )}
                   </div>
-                  
+
                   <div className="usuario-card-footer">
                     <span className={`status-badge ${user.status?.toLowerCase() === 'ativo' ? 'status-active' : 'status-inactive'}`}>
                       {user.status || 'ATIVO'}

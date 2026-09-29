@@ -31,7 +31,7 @@ export function Documentos() {
     const encodedFilename = encodeURIComponent(doc.filename);
 
     try {
-      const response = await api.get(`/api/documentos/${encodedFilename}`, {
+      const response = await api.get(`/documentos/${encodedFilename}`, {
         responseType: 'blob' // Necessário para arquivos binários
       });
 

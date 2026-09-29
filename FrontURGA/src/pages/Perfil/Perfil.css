@@ -1,17 +1,4 @@
-.perfil-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
 
-.perfil-glass-card {
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  border: 1px solid #e4e4e7;
-  position: relative;
-}
 
 .perfil-header {
   display: flex;

@@ -1,1 +1,24 @@
-/* App.css vazio */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #71717a;
+    font-size: 15px;
+    background-color: #050505;
+}
+
+/* Global Layout Containers */
+.page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.page-glass-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  position: relative;
+}

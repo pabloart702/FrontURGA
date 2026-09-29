@@ -132,12 +132,12 @@ export function UsuarioEdit() {
   };
 
   if (loading) {
-    return <div className="perfil-container"><p>Carregando...</p></div>;
+    return <div className="page-container"><p>Carregando...</p></div>;
   }
 
   return (
-    <div className="perfil-container">
-      <div className="perfil-glass-card">
+    <div className="page-container">
+      <div className="page-glass-card">
         <div className="perfil-header">
           <button type="button" className="back-btn" onClick={() => navigate('/usuarios')}>
             <ArrowLeft size={20} /> Voltar

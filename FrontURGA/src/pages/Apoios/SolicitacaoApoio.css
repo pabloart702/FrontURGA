@@ -1,18 +1,3 @@
-.apoio-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
-
-.apoio-glass-card {
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  border: 1px solid #e4e4e7;
-  position: relative;
-}
-
 .background-shapes {
   display: none;
 }
@@ -111,7 +96,6 @@
   padding-right: 36px;
 }
 
-/* Esconder os botões de incremento/decremento dos inputs do tipo number */
 .input-group input[type="number"]::-webkit-inner-spin-button,
 .input-group input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -119,7 +103,7 @@
 }
 
 .input-group input[type="number"] {
-  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .input-group input:focus,

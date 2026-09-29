@@ -122,12 +122,11 @@ export function VisualizarPedido() {
     // Define o título que o navegador usará como nome padrão do arquivo PDF
     document.title = `Relatorio_URGA_${form.operacao.replace(/\s+/g, '_')}`;
     window.print();
-    // Restaura o título original após abrir a janela de impressão
     document.title = originalTitle;
   };
 
   return (
-    <div className="vp-container" style={{ position: 'relative' }}>
+    <div className="page-container" style={{ position: 'relative' }}>
       {toastMessage && (
         <div style={{
           position: 'fixed',
@@ -149,7 +148,7 @@ export function VisualizarPedido() {
         </div>
       )}
 
-      <div className="vp-glass-card">
+      <div className="page-glass-card">
         <div className="vp-header">
           <button onClick={() => navigate('/apoios', { state: { returnTab } })} className="vp-back-btn">
             <ArrowLeft size={20} /> Voltar

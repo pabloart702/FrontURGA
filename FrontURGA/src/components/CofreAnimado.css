@@ -9,6 +9,7 @@
 
 .cofre-svg-root {
   color: rgba(255, 255, 255, 0.822);
+  will-change: transform;
 }
 
 .cofre-svg-root * {
@@ -40,12 +41,17 @@
   stroke-width: 2;
 }
 
+.cofre-alavanca {
+  stroke-width: 2;
+}
+
 .cofre-dial-fino {
   stroke-width: 1;
 }
 
 .cofre-engrenagem {
   stroke-width: 1.8;
+  will-change: transform;
 }
 
 .cofre-ponteiro {
@@ -55,12 +61,15 @@
 
 .grupo-dial {
   transform-origin: 0px 0px;
+  will-change: transform;
 }
 
-.grupo-engrenagem-esq {
+.grupo-engrenagem-sup {
   transform-origin: 0px 0px;
+  will-change: transform;
 }
 
 .grupo-engrenagem-dir {
   transform-origin: 0px 0px;
+  will-change: transform;
 }
