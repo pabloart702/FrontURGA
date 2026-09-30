@@ -47,6 +47,32 @@ export function SolicitacaoApoio() {
       return;
     }
 
+    if (name === 'numero_processo' || name === 'numero_cautelar') {
+      let v = value.replace(/\D/g, '');
+      if (v.length > 20) v = v.substring(0, 20); // 20 digits max
+
+      if (v.length > 7) v = v.substring(0, 7) + '-' + v.substring(7);
+      if (v.length > 10) v = v.substring(0, 10) + '.' + v.substring(10);
+      if (v.length > 15) v = v.substring(0, 15) + '.' + v.substring(15);
+      if (v.length > 17) v = v.substring(0, 17) + '.' + v.substring(17);
+      if (v.length > 20) v = v.substring(0, 20) + '.' + v.substring(20);
+
+      setFormData(prev => ({ ...prev, [name]: v }));
+      return;
+    }
+
+    if (name === 'valor_estimado') {
+      let v = value.replace(/\D/g, '');
+      if (v) {
+        const amount = Number(v) / 100;
+        v = amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      } else {
+        v = '';
+      }
+      setFormData(prev => ({ ...prev, [name]: v }));
+      return;
+    }
+
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -85,7 +111,7 @@ export function SolicitacaoApoio() {
         medida_cautelar: formData.medida_cautelar,
         numero_cautelar: formData.numero_cautelar,
         descricao_operacao: formData.descricao_operacao,
-        valor_estimado: Number(formData.valor_estimado),
+        valor_estimado: Number(formData.valor_estimado.replace(/\D/g, '')) / 100,
         resultados,
         tipos_apreendidos: finalTiposApreendidos
       };
@@ -195,7 +221,7 @@ export function SolicitacaoApoio() {
 
             <div className="input-group">
               <label>Nº do Processo</label>
-              <input type="number" name="numero_processo" value={formData.numero_processo} onChange={handleInputChange} required placeholder="Ex: 1234567-89.2026.8.00.0000" />
+              <input type="text" name="numero_processo" value={formData.numero_processo} onChange={handleInputChange} required placeholder="Ex: 1234567-89.2026.8.00.0000" maxLength={25} />
             </div>
 
             <div className="input-group">
@@ -211,12 +237,12 @@ export function SolicitacaoApoio() {
 
             <div className="input-group">
               <label>Nº Cautelar</label>
-              <input type="number" name="numero_cautelar" value={formData.numero_cautelar} onChange={handleInputChange} required placeholder="Ex: 9876543210" />
+              <input type="text" name="numero_cautelar" value={formData.numero_cautelar} onChange={handleInputChange} required placeholder="Ex: 1234567-89.2026.8.00.0000" maxLength={25} />
             </div>
 
             <div className="input-group">
               <label>Valor Estimado (R$)</label>
-              <input type="number" name="valor_estimado" value={formData.valor_estimado} onChange={handleInputChange} required placeholder="Ex: 150000" />
+              <input type="text" name="valor_estimado" value={formData.valor_estimado} onChange={handleInputChange} required placeholder="Ex: R$ 150.000,00" />
             </div>
 
           </div>
