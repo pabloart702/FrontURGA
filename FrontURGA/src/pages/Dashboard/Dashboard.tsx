@@ -83,7 +83,7 @@ export function Dashboard() {
       </div>
 
       {/* Resumo em Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '40px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '24px', marginBottom: '40px' }}>
         {/* Card 1 */}
         <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', gap: '20px' }}>
           <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
@@ -119,10 +119,10 @@ export function Dashboard() {
       </div>
 
       {/* Gráficos */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))', gap: '24px' }}>
 
         {/* Gráfico 1: Delegacias */}
-        <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7' }}>
+        <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7', minWidth: 0 }}>
           <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Top Delegacias Solicitantes</h3>
           <div style={{ height: '300px' }}>
             {data.delegaciasMaisSolicitam.length > 0 ? (
@@ -142,7 +142,7 @@ export function Dashboard() {
         </div>
 
         {/* Gráfico 2: Tipos Apreendidos */}
-        <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7' }}>
+        <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7', minWidth: 0 }}>
           <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Tipos Mais Apreendidos</h3>
           <div style={{ height: '300px' }}>
             {data.tiposMaisApreendidos.length > 0 ? (
@@ -162,7 +162,7 @@ export function Dashboard() {
         </div>
 
         {/* Gráfico 3: Resultados Mais Comuns */}
-        <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7', gridColumn: '1 / -1' }}>
+        <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7', gridColumn: '1 / -1', minWidth: 0 }}>
           <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Resultados Mais Comuns</h3>
           <div style={{ height: '300px' }}>
             {data.resultadosMaisComuns.length > 0 ? (

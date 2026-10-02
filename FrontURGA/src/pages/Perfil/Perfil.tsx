@@ -62,6 +62,12 @@ export function Perfil() {
         cargo: formData.cargo,
       };
 
+      if (user?.role !== 'Usuário') {
+        updateData.cpf = formData.cpf;
+        updateData.matricula = formData.matricula;
+        updateData.departamento = formData.departamento;
+      }
+
       if (formData.password) {
         updateData.password = formData.password;
       }
@@ -281,7 +287,8 @@ export function Perfil() {
                 type="text"
                 name="cpf"
                 value={formData.cpf}
-                disabled
+                onChange={handleChange}
+                disabled={user?.role === 'Usuário'}
               />
             </div>
 
@@ -291,7 +298,8 @@ export function Perfil() {
                 type="text"
                 name="matricula"
                 value={formData.matricula}
-                disabled
+                onChange={handleChange}
+                disabled={user?.role === 'Usuário'}
               />
             </div>
 
@@ -301,7 +309,8 @@ export function Perfil() {
                 type="text"
                 name="departamento"
                 value={formData.departamento}
-                disabled
+                onChange={handleChange}
+                disabled={user?.role === 'Usuário'}
               />
             </div>
 
