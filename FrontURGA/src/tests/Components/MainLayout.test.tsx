@@ -24,7 +24,7 @@ describe('MainLayout Component', () => {
         );
 
         // Verifica a brand
-        expect(screen.getByText('URGA')).toBeInTheDocument();
+        expect(screen.getAllByText('URGA')[0]).toBeInTheDocument();
         // Verifica o departamento do usuário
         expect(screen.getByText('TI')).toBeInTheDocument();
         

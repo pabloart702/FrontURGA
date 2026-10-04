@@ -89,11 +89,16 @@ describe('SolicitacaoApoio Component', () => {
         departamento: 'Delegacia-Geral da Polícia Civil (DEGEPOLI)',
         operacao: 'Operação Teste',
         data_operacao: '12/12/2026',
-        valor_estimado: 1000,
+        valor_estimado: 10,
+        descricao_operacao: 'Teste descrição',
+        medida_cautelar: 'Bloqueio',
+        numero_cautelar: '321',
+        numero_processo: '123',
+        tipos_apreendidos: [],
         resultados: ['Apreensão']
       }));
       expect(mockAlert).toHaveBeenCalledWith('Formulário cadastrado com sucesso!');
-      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+      expect(mockNavigate).toHaveBeenCalledWith('/apoios');
     });
   });
 
@@ -121,7 +126,7 @@ describe('SolicitacaoApoio Component', () => {
     fireEvent.submit(form);
 
     await waitFor(() => {
-      expect(screen.getByText('Erro: Erro simulado')).toBeInTheDocument();
+      expect(screen.getByText('Erro ao criar formulário. Verifique os dados e tente novamente.')).toBeInTheDocument();
     });
   });
 });

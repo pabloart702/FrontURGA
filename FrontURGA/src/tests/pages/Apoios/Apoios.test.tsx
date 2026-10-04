@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { Apoios } from '../../../pages/Apoios/Apoios';
 import { formsService } from '../../../services/forms';
+import * as AuthContext from '../../../contexts/AuthContext';
 
 vi.mock('../../../services/forms', () => ({
   formsService: {
@@ -14,6 +15,13 @@ describe('Apoios Component - Ordenação das abas', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(formsService.getForms).mockResolvedValue([]);
+    vi.spyOn(AuthContext, 'useAuth').mockReturnValue({
+      user: { departamento: 'TI', role: 'Administrador' },
+      login: vi.fn(),
+      logout: vi.fn(),
+      isAuthenticated: true,
+      isLoading: false
+    } as any);
   });
 
   it('deve buscar solicitações pendentes com ordenação data_operacao asc', async () => {
@@ -86,7 +94,8 @@ describe('Apoios Component - Ordenação das abas', () => {
     // Na montagem, a aba inicial é "agenda"
     await waitFor(() => {
       expect(formsService.getForms).toHaveBeenCalledWith(expect.objectContaining({
-        limit: 1000,
+        limit: 100,
+        page: 1,
         sortBy: 'data_operacao',
         sortOrder: 'desc'
       }));
