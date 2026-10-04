@@ -11,7 +11,7 @@ import '../Perfil/Perfil.css';
 export function UsuarioEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -60,7 +60,7 @@ export function UsuarioEdit() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id) return;
-    
+
     setSaving(true);
     setMessage({ type: '', text: '' });
 
@@ -81,12 +81,21 @@ export function UsuarioEdit() {
 
       await usersService.updateUser(id, updateData);
       setMessage({ type: 'success', text: 'Usuário atualizado com sucesso!' });
-      
+
       // Limpar a senha após salvar
       setFormData(prev => ({ ...prev, password: '' }));
     } catch (error: any) {
       console.error("Erro ao atualizar usuário:", error);
-      setMessage({ type: 'error', text: getSafeErrorMessage(error.response?.status, 'Erro ao atualizar o usuário. Tente novamente.') });
+
+      let errorMsg = getSafeErrorMessage(error.response?.status, 'Erro ao atualizar o usuário. Tente novamente.');
+
+      if (error.response?.data?.errors) {
+        errorMsg = error.response.data.errors.map((err: any) => err.msg).join(' | ');
+      } else if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      }
+
+      setMessage({ type: 'error', text: errorMsg });
     } finally {
       setSaving(false);
     }
@@ -95,7 +104,7 @@ export function UsuarioEdit() {
   const handleDeactivate = async () => {
     if (!id) return;
     if (!window.confirm('Tem certeza que deseja desativar este usuário?')) return;
-    
+
     setSaving(true);
     try {
       await usersService.deleteUser(id);
@@ -112,7 +121,7 @@ export function UsuarioEdit() {
   const handleActivate = async () => {
     if (!id) return;
     if (!window.confirm('Tem certeza que deseja ativar este usuário?')) return;
-    
+
     setSaving(true);
     try {
       await usersService.activateUser(id);
@@ -145,9 +154,9 @@ export function UsuarioEdit() {
           <div className="header-title" style={{ flex: 1, justifyContent: 'center' }}>
             <div className="profile-picture-container">
               {formData.fotoPerfil ? (
-                <SecureImage 
-                  src={`/uploads/profiles/${formData.fotoPerfil}`} 
-                  alt="Profile" 
+                <SecureImage
+                  src={`/uploads/profiles/${formData.fotoPerfil}`}
+                  alt="Profile"
                   className="profile-picture"
                   zoomable={true}
                   fallback={<div className="usuario-avatar-placeholder">{formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}</div>}
@@ -160,8 +169,8 @@ export function UsuarioEdit() {
             </div>
             <h2>Editar Usuário</h2>
           </div>
-          {formData.status?.toLowerCase() === 'inativo' ? (
-            <button 
+          {formData.status === 'Inativo' ? (
+            <button
               type="button"
               className="btn-deactivate"
               onClick={handleActivate}
@@ -172,7 +181,7 @@ export function UsuarioEdit() {
               Ativar Usuário
             </button>
           ) : (
-            <button 
+            <button
               type="button"
               className="btn-deactivate"
               onClick={handleDeactivate}
@@ -238,17 +247,20 @@ export function UsuarioEdit() {
 
             <div className="input-group">
               <label>Departamento</label>
-              <select
+              <input
+                type="text"
                 name="departamento"
                 value={formData.departamento}
                 onChange={handleChange}
                 required
-              >
-                <option value="">Selecione um departamento</option>
+                list="departamentos-list-usuario"
+                placeholder="Ex: URGA"
+              />
+              <datalist id="departamentos-list-usuario">
                 {departamentos.map(dept => (
-                  <option key={dept} value={dept}>{dept}</option>
+                  <option key={dept} value={dept} />
                 ))}
-              </select>
+              </datalist>
             </div>
 
             <div className="input-group">

@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { usersService } from '../../services/users';
 import { User as UserIcon, Save, Camera, Trash2 } from 'lucide-react';
 import { SecureImage } from '../../components/SecureImage';
+import { UNIDADES_POLICIAIS } from '../../constants/unidades';
 import './Perfil.css';
 
 export function Perfil() {
@@ -72,7 +73,12 @@ export function Perfil() {
         updateData.password = formData.password;
       }
 
-      await usersService.updateProfile(updateData);
+      if (user?.role !== 'Usuário' && user?.id) {
+        await usersService.updateUser(user.id, updateData);
+      } else {
+        await usersService.updateProfile(updateData);
+      }
+
       setMessage({ type: 'success', text: 'Perfil atualizado com sucesso!' });
 
       // Limpar a senha após salvar
@@ -311,7 +317,14 @@ export function Perfil() {
                 value={formData.departamento}
                 onChange={handleChange}
                 disabled={user?.role === 'Usuário'}
+                list="departamentos-list-perfil"
+                placeholder="Ex: URGA"
               />
+              <datalist id="departamentos-list-perfil">
+                {UNIDADES_POLICIAIS.map(dept => (
+                  <option key={dept} value={dept} />
+                ))}
+              </datalist>
             </div>
 
             <div className="input-group">

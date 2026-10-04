@@ -106,10 +106,10 @@ export function SolicitacaoApoio() {
       const payload = {
         departamento: formData.departamento,
         operacao: formData.operacao,
-        data_operacao: formData.data_operacao,
-        numero_processo: formData.numero_processo,
+        data_operacao: formData.data_operacao.trim() || undefined,
+        numero_processo: formData.numero_processo.trim() || undefined,
         medida_cautelar: formData.medida_cautelar,
-        numero_cautelar: formData.numero_cautelar,
+        numero_cautelar: formData.numero_cautelar.trim() || undefined,
         descricao_operacao: formData.descricao_operacao,
         valor_estimado: Number(formData.valor_estimado.replace(/\D/g, '')) / 100,
         resultados,
@@ -118,7 +118,7 @@ export function SolicitacaoApoio() {
 
       await formsService.createForm(payload);
       alert('Formulário cadastrado com sucesso!');
-      navigate('/dashboard');
+      navigate('/apoios');
     } catch (err: any) {
       if (err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
         setError('Erro de conexão. A API pode estar offline.');
@@ -134,7 +134,7 @@ export function SolicitacaoApoio() {
     <div className="page-container">
       <div className="page-glass-card">
         <div className="apoio-header">
-          <button onClick={() => navigate('/dashboard')} className="back-btn">
+          <button onClick={() => navigate('/apoios')} className="back-btn">
             <ArrowLeft size={20} /> Voltar
           </button>
           <div className="header-title" style={{ flex: 1, justifyContent: 'center' }}>
@@ -184,7 +184,6 @@ export function SolicitacaoApoio() {
                   name="data_operacao"
                   value={formData.data_operacao}
                   onChange={handleInputChange}
-                  required
                   placeholder="DD/MM/AAAA"
                   maxLength={10}
                 />
@@ -221,7 +220,7 @@ export function SolicitacaoApoio() {
 
             <div className="input-group">
               <label>Nº do Processo</label>
-              <input type="text" name="numero_processo" value={formData.numero_processo} onChange={handleInputChange} required placeholder="Ex: 1234567-89.2026.8.00.0000" maxLength={25} />
+              <input type="text" name="numero_processo" value={formData.numero_processo} onChange={handleInputChange} placeholder="Ex: 1234567-89.2026.8.00.0000" maxLength={25} />
             </div>
 
             <div className="input-group">
@@ -237,7 +236,7 @@ export function SolicitacaoApoio() {
 
             <div className="input-group">
               <label>Nº Cautelar</label>
-              <input type="text" name="numero_cautelar" value={formData.numero_cautelar} onChange={handleInputChange} required placeholder="Ex: 1234567-89.2026.8.00.0000" maxLength={25} />
+              <input type="text" name="numero_cautelar" value={formData.numero_cautelar} onChange={handleInputChange} placeholder="Ex: 1234567-89.2026.8.00.0000" maxLength={25} />
             </div>
 
             <div className="input-group">

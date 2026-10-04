@@ -57,7 +57,7 @@ export function Documentos() {
 
   const documents: DocumentInfo[] = [
     { title: 'Cartilha URGA', filename: 'Cartilha URGA.pdf', date: '2025' },
-    { title: 'Destinação de Ativos', filename: 'Destinação de Ativos.pdf', date: '2024' },
+    { title: 'Destinação de Ativos', filename: 'Destinacao de Ativos.pdf', date: '2024' },
     { title: 'Manual de Fluxos', filename: 'Manual de fluxos URGA.pdf', date: 'Atualizado' },
     { title: 'Portaria 37-2024', filename: 'Portaria 37-2024-gdgpcrn.pdf', date: '2024' }
   ];

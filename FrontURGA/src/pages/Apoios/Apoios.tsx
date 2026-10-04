@@ -4,6 +4,7 @@ import { formsService, type GetFormsParams } from '../../services/forms';
 import type { Form } from '../../types';
 import { FileSearch, PlusCircle } from 'lucide-react';
 import { UNIDADES_POLICIAIS } from '../../constants/unidades';
+import { useAuth } from '../../contexts/AuthContext';
 
 import { AgendaCalendar } from './AgendaCalendar';
 
@@ -17,6 +18,7 @@ export function Apoios() {
   const [departamento, setDepartamento] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
   const navigate = useNavigate();
   const limit = 10;
@@ -131,28 +133,32 @@ export function Apoios() {
           ))}
         </div>
 
-        <div>
-          <select
-            value={departamento}
-            onChange={(e) => { setDepartamento(e.target.value); setPage(1); }}
-            style={{
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: '1px solid #e4e4e7',
-              fontSize: '14px',
-              outline: 'none',
-              width: '250px',
-              background: '#ffffff',
-              color: '#09090b',
-              cursor: 'pointer'
-            }}
-          >
-            <option value="">Todos os Departamentos</option>
-            {UNIDADES_POLICIAIS.map(dept => (
-              <option key={dept} value={dept}>{dept}</option>
-            ))}
-          </select>
-        </div>
+        {user?.role !== 'Usuário' && (
+          <div>
+            <input
+              type="text"
+              list="filter-departamentos-list-apoios"
+              value={departamento}
+              onChange={(e) => { setDepartamento(e.target.value); setPage(1); }}
+              placeholder="Todos os Departamentos"
+              style={{
+                padding: '10px 16px',
+                borderRadius: '8px',
+                border: '1px solid #e4e4e7',
+                fontSize: '14px',
+                outline: 'none',
+                width: '250px',
+                background: '#ffffff',
+                color: '#09090b'
+              }}
+            />
+            <datalist id="filter-departamentos-list-apoios">
+              {UNIDADES_POLICIAIS.map(dept => (
+                <option key={dept} value={dept} />
+              ))}
+            </datalist>
+          </div>
+        )}
       </div>
 
       <div>
@@ -215,7 +221,7 @@ export function Apoios() {
                       {form.status ? form.status : activeTab}
                     </span>
                     <div style={{ fontSize: '13px', color: '#71717a', fontWeight: '500' }}>
-                      Data: {form.data_operacao}
+                      Data: {form.data_operacao || "Não informada"}
                     </div>
                   </div>
                 </div>

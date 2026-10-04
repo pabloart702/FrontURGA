@@ -204,7 +204,13 @@ export function VisualizarPedido() {
             </div>
             <div className="vp-info-group">
               <label>Data da Operação</label>
-              <p>{form.data_operacao}</p>
+              <p style={{
+                color: form.data_operacao ? 'inherit' : '#d97706',
+                fontStyle: form.data_operacao ? 'normal' : 'italic',
+                fontWeight: form.data_operacao ? 'normal' : '500'
+              }}>
+                {form.data_operacao || 'data da operação não informada'}
+              </p>
             </div>
           </div>
 
@@ -212,11 +218,11 @@ export function VisualizarPedido() {
             <h3>Dados Jurídicos</h3>
             <div className="vp-info-group">
               <label>Número do Processo</label>
-              <p>{form.numero_processo}</p>
+              <p>{form.numero_processo || 'Não informado'}</p>
             </div>
             <div className="vp-info-group">
               <label>Número Cautelar</label>
-              <p>{form.numero_cautelar}</p>
+              <p>{form.numero_cautelar || 'Não informado'}</p>
             </div>
             <div className="vp-info-group">
               <label>Medida Cautelar</label>

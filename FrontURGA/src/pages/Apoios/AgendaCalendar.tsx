@@ -30,12 +30,15 @@ export function AgendaCalendar({ forms }: AgendaCalendarProps) {
 
   const getFormsForDate = (date: number) => {
     return forms.filter(f => {
-      if (!f.data_operacao) return false;
+      // Se não houver data da operação, utiliza a data em que o pedido foi solicitado
+      const targetDate = f.data_operacao || f.createdAt;
+      if (!targetDate) return false;
+
       let d, m, y;
-      if (f.data_operacao.includes('/')) {
-        [d, m, y] = f.data_operacao.split('/');
-      } else if (f.data_operacao.includes('-')) {
-        const parts = f.data_operacao.split('T')[0].split('-');
+      if (targetDate.includes('/')) {
+        [d, m, y] = targetDate.split('/');
+      } else if (targetDate.includes('-')) {
+        const parts = targetDate.split('T')[0].split('-');
         if (parts[0].length === 4) {
           [y, m, d] = parts;
         } else {
@@ -153,7 +156,7 @@ export function AgendaCalendar({ forms }: AgendaCalendarProps) {
                       fontWeight: '600',
                       boxSizing: 'border-box'
                     }}
-                    title={form.operacao}
+                    title={!form.data_operacao ? `${form.operacao} (Data da operação não informada - Exibido na data da solicitação)` : form.operacao}
                   >
                     {form.operacao}
                   </div>

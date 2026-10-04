@@ -54,7 +54,7 @@ export function UsuariosList() {
     setPage(1);
   };
 
-  const handleDeptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleDeptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDepartamento(e.target.value);
     setPage(1);
   };
@@ -74,12 +74,19 @@ export function UsuariosList() {
       <div className="usuarios-filters">
         <div className="filter-group">
           <Filter size={18} className="usuarios-icon" />
-          <select value={departamento} onChange={handleDeptChange} className="filter-select">
-            <option value="">Todos os Departamentos</option>
+          <input
+            type="text"
+            list="filter-departamentos-list-usuarios"
+            value={departamento}
+            onChange={handleDeptChange}
+            className="filter-select"
+            placeholder="Todos os Departamentos"
+          />
+          <datalist id="filter-departamentos-list-usuarios">
             {departamentos.map(dept => (
-              <option key={dept} value={dept}>{dept}</option>
+              <option key={dept} value={dept} />
             ))}
-          </select>
+          </datalist>
         </div>
 
         <div className="search-group">
@@ -134,8 +141,8 @@ export function UsuariosList() {
                   </div>
 
                   <div className="usuario-card-footer">
-                    <span className={`status-badge ${user.status?.toLowerCase() === 'ativo' ? 'status-active' : 'status-inactive'}`}>
-                      {user.status || 'ATIVO'}
+                    <span className={`status-badge ${user.status === 'Ativo' ? 'status-active' : 'status-inactive'}`}>
+                      {user.status || 'Ativo'}
                     </span>
                   </div>
                 </div>
