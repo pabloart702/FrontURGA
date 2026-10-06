@@ -90,7 +90,7 @@ export function Dashboard() {
             <FileSearch size={28} />
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#71717a', fontWeight: '500' }}>Apoios Solicitados</p>
+            <p style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#71717a', fontWeight: '500' }}>Apoios solicitados</p>
             <h3 style={{ margin: 0, fontSize: '28px', fontWeight: '700', color: '#09090b' }}>{data.apoiosSolicitados}</h3>
           </div>
         </div>
@@ -101,7 +101,7 @@ export function Dashboard() {
             <FileCheck size={28} />
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#71717a', fontWeight: '500' }}>Apoios Prestados</p>
+            <p style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#71717a', fontWeight: '500' }}>Apoios prestados</p>
             <h3 style={{ margin: 0, fontSize: '28px', fontWeight: '700', color: '#09090b' }}>{data.apoiosPrestados}</h3>
           </div>
         </div>
@@ -112,7 +112,7 @@ export function Dashboard() {
             <DollarSign size={28} />
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#71717a', fontWeight: '500' }}>Valor Total Estimado</p>
+            <p style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#71717a', fontWeight: '500' }}>Valor total estimado</p>
             <h3 style={{ margin: 0, fontSize: '24px', fontWeight: '700', color: '#09090b' }}>{formatCurrency(data.totalValorEstimado)}</h3>
           </div>
         </div>
@@ -123,7 +123,7 @@ export function Dashboard() {
 
         {/* Gráfico 1: Delegacias */}
         <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7', minWidth: 0 }}>
-          <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Top Delegacias Solicitantes</h3>
+          <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Ranking de unidades por solicitações</h3>
           <div style={{ height: '300px' }}>
             {data.delegaciasMaisSolicitam.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -143,7 +143,7 @@ export function Dashboard() {
 
         {/* Gráfico 2: Tipos Apreendidos */}
         <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7', minWidth: 0 }}>
-          <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Tipos Mais Apreendidos</h3>
+          <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Tipos de bens mais apreendidos</h3>
           <div style={{ height: '300px' }}>
             {data.tiposMaisApreendidos.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -163,7 +163,7 @@ export function Dashboard() {
 
         {/* Gráfico 3: Resultados Mais Comuns */}
         <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e4e4e7', gridColumn: '1 / -1', minWidth: 0 }}>
-          <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Resultados Mais Comuns</h3>
+          <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '600', color: '#09090b' }}>Principais resultados de operações</h3>
           <div style={{ height: '300px' }}>
             {data.resultadosMaisComuns.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">

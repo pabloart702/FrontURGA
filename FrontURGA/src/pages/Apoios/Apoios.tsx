@@ -17,6 +17,7 @@ export function Apoios() {
   const [activeTab, setActiveTab] = useState<TabStatus>(initialTab);
   const [departamento, setDepartamento] = useState('');
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
@@ -53,6 +54,7 @@ export function Apoios() {
       const data = await formsService.getForms(params);
       if (Array.isArray(data)) {
         setForms(data);
+        setTotalPages(1);
       } else if (data && typeof data === 'object') {
         const formsArray = (data as any).forms || (data as any).data || (data as any).resultados;
         if (Array.isArray(formsArray)) {
@@ -60,8 +62,10 @@ export function Apoios() {
         } else {
           setForms([]);
         }
+        setTotalPages((data as any).totalPages || 1);
       } else {
         setForms([]);
+        setTotalPages(1);
       }
     } catch (err) {
       console.error('Erro ao carregar os formulários', err);
@@ -234,7 +238,7 @@ export function Apoios() {
           </div>
         )}
 
-        {activeTab !== 'agenda' && (forms.length > 0 || page > 1) && (
+        {activeTab !== 'agenda' && totalPages > 1 && (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '32px', gap: '16px' }}>
             <button
               disabled={page === 1}
@@ -261,19 +265,19 @@ export function Apoios() {
               padding: '6px 16px',
               borderRadius: '20px'
             }}>
-              Página {page}
+              Página {page} de {totalPages}
             </div>
 
             <button
-              disabled={forms.length < limit}
+              disabled={page === totalPages}
               onClick={() => setPage(p => p + 1)}
               style={{
                 padding: '8px 16px',
                 borderRadius: '6px',
                 border: '1px solid #e4e4e7',
-                background: forms.length < limit ? '#f4f4f5' : '#ffffff',
-                color: forms.length < limit ? '#a1a1aa' : '#09090b',
-                cursor: forms.length < limit ? 'not-allowed' : 'pointer',
+                background: page === totalPages ? '#f4f4f5' : '#ffffff',
+                color: page === totalPages ? '#a1a1aa' : '#09090b',
+                cursor: page === totalPages ? 'not-allowed' : 'pointer',
                 fontWeight: '500',
                 transition: 'all 0.2s'
               }}

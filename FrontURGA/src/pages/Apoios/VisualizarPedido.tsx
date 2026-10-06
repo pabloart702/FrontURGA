@@ -5,9 +5,11 @@ import { formsService } from '../../services/forms';
 import type { Form } from '../../types';
 import { ArrowLeft, FileText, CheckCircle, Printer, AlertCircle } from 'lucide-react';
 import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 import './VisualizarPedido.css';
 
 export function VisualizarPedido() {
+  const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -164,30 +166,49 @@ export function VisualizarPedido() {
               <Printer size={18} /> Relatório da Solicitação
             </button>
 
-            <select
-              value={form.status || 'pendente'}
-              onChange={handleStatusChange}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '20px',
-                fontSize: '14px',
-                fontWeight: '600',
-                border: `1px solid ${form.status === 'pendente' ? '#fca5a5' : form.status === 'ciente' ? '#fde047' : '#86efac'}`,
-                background: form.status === 'pendente' ? '#fee2e2' : form.status === 'ciente' ? '#fef9c3' : '#dcfce7',
-                color: form.status === 'pendente' ? '#dc2626' : form.status === 'ciente' ? '#ca8a04' : '#16a34a',
-                cursor: 'pointer',
-                outline: 'none',
-                textTransform: 'uppercase',
-                appearance: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                textAlign: 'center'
-              }}
-            >
-              <option value="pendente" style={{ color: '#dc2626', fontWeight: '600', background: '#ffffff' }}>PENDENTE</option>
-              <option value="ciente" style={{ color: '#ca8a04', fontWeight: '600', background: '#ffffff' }}>CIENTE</option>
-              <option value="realizado" style={{ color: '#16a34a', fontWeight: '600', background: '#ffffff' }}>REALIZADO</option>
-            </select>
+            {user?.role !== 'Usuário' ? (
+              <select
+                value={form.status || 'pendente'}
+                onChange={handleStatusChange}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  border: `1px solid ${form.status === 'pendente' ? '#fca5a5' : form.status === 'ciente' ? '#fde047' : '#86efac'}`,
+                  background: form.status === 'pendente' ? '#fee2e2' : form.status === 'ciente' ? '#fef9c3' : '#dcfce7',
+                  color: form.status === 'pendente' ? '#dc2626' : form.status === 'ciente' ? '#ca8a04' : '#16a34a',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  textTransform: 'uppercase',
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'none',
+                  textAlign: 'center'
+                }}
+              >
+                <option value="pendente" style={{ color: '#dc2626', fontWeight: '600', background: '#ffffff' }}>PENDENTE</option>
+                <option value="ciente" style={{ color: '#ca8a04', fontWeight: '600', background: '#ffffff' }}>CIENTE</option>
+                <option value="realizado" style={{ color: '#16a34a', fontWeight: '600', background: '#ffffff' }}>REALIZADO</option>
+              </select>
+            ) : (
+              <span
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  border: `1px solid ${form.status === 'pendente' ? '#fca5a5' : form.status === 'ciente' ? '#fde047' : '#86efac'}`,
+                  background: form.status === 'pendente' ? '#fee2e2' : form.status === 'ciente' ? '#fef9c3' : '#dcfce7',
+                  color: form.status === 'pendente' ? '#dc2626' : form.status === 'ciente' ? '#ca8a04' : '#16a34a',
+                  textTransform: 'uppercase',
+                  textAlign: 'center'
+                }}
+              >
+                {form.status || 'pendente'}
+              </span>
+            )}
           </div>
         </div>
 

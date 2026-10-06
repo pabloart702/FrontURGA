@@ -1,25 +1,23 @@
 import { removerAcentos } from '../utils/sanitizers';
 export const BENS = [
-    "Aeronave",
-    "Arma",
-    "Arte",
-    "Bicicleta",
-    "Caminhão",
     "Carro",
-    "Celular",
-    "Computador",
-    "Criptoativos",
-    "Dinheiro",
-    "Dólar",
-    "Embarcação",
-    "Euro",
+    "Moto",
     "Imóvel",
+    "Caminhão",
+    "Ônibus",
+    "Embarcação",
+    "Aeronave",
+    "Bicicleta",
+    "Dinheiro",
+    "Computador",
+    "Celular",
     "Imóvel Rural",
     "Joias",
-    "Moto",
     "Móveis",
-    "Ônibus",
-    "Semoventes"
+    "Arte",
+    "Criptoativos",
+    "Semoventes",
+    "Arma"
 ]
 
 export const BENS_VALIDOS = BENS.map(item => removerAcentos(item.trim().toUpperCase()));
