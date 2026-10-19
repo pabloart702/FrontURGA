@@ -123,8 +123,7 @@ export function Login() {
           <div className="urga-brand">
             <h1 className="urga-title">URGA</h1>
           </div>
-          <h2 className="urga-subtitle">ADMINISTRAÇÃO INTEGRADA<br />DE BENS E VALORES</h2>
-          <p className="urga-description">Controle, Custódia e Destinação</p>
+          <h2 className="urga-subtitle">Unidade de Recuperação e <br /> Gestão de Ativos</h2>
         </div>
 
         <div className="left-footer">

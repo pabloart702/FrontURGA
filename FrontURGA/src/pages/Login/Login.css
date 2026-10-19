@@ -18,6 +18,7 @@
   padding: 80px;
   color: white;
   z-index: 1;
+  overflow: hidden;
 }
 
 .dotted-pattern-overlay {
@@ -35,7 +36,7 @@
 .wireframe-safe-bg {
   position: absolute;
   top: 40%;
-  left: 50%;
+  left: 70%;
   transform: translate(-50%, -50%) scale(1.2);
 
   width: 400px;

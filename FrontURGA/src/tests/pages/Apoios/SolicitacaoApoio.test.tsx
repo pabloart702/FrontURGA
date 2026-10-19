@@ -67,7 +67,7 @@ describe('SolicitacaoApoio Component', () => {
     const valorInput = container.querySelector('input[name="valor_estimado"]') as HTMLInputElement;
     const descInput = container.querySelector('textarea[name="descricao_operacao"]') as HTMLTextAreaElement;
 
-    fireEvent.change(deptInput, { target: { value: 'Delegacia-Geral da Polícia Civil (DEGEPOLI)' } });
+    fireEvent.change(deptInput, { target: { value: 'DEGEPOL' } });
     fireEvent.change(opInput, { target: { value: 'Operação Teste' } });
     fireEvent.change(dataInput, { target: { value: '12122026' } }); 
     fireEvent.change(procInput, { target: { value: '123' } });
@@ -86,7 +86,7 @@ describe('SolicitacaoApoio Component', () => {
     await waitFor(() => {
       expect(formsService.createForm).toHaveBeenCalledTimes(1);
       expect(formsService.createForm).toHaveBeenCalledWith(expect.objectContaining({
-        departamento: 'Delegacia-Geral da Polícia Civil (DEGEPOLI)',
+        departamento: 'DEGEPOL',
         operacao: 'Operação Teste',
         data_operacao: '12/12/2026',
         valor_estimado: 10,
@@ -113,7 +113,7 @@ describe('SolicitacaoApoio Component', () => {
       </MemoryRouter>
     );
 
-    fireEvent.change(container.querySelector('input[name="departamento"]')!, { target: { value: 'Delegacia-Geral da Polícia Civil (DEGEPOLI)' } });
+    fireEvent.change(container.querySelector('input[name="departamento"]')!, { target: { value: 'DEGEPOL' } });
     fireEvent.change(container.querySelector('input[name="operacao"]')!, { target: { value: 'Operação Teste' } });
     fireEvent.change(container.querySelector('input[name="data_operacao"]')!, { target: { value: '12/12/2026' } });
     fireEvent.change(container.querySelector('input[name="numero_processo"]')!, { target: { value: '123' } });
