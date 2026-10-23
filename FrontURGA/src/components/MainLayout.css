@@ -202,11 +202,17 @@
 
   .main-content {
     margin-left: 0;
-    padding: 20px;
+    padding: 16px 12px;
   }
 
   .sidebar-open .sidebar-overlay {
     display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 12px 8px;
   }
 }
 
