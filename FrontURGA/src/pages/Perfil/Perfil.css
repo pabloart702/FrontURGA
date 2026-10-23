@@ -1,18 +1,32 @@
-
+.perfil-card {
+  background: #ffffff;
+  padding: 36px 40px;
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
 
 .perfil-header {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  justify-content: center;
+  margin-bottom: 28px;
   border-bottom: 1px solid #f4f4f5;
-  padding-bottom: 24px;
+  padding-bottom: 20px;
+  min-height: 48px;
 }
 
 .header-title {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
+  padding: 0 44px;
 }
 
 .usuario-avatar-placeholder {
@@ -125,51 +139,56 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-
-.form-section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #09090b;
-  margin-bottom: 8px;
-  border-bottom: 2px solid #f4f4f5;
-  padding-bottom: 8px;
+  width: 100%;
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  width: 100%;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
 }
 
 .input-group label {
   font-size: 14px;
   font-weight: 600;
   color: #09090b;
+  text-align: left;
 }
 
 .input-group input,
 .input-group select {
   width: 100%;
-  padding: 12px 16px;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 11px 14px;
   background: #ffffff;
   border: 1px solid #e4e4e7;
   border-radius: 8px;
   color: #09090b;
   font-size: 15px;
   outline: none;
-  transition: all 0.2s ease;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-group select {
+  cursor: pointer;
+  background-color: #ffffff;
 }
 
 .input-group input:focus,
 .input-group select:focus {
   border-color: #09090b;
+  box-shadow: 0 0 0 1px #09090b;
 }
 
 .input-group input:disabled {
@@ -178,25 +197,33 @@
   cursor: not-allowed;
 }
 
+.perfil-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
 .submit-btn {
   background: #09090b;
   color: #ffffff;
   border: none;
-  padding: 16px 32px;
+  padding: 14px 28px;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 20px -5px rgba(9, 9, 11, 0.2);
+  transition: all 0.2s ease;
 }
 
 .submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 25px -5px rgba(9, 9, 11, 0.3);
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 .submit-btn:disabled {
@@ -205,40 +232,116 @@
 }
 
 .back-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
   background: transparent;
-  border: none;
-  color: #71717a;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  color: #52525b;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 500;
-  transition: color 0.2s;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
 }
 
 .back-btn:hover {
+  background-color: #f4f4f5;
   color: #09090b;
+  border-color: #d4d4d8;
 }
 
 .btn-deactivate {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background: #fef2f2;
   color: #ef4444;
   border: 1px solid #fca5a5;
-  padding: 10px 16px;
+  padding: 13px 22px;
   border-radius: 8px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .btn-deactivate:hover:not(:disabled) {
   background: #fee2e2;
+  border-color: #f87171;
 }
 
 .btn-deactivate:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-deactivate.btn-activate {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+.btn-deactivate.btn-activate:hover:not(:disabled) {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+}
+
+/* Responsividade Mobile - mesmo padrão de SolicitacaoApoio */
+@media (max-width: 768px) {
+  .perfil-card {
+    padding: 20px 16px;
+    border-radius: 10px;
+    margin: 0;
+    width: 100%;
+  }
+
+  .perfil-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+
+  .header-title h2 {
+    font-size: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .perfil-form-actions {
+    margin-top: 20px;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .btn-deactivate,
+  .submit-btn {
+    width: 100%;
+    padding: 14px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .perfil-card {
+    padding: 16px 12px;
+    border-radius: 8px;
+  }
+
+  .header-title h2 {
+    font-size: 18px;
+  }
+
+  .header-title {
+    padding: 0 40px;
+  }
 }

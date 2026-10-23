@@ -141,57 +141,34 @@ export function UsuarioEdit() {
   };
 
   if (loading) {
-    return <div className="page-container"><p>Carregando...</p></div>;
+    return <div className="perfil-card" style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#71717a', margin: 0 }}>Carregando...</p></div>;
   }
 
   return (
-    <div className="page-container">
-      <div className="page-glass-card">
-        <div className="perfil-header">
-          <button type="button" className="back-btn" onClick={() => navigate('/usuarios')}>
-            <ArrowLeft size={20} /> Voltar
-          </button>
-          <div className="header-title" style={{ flex: 1, justifyContent: 'center' }}>
-            <div className="profile-picture-container">
-              {formData.fotoPerfil ? (
-                <SecureImage
-                  src={`/uploads/profiles/${formData.fotoPerfil}`}
-                  alt="Profile"
-                  className="profile-picture"
-                  zoomable={true}
-                  fallback={<div className="usuario-avatar-placeholder">{formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}</div>}
-                />
-              ) : (
-                <div className="usuario-avatar-placeholder">
-                  {formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}
-                </div>
-              )}
-            </div>
-            <h2>Editar Usuário</h2>
+    <div className="perfil-card">
+      <div className="perfil-header">
+        <button type="button" className="back-btn" onClick={() => navigate('/usuarios')} title="Voltar" aria-label="Voltar">
+          <ArrowLeft size={20} />
+        </button>
+        <div className="header-title">
+          <div className="profile-picture-container">
+            {formData.fotoPerfil ? (
+              <SecureImage
+                src={`/uploads/profiles/${formData.fotoPerfil}`}
+                alt="Profile"
+                className="profile-picture"
+                zoomable={true}
+                fallback={<div className="usuario-avatar-placeholder">{formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}</div>}
+              />
+            ) : (
+              <div className="usuario-avatar-placeholder">
+                {formData.nome ? formData.nome.charAt(0).toUpperCase() : <UserIcon size={24} className="logo-icon" />}
+              </div>
+            )}
           </div>
-          {formData.status === 'Inativo' ? (
-            <button
-              type="button"
-              className="btn-deactivate"
-              onClick={handleActivate}
-              disabled={saving}
-              style={{ backgroundColor: '#10b981', color: 'white', border: 'none' }}
-            >
-              <UserCheck size={18} />
-              Ativar Usuário
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn-deactivate"
-              onClick={handleDeactivate}
-              disabled={saving}
-            >
-              <Trash2 size={18} />
-              Desativar Usuário
-            </button>
-          )}
+          <h2>Editar Usuário</h2>
         </div>
+      </div>
 
         {message.text && (
           <div className={`message-banner ${message.type}`}>
@@ -257,8 +234,8 @@ export function UsuarioEdit() {
                 placeholder="Ex: URGA"
               />
               <datalist id="departamentos-list-usuario">
-                {departamentos.map(dept => (
-                  <option key={dept} value={dept} />
+                {departamentos.map((dept, idx) => (
+                  <option key={`${dept}-${idx}`} value={dept} />
                 ))}
               </datalist>
             </div>
@@ -303,14 +280,35 @@ export function UsuarioEdit() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+          <div className="perfil-form-actions">
+            {formData.status === 'Inativo' ? (
+              <button
+                type="button"
+                className="btn-deactivate btn-activate"
+                onClick={handleActivate}
+                disabled={saving}
+              >
+                <UserCheck size={18} />
+                <span>Ativar Usuário</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn-deactivate"
+                onClick={handleDeactivate}
+                disabled={saving}
+              >
+                <Trash2 size={18} />
+                <span>Desativar Usuário</span>
+              </button>
+            )}
+
             <button type="submit" className="submit-btn" disabled={saving}>
               <Save size={20} />
-              {saving ? 'Salvando...' : 'Salvar Alterações'}
+              <span>{saving ? 'Salvando...' : 'Salvar Alterações'}</span>
             </button>
           </div>
         </form>
-      </div>
     </div>
   );
 }

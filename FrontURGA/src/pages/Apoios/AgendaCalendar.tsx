@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Form } from '../../types';
 import { useNavigate } from 'react-router-dom';
+import './AgendaCalendar.css';
 
 interface AgendaCalendarProps {
   forms: Form[];
@@ -53,88 +54,59 @@ export function AgendaCalendar({ forms }: AgendaCalendarProps) {
 
   const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  const weekDaysShort = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
   return (
-    <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e4e4e7', overflow: 'hidden' }}>
-      <div style={{ padding: '20px', borderBottom: '1px solid #e4e4e7', background: '#fafafa', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="calendar-card">
+      <div className="calendar-header-nav">
         <button
           onClick={prevMonth}
-          style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #e4e4e7', background: '#fff', cursor: 'pointer', fontWeight: '500' }}
+          className="calendar-nav-btn"
         >
           Anterior
         </button>
-        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: '#09090b', textTransform: 'capitalize' }}>
+        <h3 className="calendar-month-title">
           {monthNames[currentMonth]} {currentYear}
         </h3>
         <button
           onClick={nextMonth}
-          style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #e4e4e7', background: '#fff', cursor: 'pointer', fontWeight: '500' }}
+          className="calendar-nav-btn"
         >
           Próximo
         </button>
       </div>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
-        gridTemplateRows: 'auto',
-        gridAutoRows: 'minmax(120px, auto)',
-        width: '100%',
-        boxSizing: 'border-box'
-      }}>
+      <div className="calendar-grid">
         {/* Cabeçalho dos Dias da Semana */}
         {weekDays.map((day, idx) => (
-          <div key={day} style={{
-            padding: '12px', textAlign: 'center', fontWeight: '600', fontSize: '13px', color: '#71717a',
-            borderRight: idx === 6 ? 'none' : '1px solid #e4e4e7',
-            borderBottom: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxSizing: 'border-box'
-          }}>
-            {day}
+          <div
+            key={day}
+            className="calendar-weekday"
+          >
+            <span className="weekday-full">{day}</span>
+            <span className="weekday-short">{weekDaysShort[idx]}</span>
           </div>
         ))}
 
         {/* Espaços vazios no início do mês */}
         {blanks.map(blank => (
-          <div key={`blank-${blank}`} style={{
-            background: '#fafafa',
-            borderRight: (blank % 7 === 6) ? 'none' : '1px solid #e4e4e7',
-            borderBottom: '1px solid #e4e4e7',
-            boxSizing: 'border-box'
-          }} />
+          <div key={`blank-${blank}`} className="calendar-blank-cell" />
         ))}
 
         {/* Dias do mês */}
         {days.map(day => {
           const isToday = day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
           const dayForms = getFormsForDate(day);
-          const currentWeekdayIndex = (firstDayOfMonth + day - 1) % 7;
 
           return (
-            <div key={day} style={{
-              padding: '8px',
-              borderRight: currentWeekdayIndex === 6 ? 'none' : '1px solid #e4e4e7',
-              borderBottom: '1px solid #e4e4e7',
-              background: isToday ? '#e0f2fe' : '#ffffff',
-              position: 'relative',
-              boxSizing: 'border-box'
-            }}>
-              <div style={{
-                fontWeight: isToday ? '700' : '500',
-                color: isToday ? '#0284c7' : '#3f3f46',
-                marginBottom: '8px',
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '24px',
-                height: '24px',
-                borderRadius: '50%',
-                background: isToday ? '#bae6fd' : 'transparent'
-              }}>
+            <div
+              key={day}
+              className={`calendar-day-cell ${isToday ? 'today' : ''}`}
+            >
+              <div className={`calendar-day-number ${isToday ? 'today' : ''}`}>
                 {day}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div className="calendar-events-container">
                 {dayForms.map(form => (
                   <div
                     key={form.id || Math.random()}
@@ -142,20 +114,7 @@ export function AgendaCalendar({ forms }: AgendaCalendarProps) {
                       e.stopPropagation();
                       navigate(`/visualizar-pedido/${form.id}`, { state: { returnTab: 'agenda' } });
                     }}
-                    style={{
-                      fontSize: '11px',
-                      background: form.status === 'pendente' ? '#fee2e2' : form.status === 'ciente' ? '#fef9c3' : '#dcfce7',
-                      color: form.status === 'pendente' ? '#991b1b' : form.status === 'ciente' ? '#854d0e' : '#166534',
-                      border: `1px solid ${form.status === 'pendente' ? '#fca5a5' : form.status === 'ciente' ? '#fde047' : '#86efac'}`,
-                      padding: '4px 6px',
-                      borderRadius: '4px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      cursor: 'pointer',
-                      fontWeight: '600',
-                      boxSizing: 'border-box'
-                    }}
+                    className={`calendar-event ${form.status || 'pendente'}`}
                     title={!form.data_operacao ? `${form.operacao} (Data da operação não informada - Exibido na data da solicitação)` : form.operacao}
                   >
                     {form.operacao}

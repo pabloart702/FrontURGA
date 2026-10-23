@@ -7,6 +7,7 @@ import { UNIDADES_POLICIAIS } from '../../constants/unidades';
 import { useAuth } from '../../contexts/AuthContext';
 
 import { AgendaCalendar } from './AgendaCalendar';
+import './Apoios.css';
 
 type TabStatus = 'agenda' | 'pendente' | 'ciente' | 'realizado';
 
@@ -80,85 +81,50 @@ export function Apoios() {
   }, [loadForms]);
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', position: 'relative' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '24px', paddingBottom: '20px', borderBottom: '1px solid #e4e4e7' }}>
-        <div>
-          <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#09090b', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <FileSearch size={28} color="#09090b" />
+    <div className="apoios-page-container">
+      <div className="apoios-header">
+        <div className="apoios-header-info">
+          <h2 className="apoios-title">
+            <FileSearch size={26} color="#09090b" className="apoios-title-icon" />
             Lista de Apoios
           </h2>
-          <p style={{ color: '#71717a', fontSize: '15px', margin: 0 }}>Gerencie e visualize as solicitações de apoio realizadas.</p>
+          <p className="apoios-subtitle">Gerencie e visualize as solicitações de apoio realizadas.</p>
         </div>
 
         <button
           onClick={() => navigate('/solicitacao-apoio')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '12px 20px',
-            background: '#09090b',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: '600',
-            fontSize: '14px',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseOver={(e) => e.currentTarget.style.background = '#27272a'}
-          onMouseOut={(e) => e.currentTarget.style.background = '#09090b'}
+          className="btn-nova-solicitacao"
         >
           <PlusCircle size={18} /> Nova Solicitação
         </button>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', gap: '8px', background: '#f4f4f5', padding: '4px', borderRadius: '8px' }}>
+      <div className="apoios-controls-container">
+        <div className="apoios-tabs-container">
           {(['agenda', 'pendente', 'ciente', 'realizado'] as TabStatus[]).map((tab) => (
             <button
               key={tab}
               onClick={() => { setActiveTab(tab); setPage(1); }}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: 'none',
-                background: activeTab === tab ? '#ffffff' : 'transparent',
-                color: activeTab === tab ? '#09090b' : '#71717a',
-                fontWeight: activeTab === tab ? '600' : '500',
-                cursor: 'pointer',
-                boxShadow: activeTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                transition: 'all 0.2s ease',
-                textTransform: 'capitalize'
-              }}
+              className={`apoios-tab-btn ${activeTab === tab ? 'active' : ''}`}
             >
-              {tab}s
+              {tab === 'agenda' ? 'Agendas' : `${tab}s`}
             </button>
           ))}
         </div>
 
         {user?.role !== 'Usuário' && (
-          <div>
+          <div className="apoios-filter-container">
             <input
               type="text"
               list="filter-departamentos-list-apoios"
               value={departamento}
               onChange={(e) => { setDepartamento(e.target.value); setPage(1); }}
               placeholder="Todos os Departamentos"
-              style={{
-                padding: '10px 16px',
-                borderRadius: '8px',
-                border: '1px solid #e4e4e7',
-                fontSize: '14px',
-                outline: 'none',
-                width: '250px',
-                background: '#ffffff',
-                color: '#09090b'
-              }}
+              className="apoios-dept-input"
             />
             <datalist id="filter-departamentos-list-apoios">
-              {UNIDADES_POLICIAIS.map(dept => (
-                <option key={dept} value={dept} />
+              {UNIDADES_POLICIAIS.map((dept, idx) => (
+                <option key={`${dept}-${idx}`} value={dept} />
               ))}
             </datalist>
           </div>
@@ -171,60 +137,32 @@ export function Apoios() {
         ) : activeTab === 'agenda' ? (
           <AgendaCalendar forms={forms} />
         ) : forms.length > 0 ? (
-          <div style={{ display: 'grid', gap: '16px' }}>
+          <div className="apoios-list-container">
             {forms.map((form) => (
               <div
                 key={form.id || Math.random()}
                 onClick={() => navigate(`/visualizar-pedido/${form.id}`, { state: { returnTab: activeTab } })}
-                style={{
-                  background: '#ffffff',
-                  padding: '24px',
-                  borderRadius: '12px',
-                  border: '1px solid #e4e4e7',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.borderColor = '#d4d4d8';
-                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.borderColor = '#e4e4e7';
-                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+                className="apoio-card"
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div className="apoio-card-content">
                   <div>
-                    <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', color: '#09090b', fontWeight: '600' }}>
+                    <h3 className="apoio-card-title">
                       {form.operacao}
                     </h3>
-                    <div style={{ display: 'flex', gap: '24px', fontSize: '14px' }}>
+                    <div className="apoio-card-details">
                       <div>
-                        <strong style={{ color: '#71717a', fontWeight: '500' }}>Departamento:</strong> <span style={{ color: '#09090b', fontWeight: '500' }}>{form.departamento}</span>
+                        <strong>Departamento:</strong> <span>{form.departamento}</span>
                       </div>
                       <div>
-                        <strong style={{ color: '#71717a', fontWeight: '500' }}>Processo:</strong> <span style={{ color: '#09090b', fontWeight: '500' }}>{form.numero_processo}</span>
+                        <strong>Processo:</strong> <span>{form.numero_processo}</span>
                       </div>
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px' }}>
-                    <span style={{ 
-                      display: 'inline-block',
-                      padding: '4px 12px',
-                      borderRadius: '20px',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      background: form.status === 'pendente' ? '#fee2e2' : form.status === 'ciente' ? '#fef9c3' : '#dcfce7',
-                      color: form.status === 'pendente' ? '#dc2626' : form.status === 'ciente' ? '#ca8a04' : '#16a34a',
-                      border: `1px solid ${form.status === 'pendente' ? '#fca5a5' : form.status === 'ciente' ? '#fde047' : '#86efac'}`,
-                      textTransform: 'uppercase'
-                    }}>
+                  <div className="apoio-card-status-col">
+                    <span className={`apoio-status-badge ${form.status || activeTab}`}>
                       {form.status ? form.status : activeTab}
                     </span>
-                    <div style={{ fontSize: '13px', color: '#71717a', fontWeight: '500' }}>
+                    <div className="apoio-card-date">
                       Data: {form.data_operacao || "Não informada"}
                     </div>
                   </div>
@@ -233,54 +171,29 @@ export function Apoios() {
             ))}
           </div>
         ) : (
-          <div style={{ padding: '60px 40px', textAlign: 'center', background: '#ffffff', borderRadius: '12px', border: '1px dashed #d4d4d8' }}>
-            <p style={{ color: '#71717a', fontSize: '15px' }}>Nenhum apoio encontrado no momento.</p>
+          <div className="apoios-empty-state">
+            <p>Nenhum apoio encontrado no momento.</p>
           </div>
         )}
 
         {activeTab !== 'agenda' && totalPages > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '32px', gap: '16px' }}>
+          <div className="apoios-pagination">
             <button
               disabled={page === 1}
               onClick={() => setPage(p => Math.max(1, p - 1))}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: '1px solid #e4e4e7',
-                background: page === 1 ? '#f4f4f5' : '#ffffff',
-                color: page === 1 ? '#a1a1aa' : '#09090b',
-                cursor: page === 1 ? 'not-allowed' : 'pointer',
-                fontWeight: '500',
-                transition: 'all 0.2s'
-              }}
+              className="pagination-btn"
             >
               Anterior
             </button>
 
-            <div style={{
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#3f3f46',
-              background: '#f4f4f5',
-              padding: '6px 16px',
-              borderRadius: '20px'
-            }}>
-              Página {page} de {totalPages}
+            <div className="pagination-info">
+              Página <span>{page}</span> de <span>{totalPages}</span>
             </div>
 
             <button
               disabled={page === totalPages}
               onClick={() => setPage(p => p + 1)}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: '1px solid #e4e4e7',
-                background: page === totalPages ? '#f4f4f5' : '#ffffff',
-                color: page === totalPages ? '#a1a1aa' : '#09090b',
-                cursor: page === totalPages ? 'not-allowed' : 'pointer',
-                fontWeight: '500',
-                transition: 'all 0.2s'
-              }}
+              className="pagination-btn"
             >
               Próxima
             </button>

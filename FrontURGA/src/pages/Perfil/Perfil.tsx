@@ -187,14 +187,13 @@ export function Perfil() {
   };
 
   if (loading) {
-    return <div className="perfil-container"><p>Carregando...</p></div>;
+    return <div className="perfil-card" style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#71717a', margin: 0 }}>Carregando...</p></div>;
   }
 
   return (
-    <div className="page-container">
-      <div className="page-glass-card">
-        <div className="perfil-header">
-          <div className="header-title">
+    <div className="perfil-card">
+      <div className="perfil-header">
+        <div className="header-title">
             <div className="profile-picture-container">
               {fotoPerfil ? (
                 <SecureImage
@@ -321,8 +320,8 @@ export function Perfil() {
                 placeholder="Ex: URGA"
               />
               <datalist id="departamentos-list-perfil">
-                {UNIDADES_POLICIAIS.map(dept => (
-                  <option key={dept} value={dept} />
+                {UNIDADES_POLICIAIS.map((dept, idx) => (
+                  <option key={`${dept}-${idx}`} value={dept} />
                 ))}
               </datalist>
             </div>
@@ -338,14 +337,13 @@ export function Perfil() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '32px' }}>
+          <div className="perfil-form-actions">
             <button type="submit" className="submit-btn" disabled={saving}>
               <Save size={20} />
               <span>{saving ? 'Salvando...' : 'Salvar Alterações'}</span>
             </button>
           </div>
         </form>
-      </div>
     </div>
   );
 }
