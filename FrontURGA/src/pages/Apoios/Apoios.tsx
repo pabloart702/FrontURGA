@@ -4,7 +4,7 @@ import { formsService, type GetFormsParams } from '../../services/forms';
 import type { Form } from '../../types';
 import { FileSearch, PlusCircle } from 'lucide-react';
 import { UNIDADES_POLICIAIS } from '../../constants/unidades';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 import { AgendaCalendar } from './AgendaCalendar';
 import './Apoios.css';

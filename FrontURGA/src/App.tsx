@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider } from './providers/AuthProvider';
+import { useAuth } from './hooks/useAuth';
 import { Login } from './pages/Login/Login';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { SolicitacaoApoio } from './pages/Apoios/SolicitacaoApoio';
@@ -10,7 +11,7 @@ import { Recuperometro } from './pages/Recuperometro/Recuperometro';
 import { Perfil } from './pages/Perfil/Perfil';
 import { UsuariosList } from './pages/Usuarios/UsuariosList';
 import { UsuarioEdit } from './pages/Usuarios/UsuarioEdit';
-import { MainLayout } from './components/MainLayout';
+import { MainLayout } from './layouts/MainLayout';
 import './index.css';
 import './App.css';
 

@@ -5,7 +5,7 @@ import { formsService } from '../../services/forms';
 import type { Form } from '../../types';
 import { ArrowLeft, FileText, CheckCircle, Printer, AlertCircle } from 'lucide-react';
 import axios from 'axios';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import './VisualizarPedido.css';
 
 export function VisualizarPedido() {

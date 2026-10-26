@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { Apoios } from '../../../pages/Apoios/Apoios';
 import { formsService } from '../../../services/forms';
-import * as AuthContext from '../../../contexts/AuthContext';
+import * as AuthContext from '../../../hooks/useAuth';
 
 vi.mock('../../../services/forms', () => ({
   formsService: {

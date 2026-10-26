@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getSafeErrorMessage } from '../../utils/errorMessages';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Shield, Eye, EyeOff } from 'lucide-react';
 import { CofreAnimado } from '../../components/CofreAnimado';

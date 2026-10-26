@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import { MainLayout } from '../../components/MainLayout';
-import * as AuthContext from '../../contexts/AuthContext';
+import { MainLayout } from '../../layouts/MainLayout';
+import * as AuthContext from '../../hooks/useAuth';
 
 describe('MainLayout Component', () => {
     it('deve renderizar a sidebar e o conteúdo', () => {

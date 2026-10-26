@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { LayoutDashboard, AlertCircle, FileCheck, FileSearch, DollarSign } from 'lucide-react';
 import { formsService } from '../../services/forms';
 import { usersService } from '../../services/users';

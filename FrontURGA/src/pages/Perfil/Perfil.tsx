@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { usersService } from '../../services/users';
 import { User as UserIcon, Save, Camera, Trash2 } from 'lucide-react';
 import { SecureImage } from '../../components/SecureImage';

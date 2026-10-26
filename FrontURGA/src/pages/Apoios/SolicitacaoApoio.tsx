@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getSafeErrorMessage } from '../../utils/errorMessages';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { formsService } from '../../services/forms';
 import { FileText, Save, ArrowLeft, Calendar } from 'lucide-react';
 import { BENS } from '../../constants/bens';

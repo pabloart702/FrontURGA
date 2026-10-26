@@ -1,24 +1,8 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { authService } from '../services/auth';
 import type { User } from '../types';
-
-export interface UserPayload {
-  id?: string;
-  role: string;
-  departamento: string;
-  nome?: string;
-}
-
-interface AuthContextType {
-  user: UserPayload | null;
-  login: (email: string, pass: string) => Promise<void>;
-  logout: () => Promise<void>;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext, type UserPayload } from './authContext';
 
 function mapUserToPayload(serverUser: User): UserPayload {
   return {
@@ -79,11 +63,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};

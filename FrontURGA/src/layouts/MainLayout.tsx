@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, FileSearch, Activity, LogOut, User as UserIcon, Users, ChevronLeft, Menu } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import './MainLayout.css';
 
 interface MainLayoutProps {
