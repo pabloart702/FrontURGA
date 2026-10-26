@@ -1,8 +1,8 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, useNavigate } from 'react-router-dom';
-import { Login } from '../../../pages/Login/Login';
 import * as AuthContext from '../../../hooks/useAuth';
+import { LoginContainer } from '../components/LoginContainer';
 
 // Mock do react-router-dom
 vi.mock('react-router-dom', async () => {
@@ -13,41 +13,62 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-describe('Login Component', () => {
+describe('LoginContainer', () => {
   const mockLogin = vi.fn();
   const mockNavigate = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     vi.mocked(useNavigate).mockReturnValue(mockNavigate);
     vi.spyOn(AuthContext, 'useAuth').mockReturnValue({
       login: mockLogin,
       user: null,
       logout: vi.fn(),
       isAuthenticated: false,
-      isLoading: false
+      isLoading: false,
     });
   });
 
-  it('deve renderizar o formulário de login', () => {
+  it('deve renderizar o formulário de login e a identidade visual', () => {
     render(
       <MemoryRouter>
-        <Login />
-      </MemoryRouter>
+        <LoginContainer />
+      </MemoryRouter>,
     );
 
     expect(screen.getByPlaceholderText('Digite seu usuário (e-mail)')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Digite sua senha')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /entrar no sistema/i })).toBeInTheDocument();
+    expect(screen.getByText('URGA')).toBeInTheDocument();
   });
 
-  it('deve realizar login com sucesso e redirecionar', async () => {
+  it('deve alternar a visibilidade da senha ao clicar no botão de exibir/ocultar', () => {
+    render(
+      <MemoryRouter>
+        <LoginContainer />
+      </MemoryRouter>,
+    );
+
+    const passwordInput = screen.getByPlaceholderText('Digite sua senha');
+    expect(passwordInput).toHaveAttribute('type', 'password');
+
+    const toggleBtn = screen.getByRole('button', { name: /exibir senha/i });
+    fireEvent.click(toggleBtn);
+
+    expect(passwordInput).toHaveAttribute('type', 'text');
+
+    fireEvent.click(screen.getByRole('button', { name: /ocultar senha/i }));
+    expect(passwordInput).toHaveAttribute('type', 'password');
+  });
+
+  it('deve realizar login com sucesso e redirecionar para o dashboard', async () => {
     mockLogin.mockResolvedValueOnce(undefined);
 
     render(
       <MemoryRouter>
-        <Login />
-      </MemoryRouter>
+        <LoginContainer />
+      </MemoryRouter>,
     );
 
     const emailInput = screen.getByPlaceholderText('Digite seu usuário (e-mail)');
@@ -71,8 +92,8 @@ describe('Login Component', () => {
 
     render(
       <MemoryRouter>
-        <Login />
-      </MemoryRouter>
+        <LoginContainer />
+      </MemoryRouter>,
     );
 
     const emailInput = screen.getByPlaceholderText('Digite seu usuário (e-mail)');

@@ -53,25 +53,28 @@ describe('DocumentosContainer', () => {
     });
   });
 
-  it('deve fechar o modal e revogar o blobUrl ao clicar no botão de fechar', async () => {
+  it('deve fechar o modal e revogar o blobUrl imediatamente da memória', async () => {
     const mockBlob = new Blob(['%PDF-1.4 mock content'], { type: 'application/pdf' });
     vi.mocked(documentosApi.fetchDocumentBlob).mockResolvedValue(mockBlob);
 
     render(<DocumentosContainer />);
 
+    // Abre o documento
     fireEvent.click(screen.getByRole('button', { name: /visualizar documento cartilha urga/i }));
 
     await waitFor(() => {
       expect(screen.getByTitle('Cartilha URGA')).toBeInTheDocument();
     });
 
+    // Fecha o modal
     const closeBtn = screen.getByRole('button', { name: /fechar/i });
     fireEvent.click(closeBtn);
 
+    // O iframe deve sumir e o blobUrl deve ter sido revogado imediatamente
+    expect(screen.queryByTitle('Cartilha URGA')).not.toBeInTheDocument();
     expect(globalThis.URL.revokeObjectURL).toHaveBeenCalledWith(
       expect.stringContaining('blob:mock-pdf-url'),
     );
-    expect(screen.queryByTitle('Cartilha URGA')).not.toBeInTheDocument();
   });
 
   it('deve exibir mensagem de erro caso o download falhe', async () => {
