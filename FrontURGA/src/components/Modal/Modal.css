@@ -1,0 +1,106 @@
+/* Native dialog base */
+dialog.app-modal {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 0;
+  background: #18181b;
+  color: #ffffff;
+  max-width: 1200px;
+  width: calc(100% - 48px);
+  max-height: 90vh;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+dialog.app-modal:modal {
+  overscroll-behavior: contain;
+}
+
+dialog.app-modal::backdrop {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  overscroll-behavior: contain;
+  animation: modalBackdropFadeIn 0.2s ease-out;
+}
+
+dialog.app-modal[open] {
+  animation: modalSlideUp 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes modalBackdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Header */
+.app-modal-header {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(24, 24, 27, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-modal-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Close button */
+.app-modal-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.app-modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Body */
+.app-modal-body {
+  flex: 1;
+  width: 100%;
+  background: #27272a;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
