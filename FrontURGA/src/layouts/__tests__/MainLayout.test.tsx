@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import { MainLayout } from '../../layouts/MainLayout';
+import { MainLayout } from '../MainLayout';
 import * as AuthContext from '../../hooks/useAuth';
 
 describe('MainLayout Component', () => {
     it('deve renderizar a sidebar e o conteúdo', () => {
         // Mock do useAuth
         vi.spyOn(AuthContext, 'useAuth').mockReturnValue({
-            user: { departamento: 'TI', role: 'Administrador' } as any,
+            user: { departamento: 'TI', role: 'Administrador' },
             logout: vi.fn(),
             login: vi.fn(),
             isAuthenticated: true,
@@ -41,7 +41,7 @@ describe('MainLayout Component', () => {
 
     it('não deve mostrar link de Usuários se não for Administrador', () => {
         vi.spyOn(AuthContext, 'useAuth').mockReturnValue({
-            user: { departamento: 'TI', role: 'Comum' } as any,
+            user: { departamento: 'TI', role: 'Comum' },
             logout: vi.fn(),
             login: vi.fn(),
             isAuthenticated: true,
