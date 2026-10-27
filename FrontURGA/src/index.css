@@ -7,5 +7,31 @@ html {
   margin: 0;
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #050505; /* optional, since Login has it but good global default for dark apps */
+  background-color: #050505;
+}
+
+/* Telas de Carregamento e Sessão */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #71717a;
+  font-size: 15px;
+  background-color: #050505;
+}
+
+/* Containers Globais de Layout */
+.page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.page-glass-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  position: relative;
 }

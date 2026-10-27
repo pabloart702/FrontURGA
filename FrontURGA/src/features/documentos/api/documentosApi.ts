@@ -1,4 +1,4 @@
-import api from '../../../api/axios';
+import api from '../../../utils/httpClient';
 
 export const documentosApi = {
   /**

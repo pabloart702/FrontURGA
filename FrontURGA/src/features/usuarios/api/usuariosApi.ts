@@ -1,4 +1,4 @@
-import api from '../../../api/axios';
+import api from '../../../utils/httpClient';
 import type { User } from '../../../types';
 import type {
   UsersListResponse,

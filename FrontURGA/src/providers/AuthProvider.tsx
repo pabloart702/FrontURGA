@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import { authService } from '../services/auth';
+import { authApi } from '../features/auth';
 import type { User } from '../types';
 import { AuthContext, type UserPayload } from './authContext';
 
@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await authService.logout();
+      await authApi.logout();
     } finally {
       setUser(null);
     }
@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initSession = async () => {
       try {
-        const serverUser = await authService.me();
+        const serverUser = await authApi.me();
         setUser(mapUserToPayload(serverUser));
       } catch {
         setUser(null);
@@ -46,8 +46,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [logout]);
 
   const login = async (email: string, pass: string): Promise<void> => {
-    await authService.login(email, pass); // backend emite o cookie HttpOnly
-    const serverUser = await authService.me();
+    await authApi.login(email, pass); // backend emite o cookie HttpOnly
+    const serverUser = await authApi.me();
     setUser(mapUserToPayload(serverUser));
   };
 

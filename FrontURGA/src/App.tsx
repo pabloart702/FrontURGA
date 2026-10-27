@@ -12,8 +12,6 @@ import { Perfil } from './pages/Perfil/Perfil';
 import { UsuariosList } from './pages/Usuarios/UsuariosList';
 import { UsuarioEdit } from './pages/Usuarios/UsuarioEdit';
 import { MainLayout } from './layouts/MainLayout';
-import './index.css';
-import './App.css';
 
 function ProtectedRoute() {
   const { isAuthenticated, user, isLoading } = useAuth();
