@@ -20,15 +20,12 @@ export function useUsuarioEdit(id?: string) {
     fotoPerfil: '',
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => Boolean(id));
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<UsuarioFeedbackMessage>({ type: '', text: '' });
 
   useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
+    if (!id) return;
 
     let isMounted = true;
     usuariosApi

@@ -166,23 +166,46 @@
   padding-right: 44px;
 }
 
-.hidden-date-picker {
+.date-picker-btn {
   position: absolute;
   right: 0;
   top: 0;
   width: 44px;
   height: 100%;
-  opacity: 0;
+  background: transparent;
+  border: none;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  color: #71717a;
+  padding: 0;
+  transition: color 0.2s ease, background-color 0.2s ease;
   z-index: 2;
 }
 
+.date-picker-btn:hover {
+  color: #09090b;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
 .date-picker-icon {
-  position: absolute;
-  right: 12px;
   pointer-events: none;
-  color: #94a3b8;
-  z-index: 1;
+}
+
+.date-input-wrapper input.hidden-date-picker {
+  position: absolute;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  right: 22px;
+  bottom: 0;
 }
 
 .form-grid-checkboxes {

@@ -1,43 +1,17 @@
-import api from '../api/axios';
+import { apoiosApi } from '../features/apoios/api/apoiosApi';
 import type { Form } from '../types';
+import type { GetFormsParams } from '../features/apoios/types/apoios.types';
 
-export interface GetFormsParams {
-  status?: string;
-  sortBy?: string;
-  sortOrder?: string;
-  departamento?: string;
-  page?: number;
-  limit?: number;
-}
+export type { GetFormsParams, Form };
 
+/**
+ * @deprecated Use `apoiosApi` from `features/apoios` directly.
+ */
 export const formsService = {
-  getForms: async (params?: GetFormsParams): Promise<Form[]> => {
-    const response = await api.get<Form[]>('/forms', { params });
-    return response.data;
-  },
-
-  getFormById: async (id: number | string): Promise<Form> => {
-    const response = await api.get<Form>(`/forms/${id}`);
-    return response.data;
-  },
-
-  createForm: async (formData: Omit<Form, 'id' | 'status' | 'criador'>): Promise<Form> => {
-    const response = await api.post<Form>('/forms', formData);
-    return response.data;
-  },
-
-  updateForm: async (id: number | string, formData: Partial<Form>): Promise<Form> => {
-    const response = await api.patch<Form>(`/forms/${id}`, formData);
-    return response.data;
-  },
-
-  updateStatus: async (id: number | string, status: string): Promise<Form> => {
-    const response = await api.patch<Form>(`/forms/${id}`, { status });
-    return response.data;
-  },
-
-  deleteForm: async (id: number | string): Promise<{ mensagem: string }> => {
-    const response = await api.delete<{ mensagem: string }>(`/forms/${id}`);
-    return response.data;
-  },
+  getForms: apoiosApi.getForms,
+  getFormById: apoiosApi.getFormById,
+  createForm: apoiosApi.createForm,
+  updateForm: apoiosApi.updateForm,
+  updateStatus: apoiosApi.updateStatus,
+  deleteForm: apoiosApi.deleteForm,
 };
