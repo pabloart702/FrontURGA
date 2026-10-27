@@ -3,8 +3,16 @@ import { useAuth } from '../../../hooks/useAuth';
 import { getApiErrorMessage } from '../../../utils/errorMessages';
 import { logger } from '../../../utils/logger';
 import { perfilApi } from '../api/perfilApi';
+import {
+  type AsyncState,
+  asyncIdle,
+  asyncLoading,
+  asyncSuccess,
+  asyncError,
+} from '../../../types/async';
 import type { ProfileFormData, ProfileMessage, ProfileUpdatePayload } from '../types/perfil.types';
 import { validateProfileImage } from '../utils/imageValidation';
+import type { User } from '../../../types';
 
 const INITIAL_FORM: ProfileFormData = {
   nome: '',
@@ -20,6 +28,8 @@ const INITIAL_FORM: ProfileFormData = {
 export interface UsePerfilReturn {
   formData: ProfileFormData;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  loadState: AsyncState<User>;
+  actionState: AsyncState<string>;
   loading: boolean;
   saving: boolean;
   uploadingImage: boolean;
@@ -34,11 +44,11 @@ export interface UsePerfilReturn {
 export function usePerfil(): UsePerfilReturn {
   const { user } = useAuth();
   const [formData, setFormData] = useState<ProfileFormData>(INITIAL_FORM);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
+  const [loadState, setLoadState] = useState<AsyncState<User>>(() =>
+    user?.id ? asyncLoading() : asyncIdle()
+  );
+  const [actionState, setActionState] = useState<AsyncState<string>>(asyncIdle());
   const [fotoPerfil, setFotoPerfil] = useState<string>('');
-  const [message, setMessage] = useState<ProfileMessage>({ type: '', text: '' });
 
   const canEditPrivilegedFields = user?.role !== 'Usuário';
 
@@ -47,11 +57,12 @@ export function usePerfil(): UsePerfilReturn {
 
     async function load() {
       if (!user?.id) {
-        setLoading(false);
+        setLoadState(asyncIdle());
         return;
       }
 
       try {
+        setLoadState(asyncLoading());
         const userData = await perfilApi.getProfile();
         if (ignore) return;
         setFormData({
@@ -65,14 +76,11 @@ export function usePerfil(): UsePerfilReturn {
           status: userData.status || '',
         });
         setFotoPerfil(userData.fotoPerfil || '');
+        setLoadState(asyncSuccess(userData));
       } catch (error) {
         if (ignore) return;
         logger.error('Erro ao carregar perfil:', error);
-        setMessage({ type: 'error', text: 'Erro ao carregar as informações do perfil.' });
-      } finally {
-        if (!ignore) {
-          setLoading(false);
-        }
+        setLoadState(asyncError('Erro ao carregar as informações do perfil.'));
       }
     }
 
@@ -89,8 +97,7 @@ export function usePerfil(): UsePerfilReturn {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSaving(true);
-    setMessage({ type: '', text: '' });
+    setActionState(asyncLoading());
 
     try {
       const updateData: ProfileUpdatePayload = {
@@ -115,15 +122,12 @@ export function usePerfil(): UsePerfilReturn {
         await perfilApi.updateProfile(updateData);
       }
 
-      setMessage({ type: 'success', text: 'Perfil atualizado com sucesso!' });
-      // Limpar campo de nova senha após salvar com sucesso
+      setActionState(asyncSuccess('Perfil atualizado com sucesso!'));
       setFormData((prev) => ({ ...prev, password: '' }));
     } catch (error: unknown) {
       logger.error('Erro ao atualizar perfil:', error);
       const errorMsg = getApiErrorMessage(error, 'Erro ao atualizar o perfil. Tente novamente.');
-      setMessage({ type: 'error', text: errorMsg });
-    } finally {
-      setSaving(false);
+      setActionState(asyncError(errorMsg));
     }
   };
 
@@ -133,61 +137,64 @@ export function usePerfil(): UsePerfilReturn {
 
     const validation = await validateProfileImage(file);
     if (!validation.valid) {
-      setMessage({ type: 'error', text: validation.error || 'Arquivo de imagem inválido.' });
+      setActionState(asyncError(validation.error || 'Arquivo de imagem inválido.'));
       e.target.value = '';
       return;
     }
 
-    setUploadingImage(true);
-    setMessage({ type: '', text: '' });
+    setActionState(asyncLoading());
 
     try {
       const response = await perfilApi.updateProfilePicture(file);
       setFotoPerfil(response.user.fotoPerfil || '');
-      setMessage({
-        type: 'success',
-        text: response.mensagem || 'Foto de perfil atualizada com sucesso!',
-      });
+      setActionState(
+        asyncSuccess(response.mensagem || 'Foto de perfil atualizada com sucesso!')
+      );
       e.target.value = '';
     } catch (error: unknown) {
       logger.error('Erro ao atualizar foto de perfil:', error);
       const errorMsg = getApiErrorMessage(error, 'Erro ao atualizar a foto de perfil.');
-      setMessage({ type: 'error', text: errorMsg });
-    } finally {
-      setUploadingImage(false);
+      setActionState(asyncError(errorMsg));
     }
   };
 
   const handleRemoveImage = async () => {
     if (!window.confirm('Tem certeza que deseja remover sua foto de perfil?')) return;
 
-    setUploadingImage(true);
-    setMessage({ type: '', text: '' });
+    setActionState(asyncLoading());
 
     try {
       const response = await perfilApi.deleteProfilePicture();
       setFotoPerfil('');
-      setMessage({
-        type: 'success',
-        text: response.mensagem || 'Foto de perfil removida com sucesso!',
-      });
+      setActionState(
+        asyncSuccess(response.mensagem || 'Foto de perfil removida com sucesso!')
+      );
     } catch (error: unknown) {
       logger.error('Erro ao remover foto de perfil:', error);
       const errorMsg = getApiErrorMessage(error, 'Erro ao remover a foto de perfil.');
-      setMessage({ type: 'error', text: errorMsg });
-    } finally {
-      setUploadingImage(false);
+      setActionState(asyncError(errorMsg));
     }
   };
+
+  const isActionLoading = actionState.status === 'loading';
 
   return {
     formData,
     handleChange,
-    loading,
-    saving,
-    uploadingImage,
+    loadState,
+    actionState,
+    loading: loadState.status === 'loading',
+    saving: isActionLoading,
+    uploadingImage: isActionLoading,
     fotoPerfil,
-    message,
+    message:
+      actionState.status === 'success'
+        ? { type: 'success', text: actionState.data }
+        : actionState.status === 'error'
+          ? { type: 'error', text: actionState.message }
+          : loadState.status === 'error'
+            ? { type: 'error', text: loadState.message }
+            : { type: '', text: '' },
     canEditPrivilegedFields,
     handleSubmit,
     handleImageUpload,

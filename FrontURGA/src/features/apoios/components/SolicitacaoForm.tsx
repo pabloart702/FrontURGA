@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { FileText, Save, ArrowLeft, Calendar } from 'lucide-react';
 import type { SolicitacaoFormData } from '../types/apoios.types';
+import type { AsyncState } from '../../../types/async';
 import './SolicitacaoApoio.css';
 
 interface SolicitacaoFormProps {
@@ -8,8 +9,9 @@ interface SolicitacaoFormProps {
   resultados: string[];
   tiposApreendidos: string[];
   outrosTipos: string;
-  loading: boolean;
-  error: string;
+  submitState?: AsyncState<void>;
+  loading?: boolean;
+  error?: string;
   userRole?: string;
   unidades: string[];
   bens: string[];
@@ -38,6 +40,7 @@ export function SolicitacaoForm({
   resultados,
   tiposApreendidos,
   outrosTipos,
+  submitState,
   loading,
   error,
   userRole,
@@ -51,6 +54,12 @@ export function SolicitacaoForm({
   onSubmit,
   onBack,
 }: SolicitacaoFormProps) {
+  const isSubmitting = submitState ? submitState.status === 'loading' : Boolean(loading);
+  const errorMessage = submitState
+    ? submitState.status === 'error'
+      ? submitState.message
+      : null
+    : error || null;
   const datePickerRef = useRef<HTMLInputElement>(null);
 
   const handleOpenDatePicker = () => {
@@ -83,7 +92,7 @@ export function SolicitacaoForm({
         </div>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
 
       <form onSubmit={onSubmit} className="apoio-form">
         <div className="form-grid">
@@ -279,8 +288,8 @@ export function SolicitacaoForm({
         </div>
 
         <div className="form-actions">
-          <button type="submit" disabled={loading} className="submit-btn">
-            <Save size={20} /> {loading ? 'Salvando...' : 'Salvar Formulário'}
+          <button type="submit" disabled={isSubmitting} className="submit-btn">
+            <Save size={20} /> {isSubmitting ? 'Salvando...' : 'Salvar Formulário'}
           </button>
         </div>
       </form>

@@ -1,13 +1,16 @@
 import { User as UserIcon, ArrowLeft, Trash2, Save, UserCheck } from 'lucide-react';
-import type { UserFormData, UsuarioFeedbackMessage } from '../types/usuarios.types';
+import type { User, UserFormData, UsuarioFeedbackMessage } from '../types/usuarios.types';
+import type { AsyncState } from '../../../types/async';
 import { SecureImage } from '../../../components/SecureImage';
 import './UsuarioEdit.css';
 
 interface UsuarioEditFormProps {
   formData: UserFormData;
-  loading: boolean;
-  saving: boolean;
-  message: UsuarioFeedbackMessage;
+  loadState?: AsyncState<User>;
+  actionState?: AsyncState<string>;
+  loading?: boolean;
+  saving?: boolean;
+  message?: UsuarioFeedbackMessage;
   cargos: string[];
   departamentos: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
@@ -19,6 +22,8 @@ interface UsuarioEditFormProps {
 
 export function UsuarioEditForm({
   formData,
+  loadState,
+  actionState,
   loading,
   saving,
   message,
@@ -30,7 +35,20 @@ export function UsuarioEditForm({
   onActivate,
   onBack,
 }: UsuarioEditFormProps) {
-  if (loading) {
+  const isLoading = loadState ? loadState.status === 'loading' : Boolean(loading);
+  const isSaving = actionState ? actionState.status === 'loading' : Boolean(saving);
+
+  const feedbackMessage = actionState
+    ? actionState.status === 'success'
+      ? { type: 'success', text: actionState.data }
+      : actionState.status === 'error'
+        ? { type: 'error', text: actionState.message }
+        : null
+    : message?.text
+      ? message
+      : null;
+
+  if (isLoading) {
     return (
       <div className="perfil-card" style={{ textAlign: 'center', padding: '40px' }}>
         <p style={{ color: '#71717a', margin: 0 }}>Carregando...</p>
@@ -82,9 +100,9 @@ export function UsuarioEditForm({
         </div>
       </div>
 
-      {message.text && (
-        <div className={`message-banner ${message.type}`}>
-          {message.text}
+      {feedbackMessage && (
+        <div className={`message-banner ${feedbackMessage.type}`}>
+          {feedbackMessage.text}
         </div>
       )}
 
@@ -208,7 +226,7 @@ export function UsuarioEditForm({
               type="button"
               className="btn-deactivate btn-activate"
               onClick={onActivate}
-              disabled={saving}
+              disabled={isSaving}
             >
               <UserCheck size={18} />
               <span>Ativar Usuário</span>
@@ -218,16 +236,16 @@ export function UsuarioEditForm({
               type="button"
               className="btn-deactivate"
               onClick={onDeactivate}
-              disabled={saving}
+              disabled={isSaving}
             >
               <Trash2 size={18} />
               <span>Desativar Usuário</span>
             </button>
           )}
 
-          <button type="submit" className="submit-btn" disabled={saving}>
+          <button type="submit" className="submit-btn" disabled={isSaving}>
             <Save size={20} />
-            <span>{saving ? 'Salvando...' : 'Salvar Alterações'}</span>
+            <span>{isSaving ? 'Salvando...' : 'Salvar Alterações'}</span>
           </button>
         </div>
       </form>

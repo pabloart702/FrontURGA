@@ -174,6 +174,58 @@ describe('SolicitacaoContainer Component', () => {
     });
   });
 
+  it('deve limpar a mensagem de erro atomicamente ao tentar submeter novamente (Discriminated Union)', async () => {
+    vi.mocked(apoiosApi.createForm).mockRejectedValueOnce(new Error('Erro inicial'));
+
+    const { container } = render(
+      <MemoryRouter>
+        <SolicitacaoContainer />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(container.querySelector('input[name="departamento"]')!, {
+      target: { value: 'DEGEPOL' },
+    });
+    fireEvent.change(container.querySelector('input[name="operacao"]')!, {
+      target: { value: 'Operação Resubmissao' },
+    });
+    fireEvent.change(container.querySelector('select[name="medida_cautelar"]')!, {
+      target: { value: 'Bloqueio' },
+    });
+    fireEvent.change(container.querySelector('input[name="valor_estimado"]')!, {
+      target: { value: '500' },
+    });
+    fireEvent.change(container.querySelector('textarea[name="descricao_operacao"]')!, {
+      target: { value: 'Desc' },
+    });
+
+    const form = screen.getByRole('button', { name: /salvar formulário/i }).closest('form')!;
+    fireEvent.submit(form);
+
+    await waitFor(() => {
+      expect(screen.getByText(/erro ao criar formulário/i)).toBeInTheDocument();
+    });
+
+    // Simula uma segunda tentativa com requisição em andamento
+    let resolvePromise: (value: Form) => void;
+    const pendingPromise = new Promise<Form>((resolve) => {
+      resolvePromise = resolve;
+    });
+    vi.mocked(apoiosApi.createForm).mockReturnValueOnce(pendingPromise);
+
+    fireEvent.submit(form);
+
+    // Imediatamente ao submeter novamente, o erro DEVE desaparecer atomicamente (estado loading)
+    expect(screen.queryByText(/erro ao criar formulário/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /salvando\.\.\./i })).toBeDisabled();
+
+    // Conclui a promise pendente
+    resolvePromise!(createdMockForm);
+    await waitFor(() => {
+      expect(mockAlert).toHaveBeenCalledWith('Formulário cadastrado com sucesso!');
+    });
+  });
+
   it('deve permitir digitar a data da operação manualmente com máscara DD/MM/AAAA', () => {
     const { container } = render(
       <MemoryRouter>

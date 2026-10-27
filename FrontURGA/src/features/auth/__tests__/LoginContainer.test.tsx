@@ -108,4 +108,43 @@ describe('LoginContainer', () => {
       expect(screen.getByText('Credenciais inválidas. Tente novamente.')).toBeInTheDocument();
     });
   });
+
+  it('deve limpar a mensagem de erro atomicamente ao tentar logar novamente (Discriminated Union)', async () => {
+    mockLogin.mockRejectedValueOnce(new Error('Credenciais inválidas'));
+
+    render(
+      <MemoryRouter>
+        <LoginContainer />
+      </MemoryRouter>,
+    );
+
+    const emailInput = screen.getByPlaceholderText('Digite seu usuário (e-mail)');
+    const passwordInput = screen.getByPlaceholderText('Digite sua senha');
+    const submitButton = screen.getByRole('button', { name: /entrar no sistema/i });
+
+    fireEvent.change(emailInput, { target: { value: 'teste@urga.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'senha123' } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Credenciais inválidas. Tente novamente.')).toBeInTheDocument();
+    });
+
+    let resolvePromise: (value: void) => void;
+    const pendingPromise = new Promise<void>((resolve) => {
+      resolvePromise = resolve;
+    });
+    mockLogin.mockReturnValueOnce(pendingPromise);
+
+    fireEvent.click(submitButton);
+
+    // O erro anterior é limpo atomicamente durante o carregamento
+    expect(screen.queryByText('Credenciais inválidas. Tente novamente.')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /entrando\.\.\./i })).toBeDisabled();
+
+    resolvePromise!();
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+    });
+  });
 });

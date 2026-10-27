@@ -14,8 +14,7 @@ export function SolicitacaoContainer() {
     resultados,
     tiposApreendidos,
     outrosTipos,
-    loading,
-    error,
+    submitState,
     handleInputChange,
     setDateFromPicker,
     setOutrosTipos,
@@ -34,8 +33,7 @@ export function SolicitacaoContainer() {
       resultados={resultados}
       tiposApreendidos={tiposApreendidos}
       outrosTipos={outrosTipos}
-      loading={loading}
-      error={error}
+      submitState={submitState}
       userRole={user?.role}
       unidades={UNIDADES_POLICIAIS}
       bens={BENS}

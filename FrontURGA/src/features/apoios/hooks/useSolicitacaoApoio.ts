@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { apoiosApi } from '../api/apoiosApi';
 import { UNIDADES_POLICIAIS } from '../../../constants/unidades';
 import { getApiErrorMessage, isNetworkError } from '../../../utils/errorMessages';
+import {
+  type AsyncState,
+  asyncIdle,
+  asyncLoading,
+  asyncSuccess,
+  asyncError,
+} from '../../../types/async';
 import type { SolicitacaoFormData } from '../types/apoios.types';
 import type { UserPayload } from '../../../providers/authContext';
 
@@ -12,8 +19,7 @@ interface UseSolicitacaoApoioProps {
 
 export function useSolicitacaoApoio({ user }: UseSolicitacaoApoioProps) {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [submitState, setSubmitState] = useState<AsyncState<void>>(asyncIdle());
 
   const [formData, setFormData] = useState<SolicitacaoFormData>(() => ({
     departamento: user && user.role === 'Usuário' && user.departamento ? user.departamento : '',
@@ -94,12 +100,12 @@ export function useSolicitacaoApoio({ user }: UseSolicitacaoApoioProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setError('');
-      setLoading(true);
+      setSubmitState(asyncLoading());
 
       if (!UNIDADES_POLICIAIS.includes(formData.departamento)) {
-        setError('Por favor, selecione um departamento válido da lista.');
-        setLoading(false);
+        setSubmitState(
+          asyncError('Por favor, selecione um departamento válido da lista.')
+        );
         return;
       }
 
@@ -126,21 +132,22 @@ export function useSolicitacaoApoio({ user }: UseSolicitacaoApoioProps) {
       };
 
       await apoiosApi.createForm(payload);
+      setSubmitState(asyncSuccess(undefined));
       alert('Formulário cadastrado com sucesso!');
       navigate('/apoios');
     } catch (err: unknown) {
       if (isNetworkError(err)) {
-        setError('Erro de conexão. A API pode estar offline.');
+        setSubmitState(asyncError('Erro de conexão. A API pode estar offline.'));
       } else {
-        setError(
-          getApiErrorMessage(
-            err,
-            'Erro ao criar formulário. Verifique os dados e tente novamente.'
+        setSubmitState(
+          asyncError(
+            getApiErrorMessage(
+              err,
+              'Erro ao criar formulário. Verifique os dados e tente novamente.'
+            )
           )
         );
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -149,8 +156,9 @@ export function useSolicitacaoApoio({ user }: UseSolicitacaoApoioProps) {
     resultados,
     tiposApreendidos,
     outrosTipos,
-    loading,
-    error,
+    submitState,
+    loading: submitState.status === 'loading',
+    error: submitState.status === 'error' ? submitState.message : '',
     handleInputChange,
     setDateFromPicker,
     setOutrosTipos,

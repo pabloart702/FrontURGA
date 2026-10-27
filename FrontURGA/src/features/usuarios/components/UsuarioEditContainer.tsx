@@ -11,9 +11,8 @@ export function UsuarioEditContainer() {
 
   const {
     formData,
-    loading,
-    saving,
-    message,
+    loadState,
+    actionState,
     handleChange,
     handleSubmit,
     handleDeactivate,
@@ -27,9 +26,8 @@ export function UsuarioEditContainer() {
   return (
     <UsuarioEditForm
       formData={formData}
-      loading={loading}
-      saving={saving}
-      message={message}
+      loadState={loadState}
+      actionState={actionState}
       cargos={CARGOS}
       departamentos={UNIDADES_POLICIAIS}
       onChange={handleChange}

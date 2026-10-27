@@ -7,24 +7,30 @@ export function PerfilContainer() {
   const {
     formData,
     handleChange,
-    loading,
-    saving,
-    uploadingImage,
+    loadState,
+    actionState,
     fotoPerfil,
-    message,
     canEditPrivilegedFields,
     handleSubmit,
     handleImageUpload,
     handleRemoveImage,
   } = usePerfil();
 
-  if (loading) {
+  if (loadState.status === 'loading') {
     return (
       <div className="perfil-card" style={{ textAlign: 'center', padding: '40px' }}>
         <p style={{ color: '#71717a', margin: 0 }}>Carregando...</p>
       </div>
     );
   }
+
+  const isActionLoading = actionState.status === 'loading';
+  const feedbackMessage =
+    actionState.status === 'success'
+      ? { type: 'success', text: actionState.data }
+      : actionState.status === 'error'
+        ? { type: 'error', text: actionState.message }
+        : null;
 
   return (
     <div className="perfil-card">
@@ -33,7 +39,7 @@ export function PerfilContainer() {
           <ProfileAvatar
             fotoPerfil={fotoPerfil}
             nome={formData.nome}
-            uploadingImage={uploadingImage}
+            uploadingImage={isActionLoading}
             onUpload={handleImageUpload}
             onRemove={handleRemoveImage}
           />
@@ -41,12 +47,12 @@ export function PerfilContainer() {
         </div>
       </div>
 
-      {message.text && (
+      {feedbackMessage && (
         <div
-          className={`message-banner ${message.type}`}
-          role={message.type === 'error' ? 'alert' : 'status'}
+          className={`message-banner ${feedbackMessage.type}`}
+          role={feedbackMessage.type === 'error' ? 'alert' : 'status'}
         >
-          {message.text}
+          {feedbackMessage.text}
         </div>
       )}
 
@@ -54,7 +60,7 @@ export function PerfilContainer() {
         formData={formData}
         onChange={handleChange}
         canEditPrivilegedFields={canEditPrivilegedFields}
-        saving={saving}
+        saving={isActionLoading}
         onSubmit={handleSubmit}
       />
     </div>

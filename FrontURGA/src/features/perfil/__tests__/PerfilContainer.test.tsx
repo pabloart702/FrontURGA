@@ -109,6 +109,41 @@ describe('PerfilContainer', () => {
     });
   });
 
+  it('deve limpar mensagem de erro atomicamente ao tentar salvar o perfil novamente (Discriminated Union)', async () => {
+    vi.mocked(perfilApi.getProfile).mockResolvedValueOnce(mockUser);
+    vi.mocked(perfilApi.updateProfile).mockRejectedValueOnce(new Error('Erro inicial'));
+
+    render(<PerfilContainer />);
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Agente Silva')).toBeInTheDocument();
+    });
+
+    const submitBtn = screen.getByRole('button', { name: /salvar alterações/i });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+    });
+
+    let resolvePromise: (value: User) => void;
+    const pendingPromise = new Promise<User>((resolve) => {
+      resolvePromise = resolve;
+    });
+    vi.mocked(perfilApi.updateProfile).mockReturnValueOnce(pendingPromise);
+
+    fireEvent.click(submitBtn);
+
+    // O alerta de erro anterior deve sumir no instante do novo submit
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /salvando\.\.\./i })).toBeDisabled();
+
+    resolvePromise!(mockUser);
+    await waitFor(() => {
+      expect(screen.getByText('Perfil atualizado com sucesso!')).toBeInTheDocument();
+    });
+  });
+
   it('deve habilitar campos privilegiados se o usuário for Administrador', async () => {
     vi.spyOn(AuthContext, 'useAuth').mockReturnValue({
       user: { id: 'admin-1', role: 'Administrador', departamento: 'DIESP', nome: 'Delegado Chefe' },

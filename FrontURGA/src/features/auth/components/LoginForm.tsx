@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react';
 import { ArrowRight, Eye, EyeOff, Shield } from 'lucide-react';
+import type { AsyncState } from '../../../types/async';
 
 interface LoginFormProps {
   email: string;
@@ -8,8 +9,9 @@ interface LoginFormProps {
   onPasswordChange: (val: string) => void;
   showPassword: boolean;
   onToggleShowPassword: () => void;
-  error: string;
-  loading: boolean;
+  loginState?: AsyncState<void>;
+  error?: string;
+  loading?: boolean;
   cooldownRemaining: number;
   isCooldownActive: boolean;
   onSubmit: (e: FormEvent) => Promise<void>;
@@ -25,12 +27,20 @@ export function LoginForm({
   onPasswordChange,
   showPassword,
   onToggleShowPassword,
+  loginState,
   error,
   loading,
   cooldownRemaining,
   isCooldownActive,
   onSubmit,
 }: LoginFormProps) {
+  const isSubmitting = loginState ? loginState.status === 'loading' : Boolean(loading);
+  const errorMessage = loginState
+    ? loginState.status === 'error'
+      ? loginState.message
+      : null
+    : error || null;
+
   return (
     <div className="login-right-panel">
       <div className="login-form-container">
@@ -39,9 +49,9 @@ export function LoginForm({
           <h2 className="form-title">Acesso ao sistema</h2>
         </div>
 
-        {error && (
+        {errorMessage && (
           <div className="login-error-message" role="alert">
-            {error}
+            {errorMessage}
           </div>
         )}
 
@@ -56,7 +66,7 @@ export function LoginForm({
                 value={email}
                 onChange={(e) => onEmailChange(e.target.value)}
                 required
-                disabled={loading || isCooldownActive}
+                disabled={isSubmitting || isCooldownActive}
               />
             </div>
           </div>
@@ -71,7 +81,7 @@ export function LoginForm({
                 value={password}
                 onChange={(e) => onPasswordChange(e.target.value)}
                 required
-                disabled={loading || isCooldownActive}
+                disabled={isSubmitting || isCooldownActive}
               />
               <button
                 type="button"
@@ -86,15 +96,15 @@ export function LoginForm({
 
           <button
             type="submit"
-            disabled={loading || isCooldownActive}
+            disabled={isSubmitting || isCooldownActive}
             className="login-submit-btn"
           >
             {isCooldownActive
               ? `Aguarde ${cooldownRemaining}s...`
-              : loading
+              : isSubmitting
                 ? 'Entrando...'
                 : 'Entrar no sistema'}
-            {!loading && !isCooldownActive && <ArrowRight size={18} />}
+            {!isSubmitting && !isCooldownActive && <ArrowRight size={18} />}
           </button>
         </form>
 

@@ -3,6 +3,13 @@ import { isAxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
 import { getSafeErrorMessage } from '../../../utils/errorMessages';
+import {
+  type AsyncState,
+  asyncIdle,
+  asyncLoading,
+  asyncSuccess,
+  asyncError,
+} from '../../../types/async';
 
 const COOLDOWN_KEY = 'loginCooldownEnd';
 const DEFAULT_COOLDOWN_MS = 300000; // 5 minutos (300 segundos)
@@ -15,6 +22,7 @@ export interface UseLoginReturn {
   setPassword: (val: string) => void;
   showPassword: boolean;
   toggleShowPassword: () => void;
+  loginState: AsyncState<void>;
   error: string;
   loading: boolean;
   cooldownRemaining: number;
@@ -31,8 +39,7 @@ export function useLogin(): UseLoginReturn {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loginState, setLoginState] = useState<AsyncState<void>>(asyncIdle());
   const [failedAttempts, setFailedAttempts] = useState(0);
 
   const [cooldownEnd, setCooldownEnd] = useState<number | null>(() => {
@@ -82,15 +89,17 @@ export function useLogin(): UseLoginReturn {
     e.preventDefault();
 
     if (cooldownEnd) {
-      setError(`Muitas tentativas falhas. Tente novamente em ${cooldownRemaining}s.`);
+      setLoginState(
+        asyncError(`Muitas tentativas falhas. Tente novamente em ${cooldownRemaining}s.`)
+      );
       return;
     }
 
     try {
-      setError('');
-      setLoading(true);
+      setLoginState(asyncLoading());
       await login(email, password);
       setFailedAttempts(0);
+      setLoginState(asyncSuccess(undefined));
       navigate('/dashboard');
     } catch (err: unknown) {
       const isAxios = isAxiosError(err);
@@ -116,7 +125,9 @@ export function useLogin(): UseLoginReturn {
         setCooldownEnd(resetTimeMs);
         setCooldownRemaining(remainingSeconds);
         localStorage.setItem(COOLDOWN_KEY, resetTimeMs.toString());
-        setError(`Muitas tentativas falhas. Aguarde ${remainingSeconds}s para tentar novamente.`);
+        setLoginState(
+          asyncError(`Muitas tentativas falhas. Aguarde ${remainingSeconds}s para tentar novamente.`)
+        );
         return;
       }
 
@@ -128,12 +139,14 @@ export function useLogin(): UseLoginReturn {
         setCooldownEnd(timeMs);
         setCooldownRemaining(300);
         localStorage.setItem(COOLDOWN_KEY, timeMs.toString());
-        setError('Muitas tentativas falhas. Aguarde 5 minutos (300s) para tentar novamente.');
+        setLoginState(
+          asyncError('Muitas tentativas falhas. Aguarde 5 minutos (300s) para tentar novamente.')
+        );
       } else {
-        setError(getSafeErrorMessage(status, 'Credenciais inválidas. Tente novamente.'));
+        setLoginState(
+          asyncError(getSafeErrorMessage(status, 'Credenciais inválidas. Tente novamente.'))
+        );
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -144,8 +157,9 @@ export function useLogin(): UseLoginReturn {
     setPassword,
     showPassword,
     toggleShowPassword,
-    error,
-    loading,
+    loginState,
+    error: loginState.status === 'error' ? loginState.message : '',
+    loading: loginState.status === 'loading',
     cooldownRemaining,
     isCooldownActive: !!cooldownEnd,
     handleSubmit,

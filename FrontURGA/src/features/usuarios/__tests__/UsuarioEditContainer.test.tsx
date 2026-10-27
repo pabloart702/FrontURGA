@@ -112,6 +112,48 @@ describe('UsuarioEditContainer Component', () => {
     });
   });
 
+  it('deve limpar mensagem de erro atomicamente ao tentar salvar novamente (Discriminated Union)', async () => {
+    vi.mocked(usuariosApi.updateUser).mockRejectedValueOnce({
+      response: { data: { message: 'Erro ao salvar' } },
+    });
+
+    render(
+      <MemoryRouter>
+        <UsuarioEditContainer />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('João Teste')).toBeInTheDocument();
+    });
+
+    const form = screen.getByRole('button', { name: /salvar alterações/i }).closest('form')!;
+    fireEvent.submit(form);
+
+    await waitFor(() => {
+      expect(screen.getByText('Erro ao salvar')).toBeInTheDocument();
+    });
+
+    // Simula uma segunda tentativa com promise pendente
+    let resolvePromise: (value: User) => void;
+    const pendingPromise = new Promise<User>((resolve) => {
+      resolvePromise = resolve;
+    });
+    vi.mocked(usuariosApi.updateUser).mockReturnValueOnce(pendingPromise);
+
+    fireEvent.submit(form);
+
+    // O erro anterior é limpo atomicamente durante o loading
+    expect(screen.queryByText('Erro ao salvar')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /salvando\.\.\./i })).toBeDisabled();
+
+    // Conclui a promise pendente
+    resolvePromise!(mockUser);
+    await waitFor(() => {
+      expect(screen.getByText('Usuário atualizado com sucesso!')).toBeInTheDocument();
+    });
+  });
+
   it('deve permitir desativar o usuário', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     vi.mocked(usuariosApi.deleteUser).mockResolvedValueOnce({ mensagem: 'Usuário desativado' });

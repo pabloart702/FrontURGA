@@ -15,8 +15,7 @@ export function LoginContainer() {
     setPassword,
     showPassword,
     toggleShowPassword,
-    error,
-    loading,
+    loginState,
     cooldownRemaining,
     isCooldownActive,
     handleSubmit,
@@ -32,8 +31,7 @@ export function LoginContainer() {
         onPasswordChange={setPassword}
         showPassword={showPassword}
         onToggleShowPassword={toggleShowPassword}
-        error={error}
-        loading={loading}
+        loginState={loginState}
         cooldownRemaining={cooldownRemaining}
         isCooldownActive={isCooldownActive}
         onSubmit={handleSubmit}
