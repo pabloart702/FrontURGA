@@ -1,13 +1,24 @@
 import { useState, useEffect } from 'react';
 import { apoiosApi } from '../api/apoiosApi';
+import {
+  type AsyncState,
+  asyncIdle,
+  asyncLoading,
+  asyncSuccess,
+  asyncError,
+} from '../../../types/async';
 import { getApiErrorMessage, isNetworkError } from '../../../utils/errorMessages';
 import type { Form, ToastFeedback } from '../types/apoios.types';
 
 export function useVisualizarPedido(id?: string) {
   const isInvalidFormat = Boolean(id && !/^[a-zA-Z0-9-]+$/.test(id));
-  const [form, setForm] = useState<Form | null>(null);
-  const [loading, setLoading] = useState(() => Boolean(id && !isInvalidFormat));
-  const [error, setError] = useState(() => (isInvalidFormat ? 'Formato de identificador inválido.' : ''));
+
+  const [loadState, setLoadState] = useState<AsyncState<Form>>(() => {
+    if (!id) return asyncIdle();
+    if (isInvalidFormat) return asyncError('Formato de identificador inválido.');
+    return asyncLoading();
+  });
+
   const [toastMessage, setToastMessage] = useState<ToastFeedback | null>(null);
 
   useEffect(() => {
@@ -18,15 +29,12 @@ export function useVisualizarPedido(id?: string) {
       .getFormById(id)
       .then((data) => {
         if (!isMounted) return;
-        setForm(data);
+        setLoadState(asyncSuccess(data));
       })
       .catch((err: unknown) => {
         if (!isMounted) return;
         console.error('Erro ao carregar os detalhes do pedido:', err);
-        setError('Erro ao carregar os detalhes do pedido.');
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
+        setLoadState(asyncError(getApiErrorMessage(err, 'Erro ao carregar os detalhes do pedido.')));
       });
 
     return () => {
@@ -42,17 +50,19 @@ export function useVisualizarPedido(id?: string) {
   };
 
   const handleStatusChange = async (newStatus: string) => {
-    if (!form || !form.id) return;
+    if (loadState.status !== 'success') return;
+    const currentForm = loadState.data;
+    if (!currentForm.id) return;
 
-    if (newStatus === 'realizado' && form.data_operacao) {
+    if (newStatus === 'realizado' && currentForm.data_operacao) {
       let d: string | undefined;
       let m: string | undefined;
       let y: string | undefined;
 
-      if (form.data_operacao.includes('/')) {
-        [d, m, y] = form.data_operacao.split('/');
-      } else if (form.data_operacao.includes('-')) {
-        const parts = form.data_operacao.split('T')[0].split('-');
+      if (currentForm.data_operacao.includes('/')) {
+        [d, m, y] = currentForm.data_operacao.split('/');
+      } else if (currentForm.data_operacao.includes('-')) {
+        const parts = currentForm.data_operacao.split('T')[0].split('-');
         if (parts[0].length === 4) {
           [y, m, d] = parts;
         } else {
@@ -73,9 +83,9 @@ export function useVisualizarPedido(id?: string) {
     }
 
     try {
-      await apoiosApi.updateStatus(form.id, newStatus);
+      await apoiosApi.updateStatus(currentForm.id, newStatus);
       showToast('success', 'Status atualizado com sucesso.');
-      setForm((prev) => (prev ? { ...prev, status: newStatus } : null));
+      setLoadState(asyncSuccess({ ...currentForm, status: newStatus }));
     } catch (err: unknown) {
       if (isNetworkError(err)) {
         showToast('error', 'Erro de conexão com o servidor. Verifique sua rede.');
@@ -86,6 +96,10 @@ export function useVisualizarPedido(id?: string) {
     }
   };
 
+  const form = loadState.status === 'success' ? loadState.data : null;
+  const loading = loadState.status === 'loading';
+  const error = loadState.status === 'error' ? loadState.message : '';
+
   const handlePrint = () => {
     if (!form) return;
     const originalTitle = document.title;
@@ -95,6 +109,7 @@ export function useVisualizarPedido(id?: string) {
   };
 
   return {
+    loadState,
     form,
     loading,
     error,

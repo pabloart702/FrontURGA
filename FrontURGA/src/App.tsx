@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider } from './providers/AuthProvider';
 import { useAuth } from './hooks/useAuth';
+import { usePermissions } from './hooks/usePermissions';
 import { Login } from './pages/Login/Login';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { SolicitacaoApoio } from './pages/Apoios/SolicitacaoApoio';
@@ -15,6 +16,7 @@ import { MainLayout } from './layouts/MainLayout';
 
 function ProtectedRoute() {
   const { isAuthenticated, user, isLoading } = useAuth();
+  const { hasValidRole } = usePermissions();
 
   // Aguarda a validação da sessão com o servidor antes de redirecionar.
   if (isLoading) {
@@ -25,12 +27,7 @@ function ProtectedRoute() {
     );
   }
 
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  const hasValidRole = user.role === 'Usuário' || user.role === 'Administrador' || user.role === 'Admin';
-  if (!hasValidRole) {
+  if (!isAuthenticated || !user || !hasValidRole) {
     return <Navigate to="/login" replace />;
   }
 
@@ -43,6 +40,7 @@ function ProtectedRoute() {
 
 function AdminRoute() {
   const { isAuthenticated, user, isLoading } = useAuth();
+  const { canManageUsers } = usePermissions();
 
   if (isLoading) {
     return (
@@ -56,7 +54,7 @@ function AdminRoute() {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.role !== 'Administrador') {
+  if (!canManageUsers) {
     return <Navigate to="/dashboard" replace />;
   }
 

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, FileSearch, Activity, LogOut, User as UserIcon, Users, ChevronLeft, Menu } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { usePermissions } from '../hooks/usePermissions';
 import './MainLayout.css';
 
 interface MainLayoutProps {
@@ -11,6 +12,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   const { logout, user } = useAuth();
+  const { canManageUsers } = usePermissions();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1000);
 
@@ -93,7 +95,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             <span>Perfil</span>
           </NavLink>
 
-          {user?.role === 'Administrador' && (
+          {canManageUsers && (
             <NavLink to="/usuarios" onClick={handleNavClick} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
               <Users size={20} />
               <span>Usuários</span>
