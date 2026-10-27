@@ -9,6 +9,7 @@ export function UsuariosListContainer() {
   const {
     users,
     loading,
+    error,
     page,
     totalPages,
     searchTerm,
@@ -26,6 +27,7 @@ export function UsuariosListContainer() {
     <UsuariosListView
       users={users}
       loading={loading}
+      error={error}
       page={page}
       totalPages={totalPages}
       searchTerm={searchTerm}

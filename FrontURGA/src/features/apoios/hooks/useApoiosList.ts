@@ -1,23 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { apoiosApi } from '../api/apoiosApi';
+import {
+  type AsyncState,
+  asyncLoading,
+  asyncSuccess,
+  asyncError,
+} from '../../../types/async';
+import { getApiErrorMessage } from '../../../utils/errorMessages';
 import type { Form, TabStatus, GetFormsParams } from '../types/apoios.types';
+
+export interface ApoiosListData {
+  forms: Form[];
+  totalPages: number;
+}
 
 interface UseApoiosListOptions {
   initialTab?: TabStatus;
 }
 
 export function useApoiosList({ initialTab = 'agenda' }: UseApoiosListOptions = {}) {
-  const [forms, setForms] = useState<Form[]>([]);
+  const [listState, setListState] = useState<AsyncState<ApoiosListData>>(() => asyncLoading());
   const [activeTab, setActiveTabState] = useState<TabStatus>(initialTab);
   const [departamento, setDepartamentoState] = useState('');
   const [page, setPageState] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
 
+  // Previne race conditions de requisições concorrentes em conexões instáveis
+  const requestIdRef = useRef(0);
   const limit = 10;
 
   useEffect(() => {
     let isMounted = true;
+    const currentRequestId = ++requestIdRef.current;
 
     const params: GetFormsParams = {
       page,
@@ -32,6 +46,11 @@ export function useApoiosList({ initialTab = 'agenda' }: UseApoiosListOptions = 
       params.departamento = departamento;
     }
 
+    // Regras estritas de ordenação por aba:
+    // - Pendente: mais antigas/próximas primeiro (data_operacao asc)
+    // - Agenda: ordem decrescente (data_operacao desc)
+    // - Ciente: mais antigas/próximas primeiro (data_operacao asc)
+    // - Realizado: mais recentemente concluídas primeiro (dataRealizado desc)
     if (activeTab === 'pendente') {
       params.sortBy = 'data_operacao';
       params.sortOrder = 'asc';
@@ -49,30 +68,32 @@ export function useApoiosList({ initialTab = 'agenda' }: UseApoiosListOptions = 
     apoiosApi
       .getForms(params)
       .then((data) => {
-        if (!isMounted) return;
+        if (!isMounted || currentRequestId !== requestIdRef.current) {
+          return;
+        }
+
+        let list: Form[] = [];
+        let total = 1;
 
         if (Array.isArray(data)) {
-          setForms(data);
-          setTotalPages(1);
+          list = data;
+          total = 1;
         } else if (data && typeof data === 'object') {
-          const list = data.forms || data.data || data.resultados || [];
-          setForms(Array.isArray(list) ? list : []);
-          setTotalPages(data.totalPages || 1);
-        } else {
-          setForms([]);
-          setTotalPages(1);
+          const rawList = data.forms || data.data || data.resultados || [];
+          list = Array.isArray(rawList) ? rawList : [];
+          total = data.totalPages || 1;
         }
+
+        setTotalPages(total);
+        setListState(asyncSuccess({ forms: list, totalPages: total }));
       })
       .catch((err: unknown) => {
-        if (!isMounted) return;
-        console.error('Erro ao carregar os formulários', err);
-        setForms([]);
-        setTotalPages(1);
-      })
-      .finally(() => {
-        if (isMounted) {
-          setLoading(false);
+        if (!isMounted || currentRequestId !== requestIdRef.current) {
+          return;
         }
+        console.error('Erro ao carregar os formulários', err);
+        setTotalPages(1);
+        setListState(asyncError(getApiErrorMessage(err, 'Erro ao carregar os formulários.')));
       });
 
     return () => {
@@ -81,29 +102,41 @@ export function useApoiosList({ initialTab = 'agenda' }: UseApoiosListOptions = 
   }, [activeTab, departamento, page]);
 
   const handleTabChange = (tab: TabStatus) => {
-    setLoading(true);
+    setListState(asyncLoading());
     setActiveTabState(tab);
     setPageState(1);
   };
 
   const handleDepartamentoChange = (dept: string) => {
-    setLoading(true);
+    setListState(asyncLoading());
     setDepartamentoState(dept);
     setPageState(1);
   };
 
   const handlePageChange = (newPage: number) => {
-    setLoading(true);
+    setListState(asyncLoading());
     setPageState(newPage);
   };
 
+  const refetch = () => {
+    setListState(asyncLoading());
+    setActiveTabState((prev) => prev);
+  };
+
+  const forms = listState.status === 'success' ? listState.data.forms : [];
+  const loading = listState.status === 'loading';
+  const error = listState.status === 'error' ? listState.message : null;
+
   return {
+    listState,
     forms,
     activeTab,
     departamento,
     page,
-    totalPages,
+    totalPages: listState.status === 'success' ? listState.data.totalPages : totalPages,
     loading,
+    error,
+    refetch,
     handleTabChange,
     handleDepartamentoChange,
     handlePageChange,

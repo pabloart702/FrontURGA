@@ -19,6 +19,7 @@ export function ApoiosContainer() {
     page,
     totalPages,
     loading,
+    error,
     handleTabChange,
     handleDepartamentoChange,
     handlePageChange,
@@ -36,6 +37,7 @@ export function ApoiosContainer() {
     <ApoiosListView
       forms={forms}
       loading={loading}
+      error={error}
       activeTab={activeTab}
       departamento={departamento}
       departamentos={UNIDADES_POLICIAIS}

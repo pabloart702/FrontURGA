@@ -6,6 +6,7 @@ import './UsuariosList.css';
 interface UsuariosListViewProps {
   users: User[];
   loading: boolean;
+  error?: string | null;
   page: number;
   totalPages: number;
   searchTerm: string;
@@ -20,6 +21,7 @@ interface UsuariosListViewProps {
 export function UsuariosListView({
   users,
   loading,
+  error,
   page,
   totalPages,
   searchTerm,
@@ -77,6 +79,10 @@ export function UsuariosListView({
       <div className="usuarios-list-card">
         {loading && users.length === 0 ? (
           <div className="loading-state">Carregando usuários...</div>
+        ) : error && users.length === 0 ? (
+          <div className="empty-state" role="alert" style={{ color: '#ef4444' }}>
+            {error}
+          </div>
         ) : users.length === 0 ? (
           <div className="empty-state">Nenhum usuário encontrado.</div>
         ) : (

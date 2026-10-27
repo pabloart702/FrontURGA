@@ -128,4 +128,80 @@ describe('UsuariosListContainer Component', () => {
       expect(screen.getByText('Nenhum usuário encontrado.')).toBeInTheDocument();
     });
   });
+
+  it('deve descartar respostas atrasadas (race conditions) ao alterar a busca rapidamente', async () => {
+    let resolveFirstSearch: (value: unknown) => void = () => {};
+    const firstSearchPromise = new Promise((resolve) => {
+      resolveFirstSearch = resolve;
+    });
+
+    vi.mocked(usuariosApi.getUsers).mockImplementation((_page, search) => {
+      if (search === 'Carlos') {
+        return firstSearchPromise as Promise<never>;
+      }
+      if (search === 'Mariana') {
+        return Promise.resolve({
+          data: [mockUsers[1]], // Mariana Delegada
+          totalPages: 1,
+          currentPage: 1,
+        } as never);
+      }
+      return Promise.resolve({ data: mockUsers, totalPages: 1, currentPage: 1 } as never);
+    });
+
+    render(
+      <MemoryRouter>
+        <UsuariosListContainer />
+      </MemoryRouter>
+    );
+
+    const searchInput = screen.getByLabelText(/pesquisar usuários/i);
+
+    // Dispara primeira busca lenta ('Carlos')
+    fireEvent.change(searchInput, { target: { value: 'Carlos' } });
+
+    // Imediatamente dispara segunda busca rápida ('Mariana')
+    fireEvent.change(searchInput, { target: { value: 'Mariana' } });
+
+    // Aguarda Mariana ser exibida na tela
+    expect(await screen.findByText('Mariana Delegada')).toBeInTheDocument();
+
+    // Agora a requisição antiga de 'Carlos' finalmente resolve
+    resolveFirstSearch({
+      data: [mockUsers[0]], // Carlos Agente
+      totalPages: 1,
+      currentPage: 1,
+    });
+
+    // Confirma que a resposta atrasada de Carlos NÃO sobrescreveu a tela de Mariana
+    await new Promise((r) => setTimeout(r, 50));
+    expect(screen.queryByText('Carlos Agente')).not.toBeInTheDocument();
+    expect(screen.getByText('Mariana Delegada')).toBeInTheDocument();
+  });
+
+  it('deve exibir mensagem de erro se a busca falhar e recuperar atomicamente', async () => {
+    vi.mocked(usuariosApi.getUsers).mockRejectedValueOnce(new Error('Erro de conexão'));
+
+    render(
+      <MemoryRouter>
+        <UsuariosListContainer />
+      </MemoryRouter>
+    );
+
+    // A busca inicial falhou
+    expect(await screen.findByRole('alert')).toHaveTextContent(/erro ao carregar a lista de usuários/i);
+
+    // Ao digitar na busca com sucesso, o erro é limpo atomicamente
+    vi.mocked(usuariosApi.getUsers).mockResolvedValueOnce({
+      data: mockUsers,
+      totalPages: 1,
+      currentPage: 1,
+    });
+
+    const searchInput = screen.getByLabelText(/pesquisar usuários/i);
+    fireEvent.change(searchInput, { target: { value: 'Recuperado' } });
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(await screen.findByText('Carlos Agente')).toBeInTheDocument();
+  });
 });

@@ -7,6 +7,7 @@ import './Apoios.css';
 interface ApoiosListViewProps {
   forms: Form[];
   loading: boolean;
+  error?: string | null;
   activeTab: TabStatus;
   departamento: string;
   departamentos: string[];
@@ -25,6 +26,7 @@ const TABS: TabStatus[] = ['agenda', 'pendente', 'ciente', 'realizado'];
 export function ApoiosListView({
   forms,
   loading,
+  error,
   activeTab,
   departamento,
   departamentos,
@@ -97,6 +99,10 @@ export function ApoiosListView({
         {loading ? (
           <div style={{ padding: '40px', textAlign: 'center', color: '#71717a' }}>
             Carregando...
+          </div>
+        ) : error ? (
+          <div className="apoios-empty-state" role="alert" style={{ color: '#ef4444' }}>
+            <p>{error}</p>
           </div>
         ) : activeTab === 'agenda' ? (
           <AgendaCalendar forms={forms} onSelectForm={onSelectForm} />
