@@ -42,19 +42,22 @@ export function isNetworkError(error: unknown): boolean {
   return isAxiosError(error) && (error.code === 'ERR_NETWORK' || error.message === 'Network Error');
 }
 
+function isApiLikeError(error: unknown): error is { response?: { status?: number; data?: ApiErrorBody } } {
+  return typeof error === 'object' && error !== null && 'response' in error;
+}
+
 /**
  * Extrai a mensagem de erro retornada pelo backend (validação do express-validator ou mensagem global). Retorna `fallback` quando não houver mensagem utilizável.
  */
 export function getApiErrorMessage(error: unknown, fallback: string): string {
-  if (!isAxiosError<ApiErrorBody>(error)) {
-    return fallback;
-  }
-  const body = error.response?.data;
-  if (body?.errors?.length) {
-    return body.errors.map((err) => err.msg).join(' | ');
-  }
-  if (body?.message) {
-    return body.message;
+  if (isAxiosError<ApiErrorBody>(error) || isApiLikeError(error)) {
+    const body = error.response?.data;
+    if (body?.errors?.length) {
+      return body.errors.map((err) => err.msg).join(' | ');
+    }
+    if (body?.message) {
+      return body.message;
+    }
   }
   return fallback;
 }

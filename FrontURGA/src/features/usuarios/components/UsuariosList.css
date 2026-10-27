@@ -10,26 +10,26 @@
   border-bottom: 1px solid #e4e4e7;
 }
 
-.header-title {
+.usuarios-header .header-title {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.header-title h2 {
+.usuarios-header .header-title h2 {
   font-size: 28px;
   font-weight: 700;
   color: #09090b;
   margin: 0 0 4px 0;
 }
 
-.header-title p {
+.usuarios-header .header-title p {
   color: #71717a;
   margin: 0;
   font-size: 15px;
 }
 
-.header-icon {
+.usuarios-header .header-icon {
   color: #09090b;
   background: rgba(9, 9, 11, 0.05);
   padding: 12px;
@@ -46,7 +46,8 @@
   flex-wrap: wrap;
 }
 
-.filter-group, .search-group {
+.filter-group,
+.search-group {
   display: flex;
   align-items: center;
   background: white;
@@ -58,7 +59,8 @@
   transition: all 0.2s ease;
 }
 
-.filter-group:focus-within, .search-group:focus-within {
+.filter-group:focus-within,
+.search-group:focus-within {
   border-color: #09090b;
   box-shadow: 0 0 0 2px rgba(9, 9, 11, 0.1);
 }
@@ -68,7 +70,8 @@
   margin-right: 8px;
 }
 
-.filter-select, .search-input {
+.filter-select,
+.search-input {
   width: 100%;
   border: none;
   background: transparent;
@@ -216,7 +219,8 @@
   color: #991b1b;
 }
 
-.loading-state, .empty-state {
+.loading-state,
+.empty-state {
   padding: 60px 40px;
   text-align: center;
   color: #71717a;
