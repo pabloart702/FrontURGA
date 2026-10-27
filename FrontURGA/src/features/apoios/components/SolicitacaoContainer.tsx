@@ -2,12 +2,14 @@ import { useNavigate } from 'react-router-dom';
 import { UNIDADES_POLICIAIS } from '../../../constants/unidades';
 import { BENS } from '../../../constants/bens';
 import { useAuth } from '../../../hooks/useAuth';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { useSolicitacaoApoio } from '../hooks/useSolicitacaoApoio';
 import { SolicitacaoForm } from './SolicitacaoForm';
 
 export function SolicitacaoContainer() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { canEditPrivilegedFields } = usePermissions();
 
   const {
     formData,
@@ -35,6 +37,7 @@ export function SolicitacaoContainer() {
       outrosTipos={outrosTipos}
       submitState={submitState}
       userRole={user?.role}
+      canChangeDepartamento={canEditPrivilegedFields}
       unidades={UNIDADES_POLICIAIS}
       bens={BENS}
       onInputChange={handleInputChange}

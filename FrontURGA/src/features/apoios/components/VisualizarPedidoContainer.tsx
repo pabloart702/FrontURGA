@@ -1,5 +1,6 @@
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { useVisualizarPedido } from '../hooks/useVisualizarPedido';
 import { VisualizarPedidoView } from './VisualizarPedidoView';
 import type { ApoiosLocationState } from '../types/apoios.types';
@@ -11,6 +12,7 @@ export function VisualizarPedidoContainer() {
   const locationState = location.state as ApoiosLocationState | null;
   const returnTab = locationState?.returnTab || 'pendente';
   const { user } = useAuth();
+  const { canEditPrivilegedFields } = usePermissions();
 
   const {
     form,
@@ -32,6 +34,7 @@ export function VisualizarPedidoContainer() {
       error={error}
       toastMessage={toastMessage}
       userRole={user?.role}
+      canUpdateStatus={canEditPrivilegedFields}
       onStatusChange={(status) => void handleStatusChange(status)}
       onPrint={handlePrint}
       onBack={handleBack}

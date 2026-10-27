@@ -14,6 +14,7 @@ interface ApoiosListViewProps {
   page: number;
   totalPages: number;
   userRole?: string;
+  canFilterDepartamento?: boolean;
   onTabChange: (tab: TabStatus) => void;
   onDepartamentoChange: (dept: string) => void;
   onPageChange: (newPage: number) => void;
@@ -33,12 +34,15 @@ export function ApoiosListView({
   page,
   totalPages,
   userRole,
+  canFilterDepartamento,
   onTabChange,
   onDepartamentoChange,
   onPageChange,
   onNewSolicitacao,
   onSelectForm,
 }: ApoiosListViewProps) {
+  const showDeptFilter = canFilterDepartamento ?? (userRole !== 'Usuário');
+
   return (
     <div className="apoios-page-container">
       <div className="apoios-header">
@@ -75,7 +79,7 @@ export function ApoiosListView({
           ))}
         </div>
 
-        {userRole !== 'Usuário' && (
+        {showDeptFilter && (
           <div className="apoios-filter-container">
             <input
               type="text"

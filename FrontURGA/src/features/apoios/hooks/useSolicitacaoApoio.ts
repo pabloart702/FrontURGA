@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apoiosApi } from '../api/apoiosApi';
 import { UNIDADES_POLICIAIS } from '../../../constants/unidades';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { getApiErrorMessage, isNetworkError } from '../../../utils/errorMessages';
 import {
   type AsyncState,
@@ -19,10 +20,11 @@ interface UseSolicitacaoApoioProps {
 
 export function useSolicitacaoApoio({ user }: UseSolicitacaoApoioProps) {
   const navigate = useNavigate();
+  const { isComum } = usePermissions();
   const [submitState, setSubmitState] = useState<AsyncState<void>>(asyncIdle());
 
   const [formData, setFormData] = useState<SolicitacaoFormData>(() => ({
-    departamento: user && user.role === 'Usuário' && user.departamento ? user.departamento : '',
+    departamento: user && isComum && user.departamento ? user.departamento : '',
     operacao: '',
     data_operacao: '',
     numero_processo: '',

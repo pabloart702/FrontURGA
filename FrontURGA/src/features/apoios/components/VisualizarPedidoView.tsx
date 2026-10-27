@@ -8,6 +8,7 @@ interface VisualizarPedidoViewProps {
   error: string;
   toastMessage: ToastFeedback | null;
   userRole?: string;
+  canUpdateStatus?: boolean;
   onStatusChange: (newStatus: string) => void;
   onPrint: () => void;
   onBack: () => void;
@@ -19,6 +20,7 @@ export function VisualizarPedidoView({
   error,
   toastMessage,
   userRole,
+  canUpdateStatus,
   onStatusChange,
   onPrint,
   onBack,
@@ -44,7 +46,7 @@ export function VisualizarPedidoView({
     );
   }
 
-  const isUserOnly = userRole === 'Usuário';
+  const isUserOnly = canUpdateStatus !== undefined ? !canUpdateStatus : userRole === 'Usuário';
   const currentStatus = form.status || 'pendente';
 
   return (

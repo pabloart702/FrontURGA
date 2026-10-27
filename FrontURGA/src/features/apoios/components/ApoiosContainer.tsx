@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { UNIDADES_POLICIAIS } from '../../../constants/unidades';
 import { useAuth } from '../../../hooks/useAuth';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { useApoiosList } from '../hooks/useApoiosList';
 import { ApoiosListView } from './ApoiosListView';
 import type { Form, ApoiosLocationState } from '../types/apoios.types';
@@ -12,6 +13,7 @@ export function ApoiosContainer() {
   const initialTab = locationState?.returnTab || 'agenda';
 
   const { user } = useAuth();
+  const { canEditPrivilegedFields } = usePermissions();
   const {
     forms,
     activeTab,
@@ -44,6 +46,7 @@ export function ApoiosContainer() {
       page={page}
       totalPages={totalPages}
       userRole={user?.role}
+      canFilterDepartamento={canEditPrivilegedFields}
       onTabChange={handleTabChange}
       onDepartamentoChange={handleDepartamentoChange}
       onPageChange={handlePageChange}

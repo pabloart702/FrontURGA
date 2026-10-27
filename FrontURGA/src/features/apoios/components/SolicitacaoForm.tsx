@@ -13,6 +13,7 @@ interface SolicitacaoFormProps {
   loading?: boolean;
   error?: string;
   userRole?: string;
+  canChangeDepartamento?: boolean;
   unidades: string[];
   bens: string[];
   onInputChange: (
@@ -44,6 +45,7 @@ export function SolicitacaoForm({
   loading,
   error,
   userRole,
+  canChangeDepartamento,
   unidades,
   bens,
   onInputChange,
@@ -54,6 +56,7 @@ export function SolicitacaoForm({
   onSubmit,
   onBack,
 }: SolicitacaoFormProps) {
+  const allowChangeDept = canChangeDepartamento ?? (userRole !== 'Usuário');
   const isSubmitting = submitState ? submitState.status === 'loading' : Boolean(loading);
   const errorMessage = submitState
     ? submitState.status === 'error'
@@ -107,9 +110,9 @@ export function SolicitacaoForm({
               onChange={onInputChange}
               required
               placeholder="Ex: Homicídios"
-              disabled={userRole === 'Usuário'}
+              disabled={!allowChangeDept}
             />
-            {userRole !== 'Usuário' && (
+            {allowChangeDept && (
               <datalist id="departamentos-list">
                 {unidades.map((unidade, idx) => (
                   <option key={`${unidade}-${idx}`} value={unidade} />

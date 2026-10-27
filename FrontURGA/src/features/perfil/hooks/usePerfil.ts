@@ -1,5 +1,6 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { getApiErrorMessage } from '../../../utils/errorMessages';
 import { logger } from '../../../utils/logger';
 import { perfilApi } from '../api/perfilApi';
@@ -50,7 +51,7 @@ export function usePerfil(): UsePerfilReturn {
   const [actionState, setActionState] = useState<AsyncState<string>>(asyncIdle());
   const [fotoPerfil, setFotoPerfil] = useState<string>('');
 
-  const canEditPrivilegedFields = user?.role !== 'Usuário';
+  const { canEditPrivilegedFields } = usePermissions();
 
   useEffect(() => {
     let ignore = false;
