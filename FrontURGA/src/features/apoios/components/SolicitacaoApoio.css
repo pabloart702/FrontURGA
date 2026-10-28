@@ -47,7 +47,7 @@
   border-color: #d4d4d8;
 }
 
-.header-title {
+.apoio-header .header-title {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,7 +71,7 @@
   color: #09090b;
 }
 
-.header-title h2 {
+.apoio-header .header-title h2 {
   font-size: 20px;
   font-weight: 700;
   color: #09090b;
@@ -372,7 +372,7 @@
     padding-bottom: 16px;
   }
 
-  .header-title {
+  .apoio-header .header-title {
     gap: 8px;
     padding: 0 40px;
   }
@@ -387,7 +387,7 @@
     height: 18px;
   }
 
-  .header-title h2 {
+  .apoio-header .header-title h2 {
     font-size: 17px;
   }
 
@@ -444,11 +444,11 @@
     border-radius: 8px;
   }
 
-  .header-title {
+  .apoio-header .header-title {
     padding: 0 36px;
   }
 
-  .header-title h2 {
+  .apoio-header .header-title h2 {
     font-size: 16px;
   }
 
