@@ -14,6 +14,23 @@ interface VisualizarPedidoViewProps {
   onBack: () => void;
 }
 
+function formatDateTime(dateStr?: string | null): string {
+  if (!dateStr) return 'Não informada';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(d);
+  } catch {
+    return dateStr;
+  }
+}
+
 export function VisualizarPedidoView({
   form,
   loading,
@@ -203,6 +220,10 @@ export function VisualizarPedidoView({
               <p>{form.departamento}</p>
             </div>
             <div className="vp-info-group">
+              <label>Data da Solicitação</label>
+              <p>{formatDateTime(form.createdAt)}</p>
+            </div>
+            <div className="vp-info-group">
               <label>Data da Operação</label>
               <p
                 style={{
@@ -211,7 +232,7 @@ export function VisualizarPedidoView({
                   fontWeight: form.data_operacao ? 'normal' : '500',
                 }}
               >
-                {form.data_operacao || 'data da operação não informada'}
+                {form.data_operacao || 'Data da operação não informada'}
               </p>
             </div>
           </div>
@@ -223,7 +244,7 @@ export function VisualizarPedidoView({
               <p>{form.numero_processo || 'Não informado'}</p>
             </div>
             <div className="vp-info-group">
-              <label>Número Cautelar</label>
+              <label>Número da Cautelar</label>
               <p>{form.numero_cautelar || 'Não informado'}</p>
             </div>
             <div className="vp-info-group">

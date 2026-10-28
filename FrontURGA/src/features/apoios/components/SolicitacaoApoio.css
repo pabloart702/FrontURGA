@@ -153,6 +153,44 @@
   cursor: not-allowed;
 }
 
+.date-header-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.date-header-group label {
+  margin-bottom: 0 !important;
+}
+
+.sem-data-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #71717a;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sem-data-checkbox-label input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  accent-color: #09090b;
+  cursor: pointer;
+}
+
+.sem-data-checkbox-label:hover {
+  color: #09090b;
+}
+
 .date-input-wrapper {
   position: relative;
   display: flex;

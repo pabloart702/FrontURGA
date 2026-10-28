@@ -50,6 +50,7 @@ describe('VisualizarPedidoContainer Component', () => {
     tipos_apreendidos: ['Veículos', 'Eletrônicos'],
     status: 'pendente',
     criador: '1',
+    createdAt: '2026-05-10T10:00:00.000Z',
   };
 
   beforeEach(() => {
@@ -79,6 +80,7 @@ describe('VisualizarPedidoContainer Component', () => {
       expect(screen.getByText('0001234-56.2026.8.00.0000')).toBeInTheDocument();
       expect(screen.getByText('Busca e apreensão')).toBeInTheDocument();
       expect(screen.getByText('Apreensão de bens ilegais')).toBeInTheDocument();
+      expect(screen.getByText('Data da Solicitação')).toBeInTheDocument();
     });
   });
 

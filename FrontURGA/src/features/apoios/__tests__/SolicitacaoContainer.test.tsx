@@ -189,6 +189,9 @@ describe('SolicitacaoContainer Component', () => {
     fireEvent.change(container.querySelector('input[name="operacao"]')!, {
       target: { value: 'Operação Resubmissao' },
     });
+    fireEvent.change(container.querySelector('input[name="data_operacao"]')!, {
+      target: { value: '15/10/2026' },
+    });
     fireEvent.change(container.querySelector('select[name="medida_cautelar"]')!, {
       target: { value: 'Bloqueio' },
     });
@@ -223,6 +226,66 @@ describe('SolicitacaoContainer Component', () => {
     resolvePromise!(createdMockForm);
     await waitFor(() => {
       expect(mockAlert).toHaveBeenCalledWith('Formulário cadastrado com sucesso!');
+    });
+  });
+
+  it('deve validar obrigatoriedade de data válida ou seleção de "Não informar data"', async () => {
+    const { container } = render(
+      <MemoryRouter>
+        <SolicitacaoContainer />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(container.querySelector('input[name="departamento"]')!, {
+      target: { value: 'DEGEPOL' },
+    });
+    fireEvent.change(container.querySelector('input[name="operacao"]')!, {
+      target: { value: 'Operação Sem Data' },
+    });
+    fireEvent.change(container.querySelector('select[name="medida_cautelar"]')!, {
+      target: { value: 'Bloqueio' },
+    });
+    fireEvent.change(container.querySelector('input[name="valor_estimado"]')!, {
+      target: { value: '100' },
+    });
+    fireEvent.change(container.querySelector('textarea[name="descricao_operacao"]')!, {
+      target: { value: 'Desc' },
+    });
+
+    const form = screen.getByRole('button', { name: /salvar formulário/i }).closest('form')!;
+    fireEvent.submit(form);
+
+    // Deve exibir erro de validação da data
+    expect(
+      screen.getByText('Informe a data da operação ou marque a opção "Não informar data".')
+    ).toBeInTheDocument();
+    expect(apoiosApi.createForm).not.toHaveBeenCalled();
+
+    // Digita data inválida
+    const dateInput = container.querySelector('input[name="data_operacao"]') as HTMLInputElement;
+    fireEvent.change(dateInput, { target: { value: '99/99/9999' } });
+    fireEvent.submit(form);
+    expect(
+      screen.getByText('Data da operação com dia, mês ou ano inválido.')
+    ).toBeInTheDocument();
+    expect(apoiosApi.createForm).not.toHaveBeenCalled();
+
+    // Agora marca "Não informar data"
+    const semDataCheckbox = screen.getByLabelText(/não informar data/i);
+    fireEvent.click(semDataCheckbox);
+    expect(dateInput).toBeDisabled();
+
+    vi.mocked(apoiosApi.createForm).mockResolvedValueOnce(createdMockForm);
+    fireEvent.submit(form);
+
+    await waitFor(() => {
+      expect(apoiosApi.createForm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          departamento: 'DEGEPOL',
+          operacao: 'Operação Sem Data',
+          data_operacao: undefined,
+        })
+      );
     });
   });
 

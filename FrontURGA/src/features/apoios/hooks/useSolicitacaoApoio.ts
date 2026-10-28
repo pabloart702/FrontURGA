@@ -37,6 +37,14 @@ export function useSolicitacaoApoio({ user }: UseSolicitacaoApoioProps) {
   const [resultados, setResultados] = useState<string[]>([]);
   const [tiposApreendidos, setTiposApreendidos] = useState<string[]>([]);
   const [outrosTipos, setOutrosTipos] = useState('');
+  const [semData, setSemData] = useState(false);
+
+  const toggleSemData = (checked: boolean) => {
+    setSemData(checked);
+    if (checked) {
+      setFormData((prev) => ({ ...prev, data_operacao: '' }));
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -111,6 +119,33 @@ export function useSolicitacaoApoio({ user }: UseSolicitacaoApoioProps) {
         return;
       }
 
+      if (!semData) {
+        const dateStr = formData.data_operacao.trim();
+        if (!dateStr) {
+          setSubmitState(
+            asyncError('Informe a data da operação ou marque a opção "Não informar data".')
+          );
+          return;
+        }
+        const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+        const match = dateStr.match(dateRegex);
+        if (!match) {
+          setSubmitState(
+            asyncError('Data da operação incompleta ou inválida. Use o formato DD/MM/AAAA.')
+          );
+          return;
+        }
+        const day = parseInt(match[1], 10);
+        const month = parseInt(match[2], 10);
+        const year = parseInt(match[3], 10);
+        if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1900 || year > 2100) {
+          setSubmitState(
+            asyncError('Data da operação com dia, mês ou ano inválido.')
+          );
+          return;
+        }
+      }
+
       let finalTiposApreendidos = [...tiposApreendidos];
       if (finalTiposApreendidos.includes('Outros')) {
         finalTiposApreendidos = finalTiposApreendidos.filter((t) => t !== 'Outros');
@@ -166,6 +201,8 @@ export function useSolicitacaoApoio({ user }: UseSolicitacaoApoioProps) {
     setOutrosTipos,
     toggleResultado,
     toggleTipoApreendido,
+    semData,
+    toggleSemData,
     handleSubmit,
   };
 }

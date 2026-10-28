@@ -17,6 +17,8 @@ export function SolicitacaoContainer() {
     tiposApreendidos,
     outrosTipos,
     submitState,
+    semData,
+    toggleSemData,
     handleInputChange,
     setDateFromPicker,
     setOutrosTipos,
@@ -38,10 +40,12 @@ export function SolicitacaoContainer() {
       submitState={submitState}
       userRole={user?.role}
       canChangeDepartamento={canEditPrivilegedFields}
+      semData={semData}
       unidades={UNIDADES_POLICIAIS}
       bens={BENS}
       onInputChange={handleInputChange}
       onDatePickerChange={setDateFromPicker}
+      onToggleSemData={toggleSemData}
       onOutrosTiposChange={setOutrosTipos}
       onToggleResultado={toggleResultado}
       onToggleTipoApreendido={toggleTipoApreendido}

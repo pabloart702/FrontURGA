@@ -14,12 +14,14 @@ interface SolicitacaoFormProps {
   error?: string;
   userRole?: string;
   canChangeDepartamento?: boolean;
+  semData?: boolean;
   unidades: string[];
   bens: string[];
   onInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => void;
   onDatePickerChange: (value: string) => void;
+  onToggleSemData?: (checked: boolean) => void;
   onOutrosTiposChange: (value: string) => void;
   onToggleResultado: (value: string) => void;
   onToggleTipoApreendido: (value: string) => void;
@@ -46,10 +48,12 @@ export function SolicitacaoForm({
   error,
   userRole,
   canChangeDepartamento,
+  semData,
   unidades,
   bens,
   onInputChange,
   onDatePickerChange,
+  onToggleSemData,
   onOutrosTiposChange,
   onToggleResultado,
   onToggleTipoApreendido,
@@ -135,7 +139,17 @@ export function SolicitacaoForm({
           </div>
 
           <div className="input-group">
-            <label htmlFor="sol-data-operacao">Data da Operação</label>
+            <div className="date-header-group">
+              <label htmlFor="sol-data-operacao">Data da Operação (Opcional)</label>
+              <label className="sem-data-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={Boolean(semData)}
+                  onChange={(e) => onToggleSemData?.(e.target.checked)}
+                />
+                Não informar data
+              </label>
+            </div>
             <div className="date-input-wrapper">
               <input
                 id="sol-data-operacao"
@@ -143,8 +157,9 @@ export function SolicitacaoForm({
                 name="data_operacao"
                 value={formData.data_operacao}
                 onChange={onInputChange}
-                placeholder="DD/MM/AAAA"
+                placeholder={semData ? 'Data não informada' : 'DD/MM/AAAA'}
                 maxLength={10}
+                disabled={Boolean(semData)}
                 aria-label="Data da operação"
               />
               <button
@@ -153,6 +168,7 @@ export function SolicitacaoForm({
                 onClick={handleOpenDatePicker}
                 title="Abrir calendário"
                 aria-label="Abrir calendário"
+                disabled={Boolean(semData)}
               >
                 <Calendar className="date-picker-icon" size={20} />
               </button>
@@ -162,13 +178,14 @@ export function SolicitacaoForm({
                 className="hidden-date-picker"
                 tabIndex={-1}
                 aria-hidden="true"
+                disabled={Boolean(semData)}
                 onChange={(e) => onDatePickerChange(e.target.value)}
               />
             </div>
           </div>
 
           <div className="input-group">
-            <label htmlFor="sol-numero-processo">Nº do Processo</label>
+            <label htmlFor="sol-numero-processo">Nº do Processo (Opcional)</label>
             <input
               id="sol-numero-processo"
               type="text"
@@ -198,7 +215,7 @@ export function SolicitacaoForm({
           </div>
 
           <div className="input-group">
-            <label htmlFor="sol-numero-cautelar">Nº Cautelar</label>
+            <label htmlFor="sol-numero-cautelar">Nº da Cautelar (Opcional)</label>
             <input
               id="sol-numero-cautelar"
               type="text"
