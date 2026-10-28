@@ -140,46 +140,49 @@ export function SolicitacaoForm({
 
           <div className="input-group">
             <label htmlFor="sol-data-operacao">Data da Operação</label>
-            <div className="date-input-wrapper">
-              <input
-                id="sol-data-operacao"
-                type="text"
-                name="data_operacao"
-                value={formData.data_operacao}
-                onChange={onInputChange}
-                placeholder={semData ? 'Data não informada' : 'DD/MM/AAAA'}
-                maxLength={10}
-                disabled={Boolean(semData)}
-                aria-label="Data da operação"
-              />
-              <button
-                type="button"
-                className="date-picker-btn"
-                onClick={handleOpenDatePicker}
-                title="Abrir calendário"
-                aria-label="Abrir calendário"
-                disabled={Boolean(semData)}
-              >
-                <Calendar className="date-picker-icon" size={20} />
-              </button>
-              <input
-                ref={datePickerRef}
-                type="date"
-                className="hidden-date-picker"
-                tabIndex={-1}
-                aria-hidden="true"
-                disabled={Boolean(semData)}
-                onChange={(e) => onDatePickerChange(e.target.value)}
-              />
+            <div className="date-row-container">
+              <div className="date-input-wrapper">
+                <input
+                  id="sol-data-operacao"
+                  type="text"
+                  name="data_operacao"
+                  value={formData.data_operacao}
+                  onChange={onInputChange}
+                  placeholder={semData ? 'Não informada' : 'DD/MM/AAAA'}
+                  maxLength={10}
+                  disabled={Boolean(semData)}
+                  aria-label="Data da operação"
+                />
+                <button
+                  type="button"
+                  className="date-picker-btn"
+                  onClick={handleOpenDatePicker}
+                  title="Abrir calendário"
+                  aria-label="Abrir calendário"
+                  disabled={Boolean(semData)}
+                >
+                  <Calendar className="date-picker-icon" size={20} />
+                </button>
+                <input
+                  ref={datePickerRef}
+                  type="date"
+                  className="hidden-date-picker"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  disabled={Boolean(semData)}
+                  onChange={(e) => onDatePickerChange(e.target.value)}
+                />
+              </div>
+              <label htmlFor="sol-sem-data" className="sem-data-checkbox-label">
+                <input
+                  id="sol-sem-data"
+                  type="checkbox"
+                  checked={Boolean(semData)}
+                  onChange={(e) => onToggleSemData?.(e.target.checked)}
+                />
+                Não informar data
+              </label>
             </div>
-            <label className="sem-data-checkbox-label">
-              <input
-                type="checkbox"
-                checked={Boolean(semData)}
-                onChange={(e) => onToggleSemData?.(e.target.checked)}
-              />
-              Não informar data
-            </label>
           </div>
 
           <div className="input-group">

@@ -153,17 +153,29 @@
   cursor: not-allowed;
 }
 
+.date-row-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.date-row-container .date-input-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
 .sem-data-checkbox-label {
   display: inline-flex;
   align-items: center;
-  align-self: flex-start;
-  gap: 6px;
-  font-size: 13px;
+  gap: 8px;
+  font-size: 13.5px;
   font-weight: 500;
-  color: #71717a;
+  color: #3f3f46;
   cursor: pointer;
   user-select: none;
-  margin-top: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .sem-data-checkbox-label input[type="checkbox"] {
@@ -213,9 +225,15 @@
   z-index: 2;
 }
 
-.date-picker-btn:hover {
+.date-picker-btn:hover:not(:disabled) {
   color: #09090b;
   background-color: rgba(0, 0, 0, 0.04);
+}
+
+.date-picker-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  color: #a1a1aa;
 }
 
 .date-picker-icon {
@@ -376,6 +394,24 @@
   .form-grid {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .date-row-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .date-row-container .date-input-wrapper {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+  }
+
+  .sem-data-checkbox-label {
+    width: 100%;
+    margin-top: 2px;
   }
 
   .form-grid-checkboxes {
