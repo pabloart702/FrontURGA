@@ -139,17 +139,7 @@ export function SolicitacaoForm({
           </div>
 
           <div className="input-group">
-            <div className="date-header-group">
-              <label htmlFor="sol-data-operacao">Data da Operação (Opcional)</label>
-              <label className="sem-data-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={Boolean(semData)}
-                  onChange={(e) => onToggleSemData?.(e.target.checked)}
-                />
-                Não informar data
-              </label>
-            </div>
+            <label htmlFor="sol-data-operacao">Data da Operação</label>
             <div className="date-input-wrapper">
               <input
                 id="sol-data-operacao"
@@ -182,6 +172,14 @@ export function SolicitacaoForm({
                 onChange={(e) => onDatePickerChange(e.target.value)}
               />
             </div>
+            <label className="sem-data-checkbox-label">
+              <input
+                type="checkbox"
+                checked={Boolean(semData)}
+                onChange={(e) => onToggleSemData?.(e.target.checked)}
+              />
+              Não informar data
+            </label>
           </div>
 
           <div className="input-group">

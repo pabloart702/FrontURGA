@@ -107,7 +107,7 @@
   text-align: left;
 }
 
-.input-group.full-width > label {
+.input-group.full-width>label {
   font-size: 14px;
 }
 
@@ -153,28 +153,17 @@
   cursor: not-allowed;
 }
 
-.date-header-group {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.date-header-group label {
-  margin-bottom: 0 !important;
-}
-
 .sem-data-checkbox-label {
   display: inline-flex;
   align-items: center;
+  align-self: flex-start;
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
   color: #71717a;
   cursor: pointer;
   user-select: none;
+  margin-top: 2px;
 }
 
 .sem-data-checkbox-label input[type="checkbox"] {
@@ -259,7 +248,7 @@
   width: 100%;
 }
 
-.checkbox-group-container > label {
+.checkbox-group-container>label {
   font-size: 14px;
   font-weight: 600;
   color: #09090b;
