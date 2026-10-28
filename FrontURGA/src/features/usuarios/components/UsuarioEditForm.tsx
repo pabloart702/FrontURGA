@@ -69,6 +69,7 @@ export function UsuarioEditForm({
           <ArrowLeft size={20} />
         </button>
         <div className="header-title">
+          <h2>Editar Usuário</h2>
           <div className="profile-picture-container">
             {formData.fotoPerfil ? (
               <SecureImage
@@ -96,7 +97,6 @@ export function UsuarioEditForm({
               </div>
             )}
           </div>
-          <h2>Editar Usuário</h2>
         </div>
       </div>
 

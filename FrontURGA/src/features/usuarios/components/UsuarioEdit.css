@@ -18,15 +18,17 @@
   margin-bottom: 28px;
   border-bottom: 1px solid #f4f4f5;
   padding-bottom: 20px;
-  min-height: 48px;
+  min-height: 56px;
 }
 
 .header-title {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 0 44px;
+  width: 100%;
+  padding: 0 60px;
+  box-sizing: border-box;
 }
 
 .usuario-avatar-placeholder {
@@ -45,7 +47,11 @@
 }
 
 .profile-picture-container {
-  position: relative;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -60,49 +66,6 @@
   border: 2px solid #e4e4e7;
 }
 
-.upload-btn {
-  position: absolute;
-  bottom: -4px;
-  right: -4px;
-  background: #09090b;
-  color: white;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 2px solid white;
-  transition: all 0.2s ease;
-}
-
-.upload-btn:hover {
-  background: #3f3f46;
-  transform: scale(1.1);
-}
-
-.remove-photo-btn {
-  position: absolute;
-  bottom: -4px;
-  left: -4px;
-  background: #ef4444;
-  color: white;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 2px solid white;
-  transition: all 0.2s ease;
-}
-
-.remove-photo-btn:hover {
-  background: #dc2626;
-  transform: scale(1.1);
-}
 
 .logo-icon {
   color: #09090b;
@@ -257,6 +220,7 @@
   justify-content: center;
   transition: all 0.2s ease;
   padding: 0;
+  z-index: 10;
 }
 
 .back-btn:hover {
@@ -317,10 +281,6 @@
     padding-bottom: 16px;
   }
 
-  .header-title h2 {
-    font-size: 20px;
-  }
-
   .form-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -346,11 +306,21 @@
     border-radius: 8px;
   }
 
+  .perfil-header {
+    min-height: 52px;
+  }
+
+  .header-title {
+    padding: 0 54px;
+  }
+
   .header-title h2 {
     font-size: 18px;
   }
 
-  .header-title {
-    padding: 0 40px;
+  .profile-picture-container,
+  .usuario-avatar-placeholder {
+    width: 50px;
+    height: 50px;
   }
 }
