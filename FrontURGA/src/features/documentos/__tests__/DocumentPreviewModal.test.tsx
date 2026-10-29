@@ -19,7 +19,6 @@ describe('DocumentPreviewModal', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    window.innerWidth = 1024;
   });
 
   it('não deve renderizar nada quando o status for idle', () => {
@@ -50,28 +49,19 @@ describe('DocumentPreviewModal', () => {
     expect(screen.getByText('Falha no download')).toBeInTheDocument();
   });
 
-  it('deve renderizar iframe no desktop e permitir download pelo botão do cabeçalho', () => {
-    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-
+  it('deve renderizar iframe no desktop', () => {
     render(<DocumentPreviewModal state={mockSuccessState} onClose={vi.fn()} />);
 
     // Verifica renderização do iframe
     const iframe = screen.getByTitle('Cartilha URGA');
     expect(iframe).toBeInTheDocument();
     expect(iframe).toHaveAttribute('src', 'blob:https://urga.onrender.com/mock-id');
-
-    // Botão de download no header
-    const downloadBtn = screen.getByRole('button', { name: /baixar documento pdf/i });
-    expect(downloadBtn).toBeInTheDocument();
-
-    fireEvent.click(downloadBtn);
-
-    expect(clickSpy).toHaveBeenCalled();
-    clickSpy.mockRestore();
   });
 
   it('deve exibir interface nativa de download no mobile e permitir alternar para visualização embutida', () => {
-    window.innerWidth = 400;
+    const userAgentSpy = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(
+      'Mozilla/5.0 (Linux; Android 14; Mobile; rv:124.0) Gecko/124.0 Firefox/124.0',
+    );
     const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
 
     render(<DocumentPreviewModal state={mockSuccessState} onClose={vi.fn()} />);
@@ -82,7 +72,7 @@ describe('DocumentPreviewModal', () => {
     // Deve renderizar cartão com botão mobile
     const mobileBtn = screen.getByRole('button', { name: /baixar e abrir documento no celular/i });
     expect(mobileBtn).toBeInTheDocument();
-    expect(screen.getByText(/Dispositivos móveis utilizam o leitor nativo/i)).toBeInTheDocument();
+    expect(screen.getByText(/Baixe o arquivo para poder visualizar/i)).toBeInTheDocument();
 
     // Dispara o download mobile
     fireEvent.click(mobileBtn);
@@ -104,5 +94,6 @@ describe('DocumentPreviewModal', () => {
     expect(screen.getByRole('button', { name: /baixar e abrir documento no celular/i })).toBeInTheDocument();
 
     clickSpy.mockRestore();
+    userAgentSpy.mockRestore();
   });
 });

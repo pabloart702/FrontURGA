@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { AlertCircle, Check, Download, FileText, RefreshCw } from 'lucide-react';
 import { Modal } from '../../../components/Modal';
 import type { DocumentViewerState } from '../types/documentos.types';
@@ -9,16 +9,24 @@ interface DocumentPreviewModalProps {
 }
 
 /**
- * Detecta se o ambiente atual é um dispositivo móvel ou tela reduzida
- * que não suporta visualização de PDF integrada em iframes.
+ * Detecta se o ambiente atual é um dispositivo móvel (Android, iOS, iPadOS)
+ * através do User Agent e Client Hints, sem depender da largura da janela.
  */
 function checkIsMobile(): boolean {
   if (typeof window === 'undefined') return false;
+
+  // 1. Suporte a Client Hints (navegadores modernos baseados em Chromium)
+  const nav = navigator as Navigator & { userAgentData?: { mobile?: boolean } };
+  if (typeof nav.userAgentData?.mobile === 'boolean') {
+    return nav.userAgentData.mobile;
+  }
+
+  // 2. Fallback via User Agent para Android, iPhone, iPad, etc.
   const ua = navigator.userAgent || '';
   const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
   const isTouchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
-  const isSmallScreen = window.innerWidth <= 768;
-  return isMobileUA || isTouchMac || isSmallScreen;
+
+  return isMobileUA || isTouchMac;
 }
 
 /**
@@ -30,7 +38,7 @@ function checkIsMobile(): boolean {
 export function DocumentPreviewModal({ state, onClose }: DocumentPreviewModalProps) {
   const [downloaded, setDownloaded] = useState(false);
   const [forceShowIframe, setForceShowIframe] = useState(false);
-  const [isMobile, setIsMobile] = useState(() => checkIsMobile());
+  const isMobile = useMemo(() => checkIsMobile(), []);
   const [prevDocKey, setPrevDocKey] = useState<string | null>(null);
 
   const currentDocKey = state.status === 'idle' ? null : state.doc.filename;
@@ -40,14 +48,6 @@ export function DocumentPreviewModal({ state, onClose }: DocumentPreviewModalPro
     setDownloaded(false);
     setForceShowIframe(false);
   }
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(checkIsMobile());
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleDownload = useCallback(() => {
     if (state.status !== 'success') return;
