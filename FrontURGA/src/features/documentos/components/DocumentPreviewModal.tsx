@@ -74,18 +74,6 @@ export function DocumentPreviewModal({ state, onClose }: DocumentPreviewModalPro
       <Modal.Header>
         <Modal.Title>{doc.title}</Modal.Title>
         <div className="doc-modal-actions">
-          {state.status === 'success' && (
-            <button
-              type="button"
-              className="doc-header-action-btn"
-              onClick={handleDownload}
-              title="Baixar documento PDF"
-              aria-label="Baixar documento PDF"
-            >
-              <Download size={18} />
-              <span className="doc-header-btn-text">Baixar</span>
-            </button>
-          )}
           <Modal.CloseButton title="Fechar" />
         </div>
       </Modal.Header>
