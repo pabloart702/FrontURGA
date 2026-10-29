@@ -94,20 +94,22 @@ export function VisualizarPedidoView({
 
       <div className="page-glass-card">
         <div className="vp-header">
-          <button
-            type="button"
-            onClick={onBack}
-            className="vp-back-btn"
-            title="Voltar"
-            aria-label="Voltar"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div className="vp-title">
-            <div className="vp-logo-circle">
-              <FileText size={24} />
+          <div className="vp-header-left">
+            <button
+              type="button"
+              onClick={onBack}
+              className="vp-back-btn"
+              title="Voltar"
+              aria-label="Voltar"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="vp-title">
+              <div className="vp-logo-circle">
+                <FileText size={20} />
+              </div>
+              <h2>Detalhes da Operação</h2>
             </div>
-            <h2>Detalhes da Operação</h2>
           </div>
           <div className="vp-actions">
             <button type="button" className="vp-print-btn" onClick={onPrint}>
@@ -119,6 +121,7 @@ export function VisualizarPedidoView({
                 aria-label="Atualizar status do pedido"
                 value={currentStatus}
                 onChange={(e) => onStatusChange(e.target.value)}
+                className="vp-status-select"
                 style={{
                   padding: '8px 16px',
                   borderRadius: '20px',
@@ -173,6 +176,7 @@ export function VisualizarPedidoView({
               </select>
             ) : (
               <span
+                className="vp-status-select"
                 style={{
                   display: 'inline-block',
                   padding: '8px 16px',

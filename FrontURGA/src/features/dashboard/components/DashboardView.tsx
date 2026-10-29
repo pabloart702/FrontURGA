@@ -16,8 +16,8 @@ export function DashboardView({ data }: DashboardViewProps) {
     <div className="dashboard">
       <header className="dashboard-header">
         <h2 className="dashboard-title">
-          <LayoutDashboard size={28} color="#09090b" />
-          Dashboard dos apoios prestados
+          <LayoutDashboard size={28} color="#09090b" className="dashboard-title-icon" />
+          <span>Dashboard dos apoios prestados</span>
         </h2>
         <p className="dashboard-subtitle">Bem-vindo, {userName || 'Usuário'}.</p>
       </header>

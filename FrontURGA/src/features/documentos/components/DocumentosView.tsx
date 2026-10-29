@@ -24,8 +24,8 @@ export function DocumentosView({
     <div className="doc-container">
       <header className="doc-header">
         <h2 className="doc-header-title">
-          <FileText size={28} color="#09090b" />
-          Documentos
+          <FileText size={28} color="#09090b" className="doc-title-icon" />
+          <span>Documentos</span>
         </h2>
         <p className="doc-header-subtitle">
           Visualize e faça o download dos manuais e normativas do URGA.

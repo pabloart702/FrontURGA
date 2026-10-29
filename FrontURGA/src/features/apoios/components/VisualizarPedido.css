@@ -1,3 +1,23 @@
+/* Containers da Página - Padrão responsivo igual a UsuarioEdit / Perfil */
+.page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-glass-card {
+  background: #ffffff;
+  padding: 36px 40px;
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
 .vp-header {
   display: flex;
   align-items: center;
@@ -7,6 +27,15 @@
   border-bottom: 1px solid #f4f4f5;
   flex-wrap: wrap;
   gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vp-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 
 .vp-back-btn {
@@ -34,26 +63,27 @@
 .vp-title {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex: 1;
-  justify-content: center;
+  gap: 12px;
+  min-width: 0;
 }
 
 .vp-title h2 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #09090b;
   margin: 0;
+  line-height: 1.25;
 }
 
 .vp-logo-circle {
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
   background: #f4f4f5;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .vp-logo-circle svg {
@@ -64,53 +94,48 @@
   display: flex;
   gap: 12px;
   align-items: center;
-}
-
-.vp-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.status-pendente {
-  background: #fef3c7;
-  color: #d97706;
-  border: 1px solid #fde68a;
-}
-
-.status-concluido {
-  background: #d1fae5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
+  margin-left: 0;
 }
 
 .vp-print-btn {
   background: #09090b;
   color: #ffffff;
   border: none;
-  padding: 8px 16px;
+  padding: 9px 18px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: background-color 0.2s;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .vp-print-btn:hover {
   background: #27272a;
 }
 
+.vp-status-select {
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
 .vp-content-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 32px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vp-section {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .vp-section h3 {
@@ -118,13 +143,18 @@
   font-weight: 600;
   color: #09090b;
   margin-top: 0;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding-bottom: 8px;
   border-bottom: 1px solid #f4f4f5;
+  line-height: 1.3;
 }
 
 .vp-info-group {
   margin-bottom: 16px;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .vp-info-group label {
@@ -140,6 +170,9 @@
   color: #09090b;
   font-size: 15px;
   font-weight: 500;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .vp-valor {
@@ -152,6 +185,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .vp-tag {
@@ -159,6 +195,11 @@
   border-radius: 16px;
   font-size: 13px;
   font-weight: 500;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  box-sizing: border-box;
 }
 
 .result-tag {
@@ -185,13 +226,15 @@
 
 .vp-results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .vp-desc-box {
   background: #f8f4f5;
-  padding: 24px;
+  padding: 20px;
   border-radius: 8px;
   border: 1px solid #e4e4e7;
   color: #09090b;
@@ -201,6 +244,9 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: break-word;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .vp-container {
@@ -226,6 +272,136 @@
   font-weight: 500;
 }
 
+/* Responsividade Mobile - Padrão UsuarioEdit */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  .page-glass-card {
+    padding: 20px 16px;
+    border-radius: 10px;
+    margin: 0;
+    width: 100%;
+  }
+
+  .vp-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    gap: 14px;
+  }
+
+  .vp-header-left {
+    gap: 10px;
+    width: 100%;
+  }
+
+  .vp-title {
+    gap: 10px;
+  }
+
+  .vp-title h2 {
+    font-size: 18px;
+  }
+
+  .vp-logo-circle {
+    width: 34px;
+    height: 34px;
+  }
+
+  .vp-actions {
+    width: 100%;
+    margin-left: 0;
+    gap: 10px;
+  }
+
+  .vp-content-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .vp-results-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .vp-desc-box {
+    padding: 16px 14px;
+    font-size: 14.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-glass-card {
+    padding: 16px 12px;
+    border-radius: 8px;
+  }
+
+  .vp-header-left {
+    gap: 8px;
+  }
+
+  .vp-back-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .vp-logo-circle {
+    width: 32px;
+    height: 32px;
+  }
+
+  .vp-title {
+    gap: 8px;
+  }
+
+  .vp-title h2 {
+    font-size: 16.5px;
+  }
+
+  .vp-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+    align-items: stretch;
+    margin-left: 0;
+  }
+
+  .vp-print-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 16px;
+  }
+
+  .vp-status-select {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 10px 16px !important;
+  }
+
+  .vp-section h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .vp-desc-box {
+    padding: 14px 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 340px) {
+  .page-glass-card {
+    padding: 14px 8px;
+  }
+
+  .vp-title h2 {
+    font-size: 15px;
+  }
+}
+
 @media print {
   body,
   html {
@@ -241,8 +417,7 @@
   .vp-valor,
   .vp-desc-box,
   .vp-tag,
-  .vp-empty,
-  .vp-status-badge {
+  .vp-empty {
     color: black !important;
   }
 
@@ -275,3 +450,4 @@
     print-color-adjust: exact !important;
   }
 }
+

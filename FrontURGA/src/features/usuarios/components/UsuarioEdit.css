@@ -71,7 +71,7 @@
   color: #09090b;
 }
 
-.header-title h2 {
+.perfil-header .header-title h2 {
   font-size: 24px;
   font-weight: 700;
   color: #09090b;
@@ -203,7 +203,7 @@
   cursor: not-allowed;
 }
 
-.back-btn {
+.perfil-header .back-btn {
   position: absolute;
   left: 0;
   top: 50%;
@@ -223,7 +223,7 @@
   z-index: 10;
 }
 
-.back-btn:hover {
+.perfil-header .back-btn:hover {
   background-color: #f4f4f5;
   color: #09090b;
   border-color: #d4d4d8;
