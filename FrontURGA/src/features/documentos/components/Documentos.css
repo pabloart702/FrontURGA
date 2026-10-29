@@ -150,6 +150,178 @@
   }
 }
 
+/* Modal Header Actions */
+.doc-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doc-header-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #eab308;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 0 14px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.doc-header-action-btn:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: rgba(212, 175, 55, 0.6);
+  color: #facc15;
+  transform: translateY(-1px);
+}
+
+/* Mobile PDF Fallback & Direct Download View */
+.doc-mobile-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 20px;
+  height: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  color: #ffffff;
+  overflow-y: auto;
+}
+
+.doc-mobile-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d4af37;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 16px -4px rgba(212, 175, 55, 0.15);
+}
+
+.doc-mobile-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  max-width: 90%;
+  word-break: break-word;
+}
+
+.doc-mobile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #a1a1aa;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 18px;
+}
+
+.doc-mobile-description {
+  font-size: 14px;
+  color: #d4d4d8;
+  max-width: 360px;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.doc-mobile-download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: #d4af37;
+  color: #09090b;
+  border: none;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+}
+
+.doc-mobile-download-btn:hover {
+  background: #dfbe4e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+}
+
+.doc-mobile-download-btn.downloaded {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.doc-mobile-feedback {
+  font-size: 13px;
+  color: #34d399;
+  margin-top: 14px;
+  font-weight: 500;
+}
+
+.doc-mobile-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: #71717a;
+  font-size: 12px;
+  margin-top: 24px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 6px 10px;
+  transition: color 0.2s;
+}
+
+.doc-mobile-toggle-btn:hover {
+  color: #a1a1aa;
+}
+
+.doc-iframe-mobile-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #18181b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #a1a1aa;
+}
+
+.doc-iframe-return-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.doc-iframe-return-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 /* Responsividade Mobile - Padronizada com as demais abas */
 @media (max-width: 768px) {
   .doc-header {
@@ -192,6 +364,14 @@
 
   .doc-header-subtitle {
     font-size: 12.5px;
+  }
+
+  .doc-header-btn-text {
+    display: none;
+  }
+
+  .doc-header-action-btn {
+    padding: 0 10px;
   }
 }
 
