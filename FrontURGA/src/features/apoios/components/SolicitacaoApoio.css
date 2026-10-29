@@ -498,7 +498,7 @@
 
   .apoio-header .header-title {
     padding: 0 40px;
-    gap: 8px;
+    gap: 6px;
   }
 
   .apoio-header .header-title h2 {
@@ -531,22 +531,16 @@
   }
 
   .apoio-header .logo-circle {
-    width: 28px;
-    height: 28px;
-  }
-
-  .apoio-header .logo-icon {
-    width: 16px;
-    height: 16px;
+    display: none;
   }
 
   .apoio-header .header-title {
     padding: 0 34px;
-    gap: 6px;
+    gap: 0;
   }
 
   .apoio-header .header-title h2 {
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
     line-height: 1.2;
     word-break: normal;
