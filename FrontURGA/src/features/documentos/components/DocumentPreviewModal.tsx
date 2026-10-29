@@ -97,7 +97,7 @@ export function DocumentPreviewModal({ state, onClose }: DocumentPreviewModalPro
               <span>{doc.date}</span>
             </div>
             <p className="doc-mobile-description">
-              Dispositivos móveis utilizam o leitor nativo do sistema para visualização completa com zoom e alta resolução.
+              Baixe o arquivo para poder visualizar. Dispositivos móveis utilizam o leitor nativo do sistema para visualização completa.
             </p>
 
             <button
